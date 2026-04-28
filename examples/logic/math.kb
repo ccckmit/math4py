@@ -1,0 +1,17 @@
+# 數學推理知識庫
+
+# 數字事實
+fact(number=2, type="even").
+fact(number=4, type="even").
+fact(number=6, type="even").
+fact(number=3, type="odd").
+fact(number=5, type="odd").
+
+# 規則：偶數 + 偶數 = 偶數
+rule(even_sum) :- type="even", type="even" -> number=f1.number+f2.number, type="even").
+
+# 規則：奇數 + 奇數 = 偶數
+rule(odd_sum) :- type="odd", type="odd" -> number=f1.number+f2.number, type="even").
+
+# 規則：偶數 + 奇數 = 奇數
+rule(mixed_sum) :- type="even", type="odd" -> number=f1.number+f2.number, type="odd").

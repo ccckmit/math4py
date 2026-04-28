@@ -1,0 +1,15 @@
+# 家族關係知識庫（Prolog 風格語法）
+
+# 原始事實
+fact(person="Alice", relation="mother", target="Bob").
+fact(person="Bob", relation="father", target="Charlie").
+fact(person="Charlie", relation="father", target="David").
+
+# 規則：如果 X 是 Y 的母親，Y 是 Z 的父親，則 X 是 Z 的祖母
+rule(grandmother) :- relation="mother", relation="father" -> person=f1.person, relation="grandmother", target=f2.target).
+
+# 規則：如果 X 是 Y 的父親，Y 是 Z 的父親，則 X 是 Z 的祖父
+rule(grandfather) :- relation="father", relation="father" -> person=f1.person, relation="grandfather", target=f2.target).
+
+# 規則：如果 X 是 Y 的祖母，Y 是 Z 的父親，則 X 是 Z 的曾祖母
+rule(great_grandmother) :- relation="grandmother", relation="father" -> person=f1.person, relation="great_grandmother", target=f2.target).

@@ -1,8 +1,8 @@
-"""Tests for algebra/matrix.py."""
+"""Tests for matrix/matrix.py."""
 
-import pytest
 import numpy as np
-from math4py.algebra import Matrix
+
+from math4py.matrix import Matrix
 
 
 class TestMatrixCreation:

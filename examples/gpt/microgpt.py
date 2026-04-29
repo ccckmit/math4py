@@ -56,11 +56,14 @@ class SimpleGPT:
         print(f"num params: {len(self.params)}")
 
     def _init_params(self):
-        std = 0.1
+        # Xavier/Glorot 初始化
+        std = 0.02
 
         def matrix(nout, nin):
+            # Xavier initialization: std = sqrt(2 / (nin + nout))
+            scale = np.sqrt(2.0 / (nin + nout))
             return Tensor(
-                np.random.randn(nout, nin) * std,
+                np.random.randn(nout, nin) * scale * std,
                 requires_grad=True
             )
 
@@ -101,27 +104,20 @@ class SimpleGPT:
         return (x - mean) / std
 
     def embedding_lookup(self, token_ids: List[int]) -> Tensor:
-        """Embedding lookup - 正确维护梯度流。"""
-        # 從 wte 中取出對應的 embedding vectors
-        embeddings = []
-        for tid in token_ids:
-            # 使用 __getitem__ 保持梯度連接
-            emb = self.wte[tid]  # shape: (n_embd,)
-            embeddings.append(emb.data)
+        """Embedding lookup - 使用矩阵乘法实现（自动梯度流）。"""
+        # 创建一个 one-hot 矩阵用于选择 token embeddings
+        n = len(token_ids)
+        one_hot = np.zeros((n, self.vocab_size))
+        for i, tid in enumerate(token_ids):
+            one_hot[i, tid] = 1.0
 
-        # 合併成矩陣
-        emb_matrix = np.array(embeddings)
-        result = Tensor(emb_matrix, requires_grad=True)
-        result._children = [self.wte]
+        one_hot_t = Tensor(one_hot, requires_grad=True)
+        one_hot_t._children = [self.wte]
 
-        def grad_fn(grad):
-            # 將梯度累加到對應的 token embedding
-            if self.wte.grad is None:
-                self.wte.grad = np.zeros_like(self.wte.data)
-            for i, tid in enumerate(token_ids):
-                self.wte.grad[tid] += grad[i]
+        # 矩阵乘法：one_hot @ wte = embeddings
+        # d(one_hot @ wte)/d(wte) = one_hot^T
+        result = one_hot_t @ self.wte
 
-        result._grad_fn = grad_fn
         return result
 
     def positional_embedding(self, seq_len: int) -> Tensor:
@@ -254,11 +250,16 @@ class SimpleGPT:
         return next_token_id
 
 
-def adam_update(params, grads, m, v, step, lr=0.001, beta1=0.9, beta2=0.99, eps=1e-8):
-    """Adam 优化器更新。"""
+def adam_update(params, grads, m, v, step, lr=0.001, beta1=0.9, beta2=0.99, eps=1e-8, clip_grad=1.0):
+    """Adam 优化器更新 with gradient clipping."""
     lr_t = lr * (1 - step / 1000)
 
     for i, (p, g) in enumerate(zip(params, grads)):
+        # Gradient clipping
+        grad_norm = np.linalg.norm(g)
+        if grad_norm > clip_grad:
+            g = g * clip_grad / grad_norm
+
         m[i] = beta1 * m[i] + (1 - beta1) * g
         v[i] = beta2 * v[i] + (1 - beta2) * g ** 2
         m_hat = m[i] / (1 - beta1 ** (step + 1))
@@ -284,17 +285,23 @@ def train(model, docs, tokenizer, num_steps=300):
         loss.backward()
 
         grads = []
-        for p in model.params:
+        for i, p in enumerate(model.params):
             if p.grad is not None:
                 grads.append(p.grad.copy())
             else:
                 grads.append(np.zeros_like(p.data))
 
-        adam_update(model.params, grads, m, v, step, lr=0.001)
+        grad_norms = [np.linalg.norm(g) for g in grads]
+        max_grad = max(grad_norms) if grad_norms else 0
+        mean_grad = np.mean(grad_norms) if grad_norms else 0
 
-        if (step + 1) % 50 == 0:
+        adam_update(model.params, grads, m, v, step, lr=0.001, clip_grad=1.0)
+
+        if (step + 1) % 100 == 0:
             loss_val = float(loss.data) if loss.data.ndim == 0 else float(loss.data.sum())
-            print(f"step {step+1:4d} | loss {loss_val:.4f}")
+            # Check which params have non-zero gradients
+            params_with_grad = sum(1 for g in grad_norms if g > 1e-6)
+            print(f"step {step+1:4d} | loss {loss_val:.4f} | max_grad {max_grad:.4f} | mean_grad {mean_grad:.4f} | params_with_grad {params_with_grad}/{len(grad_norms)}")
 
     return model
 

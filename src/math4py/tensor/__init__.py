@@ -1,6 +1,6 @@
-"""Tensor module - 支援梯度的張量運算。"""
+"""Tensor module - 張量運算。"""
 
-from .tensor import Tensor
 from . import function as F
+from .tensor import Tensor
 
 __all__ = ["Tensor", "F"]

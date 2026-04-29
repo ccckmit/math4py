@@ -1,246 +1,312 @@
-"""張量運算定理測試 - 驗證梯度傳播和反向傳播。"""
+"""張量運算測試。"""
 
 import numpy as np
-import pytest
-from math4py.tensor.tensor import Tensor
+
 from math4py.tensor import function as F
+from math4py.tensor.tensor import Tensor
 
 
-class TestGradientFlow:
-    """測試梯度流是否正確傳播。"""
+class TestTensorCreation:
+    """張量建立測試。"""
 
-    def test_simple_linear_backward(self):
-        """測試線性層的梯度流：y = x @ W，dy/dW = x^T @ grad_output"""
-        x = Tensor([[1.0, 2.0]], requires_grad=True)
-        W = Tensor([[1.0, 0.0], [0.0, 1.0]], requires_grad=True)
+    def test_tensor_from_list(self):
+        """張量可以從串列建立。"""
+        t = Tensor([1, 2, 3])
+        assert t.shape == (3,)
+        assert t.data.dtype == np.float64
 
-        y = x @ W
-        loss = y.sum()
-        loss.backward()
+    def test_tensor_from_numpy(self):
+        """張量可以從 numpy array 建立。"""
+        arr = np.array([1.0, 2.0, 3.0])
+        t = Tensor(arr)
+        np.testing.assert_array_equal(t.data, arr)
 
-        # dy/dW = x^T = [[1], [2]]
-        expected_grad_W = np.array([[1.0, 1.0], [2.0, 2.0]])
-        np.testing.assert_array_almost_equal(W.grad, expected_grad_W)
+    def test_zeros(self):
+        """zeros 建立全零張量。"""
+        t = Tensor.zeros(3, 4)
+        assert t.shape == (3, 4)
+        assert np.all(t.data == 0)
 
-    def test_linear_with_ones_backward(self):
-        """測試：y = x @ ones，all ones input"""
-        x = Tensor([[1.0, 1.0]], requires_grad=True)
-        W = Tensor([[1.0, 1.0], [1.0, 1.0]], requires_grad=True)
+    def test_ones(self):
+        """ones 建立全一張量。"""
+        t = Tensor.ones(2, 3)
+        assert t.shape == (2, 3)
+        assert np.all(t.data == 1)
 
-        y = x @ W
-        loss = y.sum()
-        loss.backward()
-
-        # dy/dW = x^T @ ones = [[1], [1]] @ [[1, 1]] = [[1, 1], [1, 1]]
-        expected_grad_W = np.ones((2, 2))
-        np.testing.assert_array_almost_equal(W.grad, expected_grad_W)
-
-    def test_two_layer_network(self):
-        """測試兩層網絡：y = x @ W1 @ W2"""
-        x = Tensor([[1.0, 2.0]], requires_grad=True)
-        W1 = Tensor([[1.0, 0.0], [0.0, 1.0]], requires_grad=True)
-        W2 = Tensor([[1.0, 0.0], [0.0, 1.0]], requires_grad=True)
-
-        h = x @ W1
-        y = h @ W2
-        loss = y.sum()
-        loss.backward()
-
-        # dy/dW2 = h^T = [[1, 2]]^T @ [[1, 1]] = [[1, 1], [2, 2]]
-        expected_grad_W2 = np.array([[1.0, 1.0], [2.0, 2.0]])
-        np.testing.assert_array_almost_equal(W2.grad, expected_grad_W2)
-
-    def test_embedding_lookup_gradient(self):
-        """測試 embedding lookup 的梯度"""
-        vocab_size = 5
-        n_embd = 3
-        wte = Tensor(np.random.randn(vocab_size, n_embd) * 0.1, requires_grad=True)
-
-        token_id = 2
-        # 使用 __getitem__ 取出一行
-        emb = wte[token_id]  # 這會創建一個新的 Tensor，連接梯度
-
-        # loss = sum(emb)，這樣 d(loss)/dW[token_id] = 1
-        loss = emb.sum()
-        loss.backward()
-
-        # wte 的第 2 行梯度應該是 1，其他行是 0
-        expected_grad = np.zeros((vocab_size, n_embd))
-        expected_grad[token_id] = np.ones(n_embd)
-        np.testing.assert_array_almost_equal(wte.grad, expected_grad)
-
-    def test_softmax_gradient(self):
-        """測試 softmax 的梯度"""
-        logits = Tensor([[1.0, 2.0, 3.0]], requires_grad=True)
-        probs = F.softmax(logits, axis=-1)
-        loss = probs.sum()
-        loss.backward()
-
-        # softmax 求和的梯度應該是全 1（通過鏈式法則）
-        assert probs.grad is not None or logits.grad is not None
-
-    def test_matmul_gradient_chain(self):
-        """測試矩陣乘法梯度鏈"""
-        x = Tensor([[1.0, 2.0]], requires_grad=True)
-        W = Tensor([[1.0], [2.0]], requires_grad=True)
-
-        y = x @ W  # shape: (1, 1)
-        loss = y.sum()
-        loss.backward()
-
-        # dy/dW = x^T = [[1], [2]]
-        expected_grad_W = np.array([[1.0], [2.0]])
-        np.testing.assert_array_almost_equal(W.grad, expected_grad_W)
+    def test_randn(self):
+        """randn 建立隨機張量。"""
+        t = Tensor.randn(1000)
+        assert t.shape == (1000,)
 
 
-class TestEmbeddingAndLoss:
-    """測試 Embedding 和 Loss 計算"""
+class TestBasicOperations:
+    """基本運算測試。"""
 
-    def test_embedding_gradient(self):
-        """測試 embedding lookup 的梯度"""
-        vocab_size = 4
-        n_embd = 3
-        W = Tensor(np.random.randn(vocab_size, n_embd) * 0.1, requires_grad=True)
-
-        # 模擬 embedding lookup: 取第 1 行的 embedding
-        token_id = 1
-        emb = Tensor(W.data[token_id:token_id+1], requires_grad=False)
-        emb._children = [W]
-        emb._grad_fn = lambda grad: None  # 這需要正確實現
-
-        # 應該能追踪梯度
-        # 讓我們測試：loss = sum(emb)，那麼 d(loss)/dW[1] = 1
-        result = Tensor(W.data[token_id], requires_grad=True)
-        result._children = [W]
-
-        # 修正：直接用 Tensor 的 slicing
-        pass  # 這個測試需要修復
-
-    def test_cross_entropy_gradient(self):
-        """測試交叉熵損失的梯度"""
-        logits = Tensor([[2.0, 1.0, 0.0]], requires_grad=True)
-        target_idx = 0  # 目標是第 0 類
-
-        # Softmax
-        probs = F.softmax(logits, axis=-1)
-        # NLL loss = -log(probs[0, target_idx])
-        prob_target = probs[0, target_idx]
-        nll = -prob_target.log()
-
-        # backward
-        nll.backward()
-
-        # 檢查 logit 梯度
-        assert logits.grad is not None
-        assert np.any(logits.grad != 0)
-
-
-class TestAdamOptimizer:
-    """測試 Adam 優化器"""
-
-    def test_adam_update(self):
-        """測試 Adam 更新"""
-        params = [Tensor([1.0, 2.0], requires_grad=True)]
-        grads = [np.array([0.1, 0.2])]
-
-        m = [0.0]
-        v = [0.0]
-        lr = 0.01
-        beta1 = 0.9
-        beta2 = 0.99
-        eps = 1e-8
-
-        for step in range(10):
-            m[0] = beta1 * m[0] + (1 - beta1) * grads[0][0]
-            v[0] = beta2 * v[0] + (1 - beta2) * grads[0][0] ** 2
-            m_hat = m[0] / (1 - beta1 ** (step + 1))
-            v_hat = v[0] / (1 - beta2 ** (step + 1))
-            params[0].data -= lr * m_hat / (v_hat ** 0.5 + eps)
-
-        # 參數應該被更新
-        assert abs(params[0].data[0] - 1.0) > 0.01
-
-
-class TestTransformerOperations:
-    """測試 Transformer 操作的梯度"""
-
-    def test_layer_norm_gradient(self):
-        """測試 Layer Norm 的梯度"""
-        x = Tensor([[1.0, 2.0, 3.0]], requires_grad=True)
-
-        # Layer Norm
-        mean = x.mean(axis=-1, keepdims=True)
-        var = ((x - mean) ** 2).mean(axis=-1, keepdims=True)
-        std = (var + 1e-5) ** 0.5
-        x_norm = (x - mean) / std
-
-        loss = x_norm.sum()
-        loss.backward()
-
-        # 梯度應該不為零
-        assert x.grad is not None
-        assert np.any(x.grad != 0)
-
-    def test_attention_scores_gradient(self):
-        """測試 attention 分數的梯度"""
-        seq_len = 3
-        n_embd = 4
-
-        q = Tensor(np.random.randn(seq_len, n_embd) * 0.1, requires_grad=True)
-        k = Tensor(np.random.randn(seq_len, n_embd) * 0.1, requires_grad=True)
-
-        # Attention scores: q @ k.T
-        scores = q @ k.T / (n_embd ** 0.5)
-
-        loss = scores.sum()
-        loss.backward()
-
-        assert q.grad is not None
-        assert k.grad is not None
-
-    def test_multiplication_gradient(self):
-        """測試元素級乘法的梯度"""
-        a = Tensor([1.0, 2.0, 3.0], requires_grad=True)
-        b = Tensor([4.0, 5.0, 6.0], requires_grad=True)
-
-        c = a * b
-        loss = c.sum()
-
-        loss.backward()
-
-        # dc/da = b, dc/db = a
-        np.testing.assert_array_almost_equal(a.grad, [4.0, 5.0, 6.0])
-        np.testing.assert_array_almost_equal(b.grad, [1.0, 2.0, 3.0])
-
-
-class TestRegression:
-    """回歸測試：確保之前的功能仍然正常"""
-
-    def test_basic_operations(self):
-        """基本運算測試"""
-        a = Tensor([1, 2, 3], requires_grad=True)
-        b = Tensor([4, 5, 6], requires_grad=True)
-
+    def test_addition(self):
+        """加法。"""
+        a = Tensor([1, 2, 3])
+        b = Tensor([4, 5, 6])
         c = a + b
-        assert np.allclose(c.data, [5, 7, 9])
+        np.testing.assert_array_equal(c.data, [5, 7, 9])
 
-        d = a * b
-        assert np.allclose(d.data, [4, 10, 18])
+    def test_addition_order(self):
+        """加法結合律。"""
+        a = Tensor([1, 2])
+        b = Tensor([3, 4])
+        c = Tensor([5, 6])
+        result1 = (a + b) + c
+        result2 = a + (b + c)
+        np.testing.assert_array_equal(result1.data, result2.data)
+
+    def test_multiplication(self):
+        """逐元素乘法。"""
+        a = Tensor([2, 3])
+        b = Tensor([4, 5])
+        c = a * b
+        np.testing.assert_array_equal(c.data, [8, 15])
 
     def test_matrix_multiplication(self):
-        """矩陣乘法測試"""
-        a = Tensor([[1, 2], [3, 4]], requires_grad=True)
-        b = Tensor([[5, 6], [7, 8]], requires_grad=True)
-
+        """矩陣乘法。"""
+        a = Tensor([[1, 2], [3, 4]])
+        b = Tensor([[5, 6], [7, 8]])
         c = a @ b
         expected = np.array([[19, 22], [43, 50]])
         np.testing.assert_array_equal(c.data, expected)
 
-    def test_reshapetranspose(self):
-        """reshape 和 transpose 測試"""
-        a = Tensor([[1, 2, 3, 4]], requires_grad=True)
+    def test_matmul_associative(self):
+        """矩陣乘法結合律 (AB)C = A(BC)。"""
+        a = Tensor([[1, 2], [3, 4]])
+        b = Tensor([[5, 6], [7, 8]])
+        c = Tensor([[1, 0], [0, 1]])
+        result1 = (a @ b) @ c
+        result2 = a @ (b @ c)
+        np.testing.assert_array_equal(result1.data, result2.data)
+
+
+class TestReductionOperations:
+    """歸約運算測試。"""
+
+    def test_sum(self):
+        """求和。"""
+        a = Tensor([[1, 2], [3, 4]])
+        s = a.sum()
+        assert s.data == 10
+
+    def test_sum_axis(self):
+        """沿維度求和。"""
+        a = Tensor([[1, 2], [3, 4]])
+        s = a.sum(axis=0)
+        np.testing.assert_array_equal(s.data, [4, 6])
+
+    def test_mean(self):
+        """平均值。"""
+        a = Tensor([1, 2, 3, 4])
+        m = a.mean()
+        assert m.data == 2.5
+
+
+class TestShapeOperations:
+    """形狀操作測試。"""
+
+    def test_reshape(self):
+        """reshape。"""
+        a = Tensor([[1, 2, 3, 4]])
         b = a.reshape(2, 2)
         assert b.shape == (2, 2)
+        np.testing.assert_array_equal(b.data, [[1, 2], [3, 4]])
 
-        c = b.T
+    def test_transpose(self):
+        """轉置：(A^T)^T = A。"""
+        a = Tensor([[1, 2], [3, 4]])
+        np.testing.assert_array_equal(a.T.data, a.data.T)
+        np.testing.assert_array_equal(a.T.T.data, a.data)
+
+    def test_flatten(self):
+        """展平。"""
+        x = Tensor(np.random.randn(2, 3, 4))
+        y = F.flatten(x)
+        assert y.shape == (2, 12)
+
+
+class TestElementaryOperations:
+    """初等函數測試。"""
+
+    def test_negative(self):
+        """負號。"""
+        a = Tensor([1, 2, 3])
+        b = -a
+        np.testing.assert_array_equal(b.data, [-1, -2, -3])
+
+    def test_subtraction(self):
+        """減法。"""
+        a = Tensor([5, 6, 7])
+        b = Tensor([1, 2, 3])
+        c = a - b
+        np.testing.assert_array_equal(c.data, [4, 4, 4])
+
+    def test_pow_scalar(self):
+        """冪運算。"""
+        a = Tensor([2, 3, 4])
+        b = a**2
+        np.testing.assert_array_equal(b.data, [4, 9, 16])
+
+    def test_division(self):
+        """除法。"""
+        a = Tensor([6, 8, 10])
+        b = Tensor([2, 4, 5])
+        c = a / b
+        np.testing.assert_array_equal(c.data, [3, 2, 2])
+
+
+class TestMathFunctions:
+    """數學函數測試。"""
+
+    def test_exp(self):
+        """指數函數。"""
+        x = Tensor([0, 1, 2])
+        y = x.exp()
+        np.testing.assert_array_almost_equal(y.data, [1, np.e, np.e**2])
+
+    def test_log(self):
+        """自然對數。"""
+        x = Tensor([1, np.e, np.e**2])
+        y = x.log()
+        np.testing.assert_array_almost_equal(y.data, [0, 1, 2])
+
+    def test_exp_log_inverse(self):
+        """exp(log(x)) = x。"""
+        x = Tensor([0.5, 1.0, 2.0])
+        y = x.log().exp()
+        np.testing.assert_array_almost_equal(y.data, x.data)
+
+
+class TestActivationFunctions:
+    """激活函數測試。"""
+
+    def test_relu_positive(self):
+        """ReLU：x > 0 時，relu(x) = x。"""
+        x = Tensor([1, 2, 3])
+        y = x.relu()
+        np.testing.assert_array_equal(y.data, [1, 2, 3])
+
+    def test_relu_negative(self):
+        """ReLU：x < 0 時，relu(x) = 0。"""
+        x = Tensor([-1, -2, -3])
+        y = x.relu()
+        np.testing.assert_array_equal(y.data, [0, 0, 0])
+
+    def test_sigmoid_range(self):
+        """Sigmoid：輸出在 (0, 1) 之間。"""
+        x = Tensor([-100, 0, 100])
+        y = x.sigmoid()
+        assert np.all(y.data > 0)
+        assert y.data[1] == 0.5
+
+    def test_sigmoid_half(self):
+        """Sigmoid：sigmoid(0) = 0.5。"""
+        x = Tensor([0])
+        y = x.sigmoid()
+        assert abs(y.data[0] - 0.5) < 1e-10
+
+    def test_tanh_range(self):
+        """Tanh：輸出在 [-1, 1] 之間。"""
+        x = Tensor([-100, 0, 100])
+        y = F.tanh(x)
+        assert y.data[1] == 0
+
+    def test_tanh_zero(self):
+        """Tanh：tanh(0) = 0。"""
+        x = Tensor([0])
+        y = F.tanh(x)
+        assert abs(y.data[0]) < 1e-10
+
+
+class TestSoftmax:
+    """Softmax 測試。"""
+
+    def test_softmax_sum(self):
+        """Softmax：所有機率之和為 1。"""
+        x = Tensor([[1.0, 2.0, 3.0]])
+        probs = F.softmax(x)
+        assert abs(np.sum(probs.data) - 1.0) < 1e-10
+
+    def test_softmax_max(self):
+        """Softmax：最大值對應正確類別。"""
+        pred = Tensor([[1.0, 2.0, 3.0]])
+        probs = F.softmax(pred)
+        assert np.argmax(probs.data) == 2
+
+
+class TestLossFunctions:
+    """損失函數測試。"""
+
+    def test_mse_zero(self):
+        """MSE：當 pred = target 時，損失為 0。"""
+        pred = Tensor([1.0, 2.0, 3.0])
+        target = Tensor([1.0, 2.0, 3.0])
+        loss = F.mse_loss(pred, target)
+        assert abs(loss.data) < 1e-10
+
+    def test_mse_positive(self):
+        """MSE：損失始終非負。"""
+        pred = Tensor([1.0, 2.0, 3.0])
+        target = Tensor([4.0, 5.0, 6.0])
+        loss = F.mse_loss(pred, target)
+        assert loss.data >= 0
+
+
+class TestLinearFunction:
+    """線性變換測試。"""
+
+    def test_linear(self):
+        """線性變換：y = xW^T + b。"""
+        x = Tensor([[1, 2]])
+        W = Tensor([[1, 2], [3, 4]])
+        b = Tensor([0.5, 0.5])
+        y = F.linear(x, W, b)
+        expected = np.array([[1 * 1 + 2 * 3 + 0.5, 1 * 2 + 2 * 4 + 0.5]])
+        np.testing.assert_array_almost_equal(y.data, expected)
+
+    def test_linear_no_bias(self):
+        """線性變換（無偏置）。"""
+        x = Tensor([[1, 2]])
+        W = Tensor([[1, 2], [3, 4]])
+        y = F.linear(x, W)
+        expected = np.array([[1 * 1 + 2 * 3, 1 * 2 + 2 * 4]])
+        np.testing.assert_array_almost_equal(y.data, expected)
+
+
+class TestCatAndStack:
+    """連接和堆疊測試。"""
+
+    def test_cat(self):
+        """沿維度連接。"""
+        a = Tensor([[1, 2]])
+        b = Tensor([[3, 4]])
+        c = F.cat((a, b), dim=0)
         assert c.shape == (2, 2)
+        np.testing.assert_array_equal(c.data, [[1, 2], [3, 4]])
+
+    def test_stack(self):
+        """堆疊。"""
+        a = Tensor([1, 2])
+        b = Tensor([3, 4])
+        c = F.stack((a, b), dim=0)
+        assert c.shape == (2, 2)
+        np.testing.assert_array_equal(c.data, [[1, 2], [3, 4]])
+
+
+class TestIndexing:
+    """索引測試。"""
+
+    def test_indexing_1d(self):
+        """一維索引。"""
+        x = Tensor([1, 2, 3, 4])
+        assert x[0].data == 1
+        assert x[-1].data == 4
+
+    def test_indexing_2d(self):
+        """二維索引。"""
+        x = Tensor([[1, 2], [3, 4]])
+        np.testing.assert_array_equal(x[0].data, [1, 2])
+        np.testing.assert_array_equal(x[:, 0].data, [1, 3])

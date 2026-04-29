@@ -68,53 +68,31 @@ Example queries:
 
 ## Tensor Module
 
-Gradient-enabled tensor operations with automatic differentiation:
+NumPy-based tensor operations:
 
 ```python
 from math4py.tensor import Tensor
 import math4py.tensor.function as F
 
 # Create tensors
-x = Tensor([1.0, 2.0, 3.0], requires_grad=True)
-w = Tensor([[1.0, 2.0], [3.0, 4.0]], requires_grad=True)
+x = Tensor([1.0, 2.0, 3.0])
+w = Tensor([[1.0, 2.0], [3.0, 4.0]])
 
 # Operations
 y = F.linear(x, w)  # Linear transformation
-z = y.relu()          # ReLU activation
-loss = z.sum()
-loss.backward()        # Backpropagation
-
-print(x.grad)  # Gradient w.r.t. x
+z = y.relu()         # ReLU activation
+result = z.sum()
+print(result.numpy())
 ```
 
 Features:
 - NumPy-based tensor operations
-- Automatic gradient computation (backpropagation)
 - Supports: addition, multiplication, matmul, reshape, transpose
 - Activation functions: ReLU, Sigmoid, Tanh
 - Loss functions: MSE, Cross-Entropy with Softmax
 - Neural network operations: linear layers, softmax
 
 Module structure:
-- `tensor.py` — Tensor class with autograd
-- `function.py` — Neural network functions and operations
-- `theorem.py` — 30 pytest tests verifying tensor operations and gradients
-
-### GPT Example
-
-A simple GPT model implemented using the math4py tensor gradient engine:
-
-```bash
-# Run GPT training and generation
-python examples/gpt/microgpt.py
-```
-
-Features:
-- Character-level tokenization
-- Token and position embeddings
-- Multi-layer transformer with self-attention
-- RMSNorm and residual connections
-- Adam optimizer with learning rate decay
-- Text generation with temperature sampling
-
-The model trains on `_data/corpus.txt` and generates text by sampling from the learned distribution.
+- `tensor.py` — Tensor class
+- `function.py` — Mathematical functions and operations
+- `theorem.py` — pytest tests verifying tensor operations

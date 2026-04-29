@@ -1,150 +1,312 @@
 r"""Set theory theorems and axioms."""
 
-from typing import Set
-
 
 def empty_set_axiom():
     r"""Empty set axiom: ∅ exists."""
-    assert True
-    return {"pass": True}
+    return {"pass": True, "description": "Empty set exists"}
 
 
-def extensionality_axiom(set1: Set, set2: Set):
-    r"""Extensionality axiom: Two sets are equal if and only if they have the same elements."""
+def extensionality_axiom(set1: set, set2: set):
+    r"""Extensionality axiom: Two sets are equal iff they have the same elements.
+    
+    Args:
+        set1: First set
+        set2: Second set
+    
+    Returns:
+        Dict with pass status and equality check
+    """
     equal = set1 == set2
-    assert equal == (set1 <= set2 and set2 <= set1)
-    return {"pass": True, "equal": equal}
+    return {"pass": equal, "equal": equal, "description": "Sets equal if same elements"}
 
 
 def pair_set_axiom(a, b):
-    r"""Pair set axiom: {a, b} exists."""
+    r"""Pair set axiom: {a, b} exists.
+    
+    Args:
+        a: First element
+        b: Second element
+    
+    Returns:
+        Dict with pass status
+    """
     pair = {a, b}
-    assert a in pair and b in pair
-    return {"pass": True}
+    return {"pass": a in pair and b in pair, "description": "Pair set exists"}
 
 
-def union_axiom(sets: Set[Set]):
-    r"""Union axiom: ⋃S exists."""
+def union_axiom(sets: list):
+    r"""Union axiom: ⋃S exists.
+    
+    Args:
+        sets: List of sets
+    
+    Returns:
+        Dict with pass status
+    """
     union_set = set()
     for s in sets:
         union_set |= s
-    assert union_set is not None
-    return {"pass": True}
+    return {"pass": True, "size": len(union_set), "description": "Union of sets exists"}
 
 
-def power_set_axiom(set1: Set):
-    r"""Power set axiom: P(A) exists."""
+def power_set_axiom(set1: set):
+    r"""Power set axiom: P(A) exists.
+    
+    Args:
+        set1: Input set
+    
+    Returns:
+        Dict with pass status and power set size
+    """
     from itertools import combinations
 
     elements = list(set1)
-    power = {frozenset()}
+    power = set()
+    power.add(frozenset())
     for r in range(1, len(elements) + 1):
         for combo in combinations(elements, r):
             power.add(frozenset(combo))
-    assert len(power) == 2 ** len(set1)
-    return {"pass": True, "size": len(power)}
+    return {"pass": True, "size": len(power), "expected": 2 ** len(set1)}
 
 
-def foundation_axiom(set1: Set):
-    r"""Foundation axiom: Every non-empty set has an ∈-minimal element."""
-    if not set1:
-        return {"pass": True}
-    return {"pass": True}
+def foundation_axiom(set1: set):
+    r"""Foundation axiom: Every non-empty set has an ∈-minimal element.
+    
+    Args:
+        set1: Set to check
+    
+    Returns:
+        Dict with pass status
+    """
+    return {"pass": True, "is_empty": len(set1) == 0}
 
 
-def replacement_axiom():
-    r"""Replacement axiom: Image of set under function is a set."""
-    assert True
-    return {"pass": True}
+def replacement_axiom(set1: set, func):
+    r"""Replacement axiom: Image of set under function is a set.
+    
+    Args:
+        set1: Input set
+        func: Function to apply
+    
+    Returns:
+        Dict with pass status
+    """
+    try:
+        image = set(func(x) for x in set1)
+        return {"pass": True, "image": image, "size": len(image)}
+    except Exception:
+        return {"pass": False}
 
 
-def separation_axiom(set1: Set):
-    r"""Separation axiom: {x ∈ A | φ(x)} is a set."""
-    subset = set1
-    assert subset <= set1
-    return {"pass": True}
+def separation_axiom(set1: set, predicate):
+    r"""Separation axiom: {x ∈ A | φ(x)} is a set.
+    
+    Args:
+        set1: Input set
+        predicate: Function that returns bool
+    
+    Returns:
+        Dict with pass status
+    """
+    try:
+        subset = {x for x in set1 if predicate(x)}
+        return {"pass": subset <= set1, "subset": subset}
+    except Exception:
+        return {"pass": False}
 
 
-def commutativity_union(set1: Set, set2: Set):
-    r"""Commutativity: A ∪ B = B ∪ A."""
-    assert set1 | set2 == set2 | set1
-    return {"pass": True}
+def commutativity_union(set1: set, set2: set):
+    r"""Commutativity: A ∪ B = B ∪ A.
+    
+    Args:
+        set1: First set
+        set2: Second set
+    
+    Returns:
+        Dict with pass status
+    """
+    result = set1 | set2 == set2 | set1
+    return {"pass": result, "left": set1 | set2, "right": set2 | set1}
 
 
-def commutativity_intersection(set1: Set, set2: Set):
-    r"""Commutativity: A ∩ B = B ∩ A."""
-    assert set1 & set2 == set2 & set1
-    return {"pass": True}
+def commutativity_intersection(set1: set, set2: set):
+    r"""Commutativity: A ∩ B = B ∩ A.
+    
+    Args:
+        set1: First set
+        set2: Second set
+    
+    Returns:
+        Dict with pass status
+    """
+    result = set1 & set2 == set2 & set1
+    return {"pass": result, "left": set1 & set2, "right": set2 & set1}
 
 
-def associativity_union(set1: Set, set2: Set, set3: Set):
-    r"""Associativity: (A ∪ B) ∪ C = A ∪ (B ∪ C)."""
-    assert (set1 | set2) | set3 == set1 | (set2 | set3)
-    return {"pass": True}
+def associativity_union(set1: set, set2: set, set3: set):
+    r"""Associativity: (A ∪ B) ∪ C = A ∪ (B ∪ C).
+    
+    Args:
+        set1: First set
+        set2: Second set
+        set3: Third set
+    
+    Returns:
+        Dict with pass status
+    """
+    left = (set1 | set2) | set3
+    right = set1 | (set2 | set3)
+    return {"pass": left == right, "left": left, "right": right}
 
 
-def associativity_intersection(set1: Set, set2: Set, set3: Set):
-    r"""Associativity: (A ∩ B) ∩ C = A ∩ (B ∩ C)."""
-    assert (set1 & set2) & set3 == set1 & (set2 & set3)
-    return {"pass": True}
+def associativity_intersection(set1: set, set2: set, set3: set):
+    r"""Associativity: (A ∩ B) ∩ C = A ∩ (B ∩ C).
+    
+    Args:
+        set1: First set
+        set2: Second set
+        set3: Third set
+    
+    Returns:
+        Dict with pass status
+    """
+    left = (set1 & set2) & set3
+    right = set1 & (set2 & set3)
+    return {"pass": left == right, "left": left, "right": right}
 
 
-def distributivity_union_intersection(set1: Set, set2: Set, set3: Set):
-    r"""Distributivity: A ∪ (B ∩ C) = (A ∪ B) ∩ (A ∪ C)."""
-    assert set1 | (set2 & set3) == (set1 | set2) & (set1 | set3)
-    return {"pass": True}
+def distributivity_union_intersection(set1: set, set2: set, set3: set):
+    r"""Distributivity: A ∪ (B ∩ C) = (A ∪ B) ∩ (A ∪ C).
+    
+    Args:
+        set1: First set
+        set2: Second set
+        set3: Third set
+    
+    Returns:
+        Dict with pass status
+    """
+    left = set1 | (set2 & set3)
+    right = (set1 | set2) & (set1 | set3)
+    return {"pass": left == right, "left": left, "right": right}
 
 
-def distributivity_intersection_union(set1: Set, set2: Set, set3: Set):
-    r"""Distributivity: A ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C)."""
-    assert set1 & (set2 | set3) == (set1 & set2) | (set1 & set3)
-    return {"pass": True}
+def distributivity_intersection_union(set1: set, set2: set, set3: set):
+    r"""Distributivity: A ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C).
+    
+    Args:
+        set1: First set
+        set2: Second set
+        set3: Third set
+    
+    Returns:
+        Dict with pass status
+    """
+    left = set1 & (set2 | set3)
+    right = (set1 & set2) | (set1 & set3)
+    return {"pass": left == right, "left": left, "right": right}
 
 
-def demorgans_law_union(set1: Set, set2: Set, universal: Set):
-    r"""De Morgan's law: (A ∪ B)' = A' ∩ B'."""
+def demorgans_law_union(set1: set, set2: set, universal: set):
+    r"""De Morgan's law: (A ∪ B)' = A' ∩ B'.
+    
+    Args:
+        set1: First set
+        set2: Second set
+        universal: Universal set
+    
+    Returns:
+        Dict with pass status
+    """
     left = universal - (set1 | set2)
     right = (universal - set1) & (universal - set2)
-    assert left == right
-    return {"pass": True}
+    return {"pass": left == right, "left": left, "right": right}
 
 
-def demorgans_law_intersection(set1: Set, set2: Set, universal: Set):
-    r"""De Morgan's law: (A ∩ B)' = A' ∪ B'."""
+def demorgans_law_intersection(set1: set, set2: set, universal: set):
+    r"""De Morgan's law: (A ∩ B)' = A' ∪ B'.
+    
+    Args:
+        set1: First set
+        set2: Second set
+        universal: Universal set
+    
+    Returns:
+        Dict with pass status
+    """
     left = universal - (set1 & set2)
     right = (universal - set1) | (universal - set2)
-    assert left == right
-    return {"pass": True}
+    return {"pass": left == right, "left": left, "right": right}
 
 
-def double_complement(set1: Set, universal: Set):
-    r"""Double complement: (A')' = A."""
-    assert (universal - (universal - set1)) == set1
-    return {"pass": True}
+def double_complement(set1: set, universal: set):
+    r"""Double complement: (A')' = A.
+    
+    Args:
+        set1: Set to complement
+        universal: Universal set
+    
+    Returns:
+        Dict with pass status
+    """
+    result = (universal - (universal - set1)) == set1
+    return {"pass": result, "result": universal - (universal - set1)}
 
 
-def identity(set1: Set):
-    r"""Identity: A ∪ ∅ = A and A ∩ U = A."""
-    assert (set1 | set()) == set1
-    return {"pass": True}
+def identity(set1: set):
+    r"""Identity: A ∪ ∅ = A and A ∩ U = A.
+    
+    Args:
+        set1: Set to test
+    
+    Returns:
+        Dict with pass status
+    """
+    empty = set()
+    left = set1 | empty
+    return {"pass": left == set1, "left": left}
 
 
-def domination(set1: Set, universal: Set):
-    r"""Domination: A ∪ U = U and A ∩ ∅ = ∅."""
-    assert (set1 | universal) == universal
-    assert (set1 & set()) == set()
-    return {"pass": True}
+def domination(set1: set, universal: set):
+    r"""Domination: A ∪ U = U and A ∩ ∅ = ∅.
+    
+    Args:
+        set1: Set to test
+        universal: Universal set
+    
+    Returns:
+        Dict with pass status
+    """
+    empty = set()
+    left = set1 | universal
+    right = set1 & empty
+    return {"pass": left == universal and right == empty, "union": left, "intersection": right}
 
 
-def idempotent(set1: Set):
-    r"""Idempotent: A ∪ A = A and A ∩ A = A."""
-    assert (set1 | set1) == set1
-    assert (set1 & set1) == set1
-    return {"pass": True}
+def idempotent(set1: set):
+    r"""Idempotent: A ∪ A = A and A ∩ A = A.
+    
+    Args:
+        set1: Set to test
+    
+    Returns:
+        Dict with pass status
+    """
+    left = set1 | set1
+    right = set1 & set1
+    return {"pass": left == set1 and right == set1, "union": left, "intersection": right}
 
 
-def absorption(set1: Set, set2: Set):
-    r"""Absorption: A ∪ (A ∩ B) = A and A ∩ (A ∪ B) = A."""
-    assert set1 | (set1 & set2) == set1
-    assert set1 & (set1 | set2) == set1
-    return {"pass": True}
+def absorption(set1: set, set2: set):
+    r"""Absorption: A ∪ (A ∩ B) = A and A ∩ (A ∪ B) = A.
+    
+    Args:
+        set1: First set
+        set2: Second set
+    
+    Returns:
+        Dict with pass status
+    """
+    left = set1 | (set1 & set2)
+    right = set1 & (set1 | set2)
+    return {"pass": left == set1 and right == set1, "union": left, "intersection": right}

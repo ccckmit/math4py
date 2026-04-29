@@ -1,4 +1,4 @@
-"""Tests for calculus/numeric.py - 數值微積分."""
+"""Tests for calculus/function.py - 數值微積分."""
 
 import pytest
 import numpy as np

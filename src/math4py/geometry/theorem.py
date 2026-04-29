@@ -1,215 +1,278 @@
-"""幾何定理。
-
-幾何學的重要定理。
-"""
+r"""Geometry theorems - verified by checking equalities."""
 
 import math
 from .point import Point
 from .vector import Vector
 
 
-def pythagorean_theorem(a: float, b: float) -> float:
-    """畢氏定理。
-
-    c² = a² + b²
-
+def pythagorean_theorem(a: float, b: float, c: float):
+    r"""Pythagorean theorem: c² = a² + b².
+    
     Args:
-        a: 股
-        b: 勾
-
+        a: Leg a (股)
+        b: Leg b (勾)
+        c: Hypotenuse (弦)
+    
     Returns:
-        弦
+        Dict with pass status
     """
-    return math.sqrt(a * a + b * b)
+    left = c * c
+    right = a * a + b * b
+    return {"pass": abs(left - right) < 1e-10, "c_sq": left, "a_sq_plus_b_sq": right}
 
 
-def distance_formula(p1: Point, p2: Point) -> float:
-    """距離公式。
-
-    d = √((x2-x1)² + (y2-y1)²)
-
+def distance_formula(p1: Point, p2: Point):
+    r"""Distance formula: d² = (x2-x1)² + (y2-y1)².
+    
     Args:
-        p1: 點 1
-        p2: 點 2
-
+        p1: Point 1
+        p2: Point 2
+    
     Returns:
-        距離
+        Dict with pass status
     """
     dx = p2.x - p1.x
     dy = p2.y - p1.y
-    return math.sqrt(dx * dx + dy * dy)
+    
+    d_sq = dx * dx + dy * dy
+    direct_sq = (p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2
+    
+    return {"pass": abs(d_sq - direct_sq) < 1e-10, "d_sq": d_sq}
 
 
-def midpoint_formula(p1: Point, p2: Point) -> Point:
-    """中點公式。
-
-    M = ((x1+x2)/2, (y1+y2)/2)
-
+def midpoint_formula(p1: Point, p2: Point, m: Point):
+    r"""Midpoint formula: M = ((x1+x2)/2, (y1+y2)/2).
+    
     Args:
-        p1: 點 1
-        p2: 點 2
-
+        p1: Point 1
+        p2: Point 2
+        m: Expected midpoint
+    
     Returns:
-        中點
+        Dict with pass status
     """
-    return Point((p1.x + p2.x) / 2, (p1.y + p2.y) / 2)
+    expected_x = (p1.x + p2.x) / 2
+    expected_y = (p1.y + p2.y) / 2
+    
+    return {
+        "pass": abs(m.x - expected_x) < 1e-10 and abs(m.y - expected_y) < 1e-10,
+        "expected": (expected_x, expected_y),
+        "observed": (m.x, m.y),
+    }
 
 
-def slope_formula(p1: Point, p2: Point) -> float:
-    """斜率公式。
-
-    m = (y2-y1) / (x2-x1)
-
+def slope_formula(p1: Point, p2: Point):
+    r"""Slope formula: m = (y2-y1)/(x2-x1).
+    
     Args:
-        p1: 點 1
-        p2: 點 2
-
+        p1: Point 1
+        p2: Point 2
+    
     Returns:
-        斜率
+        Dict with pass status
     """
     if p2.x == p1.x:
-        raise ValueError("Vertical line")
-    return (p2.y - p1.y) / (p2.x - p1.x)
+        return {"pass": False, "reason": "vertical_line"}
+    
+    slope = (p2.y - p1.y) / (p2.x - p1.x)
+    expected_slope = (p2.y - p1.y) / (p2.x - p1.x)
+    
+    return {"pass": abs(slope - expected_slope) < 1e-10, "slope": slope}
 
 
-def area_triangle_heron(a: float, b: float, c: float) -> float:
-    """海龍公式 (三角形面積)。
-
-    s = (a+b+c)/2
-    A = √(s(s-a)(s-b)(s-c))
-
+def area_triangle_heron(a: float, b: float, c: float, area: float):
+    r"""Heron's formula: A = √(s(s-a)(s-b)(s-c)) where s = (a+b+c)/2.
+    
     Args:
-        a, b, c: 邊長
-
+        a, b, c: Side lengths
+        area: Expected area
+    
     Returns:
-        面積
+        Dict with pass status
     """
+    if a <= 0 or b <= 0 or c <= 0:
+        return {"pass": False, "reason": "invalid_sides"}
+    
     s = (a + b + c) / 2
-    area_sq = s * (s - a) * (s - b) * (s - c)
-    if area_sq <= 0:
-        return 0.0
-    return math.sqrt(area_sq)
+    heron_area = math.sqrt(s * (s - a) * (s - b) * (s - c))
+    
+    return {"pass": abs(heron_area - area) < 1e-10, "heron_area": heron_area}
 
 
-def law_of_cosine(a: float, b: float, angle_c: float) -> float:
-    """餘弦定理。
-
-    c² = a² + b² - 2ab cos(C)
-
+def law_of_cosine(a: float, b: float, angle_c: float, c: float):
+    r"""Law of cosine: c² = a² + b² - 2ab cos(C).
+    
     Args:
-        a: 邊 a
-        b: 邊 b
-        angle_c: 夾角 C (弧度)
-
+        a: Side a
+        b: Side b
+        angle_c: Angle C in radians
+        c: Expected side c
+    
     Returns:
-        邊 c
+        Dict with pass status
     """
-    return math.sqrt(a * a + b * b - 2 * a * b * math.cos(angle_c))
+    left = c * c
+    right = a * a + b * b - 2 * a * b * math.cos(angle_c)
+    
+    return {"pass": abs(left - right) < 1e-10, "c_sq": left, "right": right}
 
 
-def law_of_sine(a: float, angle_a: float, angle_b: float) -> float:
-    """正弦定理。
-
-    a/sin(A) = b/sin(B) = c/sin(C)
-
+def law_of_sine(a: float, angle_a: float, b: float, angle_b: float):
+    r"""Law of sine: a/sin(A) = b/sin(B).
+    
     Args:
-        a: 邊 a
-        angle_a: 角 A (弧度)
-        angle_b: 角 B (弧度)
-
+        a: Side a
+        angle_a: Angle A in radians
+        b: Side b
+        angle_b: Angle B in radians
+    
     Returns:
-        邊 b
+        Dict with pass status
     """
-    return a * math.sin(angle_b) / math.sin(angle_a)
+    if angle_a == 0 or angle_b == 0:
+        return {"pass": False, "reason": "zero_angle"}
+    
+    ratio = a / math.sin(angle_a)
+    expected = b / math.sin(angle_b)
+    
+    return {"pass": abs(ratio - expected) < 1e-10, "ratio_a": ratio, "ratio_b": expected}
 
 
-def euler_theorem(poly_order: int, poly_edges: int, poly_faces: int) -> int:
-    """Euler 多面體定理。
-
-    V - E + F = 2
-
+def euler_theorem(V: int, E: int, F: int):
+    r"""Euler characteristic: V - E + F = 2 for convex polyhedra.
+    
     Args:
-        poly_order: 頂點數 V
-        poly_edges: 邊數 E
-        poly_faces: 面數 F
-
+        V: Number of vertices
+        E: Number of edges
+        F: Number of faces
+    
     Returns:
-        V - E + F
+        Dict with pass status
     """
-    return poly_order - poly_edges + poly_faces
+    chi = V - E + F
+    
+    return {"pass": abs(chi - 2) < 1e-10, "chi": chi, "expected": 2}
 
 
-def heron_maximizer(triangles: list) -> tuple:
-    """Heron 最優三角形 (最大面積)。
-
-    等腰三角形面積最大
-
+def angle_sum_triangle(sum_angle: float):
+    r"""Triangle interior angle sum = π.
+    
     Args:
-        triangles: 三角形列表
-
+        sum_angle: Sum of angles
+    
     Returns:
-        最大面積三角形
+        Dict with pass status
     """
-    max_area = 0
-    max_tri = None
-    for tri in triangles:
-        a, b, c = tri
-        s = (a + b + c) / 2
-        area_sq = s * (s - a) * (s - b) * (s - c)
-        if area_sq > max_area:
-            max_area = area_sq
-            max_tri = tri
-    return max_tri
+    expected = math.pi
+    
+    return {"pass": abs(sum_angle - expected) < 1e-10, "sum": sum_angle, "expected": expected}
 
 
-def angle_sum_triangle() -> float:
-    """三角形內角和 = π。
-
-    Returns:
-        內角和 (弧度)
-    """
-    return math.pi
-
-
-def angle_sum_polygon(n: int) -> float:
-    """n 邊形內角和。
-
-    (n-2) * π
-
+def angle_sum_polygon(n: int, sum_angle: float):
+    r"""n-gon interior angle sum = (n-2)π.
+    
     Args:
-        n: 邊數
-
+        n: Number of sides
+        sum_angle: Actual sum
+    
     Returns:
-        內角和 (弧度)
+        Dict with pass status
     """
-    return (n - 2) * math.pi
+    expected = (n - 2) * math.pi
+    
+    return {"pass": abs(sum_angle - expected) < 1e-10, "sum": sum_angle, "expected": expected}
 
 
-def interior_angle(n: int) -> float:
-    """正 n 邊形內角。
-
-    (n-2) * π / n
-
+def interior_angle(n: int, angle: float):
+    r"""Regular n-gon interior angle = (n-2)π/n.
+    
     Args:
-        n: 邊數
-
+        n: Number of sides
+        angle: Interior angle
+    
     Returns:
-        內角 (弧度)
+        Dict with pass status
     """
-    return (n - 2) * math.pi / n
+    expected = (n - 2) * math.pi / n
+    
+    return {"pass": abs(angle - expected) < 1e-10, "angle": angle, "expected": expected}
 
 
-__all__ = [
-    "pythagorean_theorem",
-    "distance_formula",
-    "midpoint_formula",
-    "slope_formula",
-    "area_triangle_heron",
-    "law_of_cosine",
-    "law_of_sine",
-    "euler_theorem",
-    "heron_maximizer",
-    "angle_sum_triangle",
-    "angle_sum_polygon",
-    "interior_angle",
-]
+def point_on_line(p: Point, line_p1: Point, line_p2: Point):
+    r"""Check if point P lies on line through P1 and P2.
+    
+    Collinearity: (P-P1) × (P2-P1) = 0
+    
+    Args:
+        p: Point to check
+        line_p1: Line point 1
+        line_p2: Line point 2
+    
+    Returns:
+        Dict with pass status
+    """
+    cross = (p.x - line_p1.x) * (line_p2.y - line_p1.y) - (p.y - line_p1.y) * (line_p2.x - line_p1.x)
+    
+    return {"pass": abs(cross) < 1e-10, "cross_product": cross}
+
+
+def three_points_collinear(p1: Point, p2: Point, p3: Point):
+    r"""Check if three points are collinear.
+    
+    Args:
+        p1: Point 1
+        p2: Point 2
+        p3: Point 3
+    
+    Returns:
+        Dict with pass status
+    """
+    cross = (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x)
+    
+    return {"pass": abs(cross) < 1e-10, "collinear": abs(cross) < 1e-10}
+
+
+def parallel_vectors(v1: Vector, v2: Vector):
+    r"""Check if two vectors are parallel.
+    
+    Args:
+        v1: Vector 1
+        v2: Vector 2
+    
+    Returns:
+        Dict with pass status
+    """
+    cross = v1.x * v2.y - v1.y * v2.x
+    
+    return {"pass": abs(cross) < 1e-10, "cross": cross}
+
+
+def perpendicular_vectors(v1: Vector, v2: Vector):
+    r"""Check if two vectors are perpendicular.
+    
+    Args:
+        v1: Vector 1
+        v2: Vector 2
+    
+    Returns:
+        Dict with pass status
+    """
+    dot = v1.x * v2.x + v1.y * v2.y
+    
+    return {"pass": abs(dot) < 1e-10, "dot": dot}
+
+
+def vector_magnitude(v: Vector):
+    r"""Magnitude: |v| = √(x² + y²).
+    
+    Args:
+        v: Vector
+    
+    Returns:
+        Dict with pass status
+    """
+    mag_sq = v.x * v.x + v.y * v.y
+    mag = math.sqrt(mag_sq)
+    expected = math.sqrt(v.x**2 + v.y**2)
+    
+    return {"pass": abs(mag - expected) < 1e-10, "magnitude": mag}

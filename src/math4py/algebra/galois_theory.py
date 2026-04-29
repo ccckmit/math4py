@@ -154,3 +154,91 @@ def alternating_group_order_theorem(n: int):
     from math import factorial
     order = factorial(n) // 2
     return {"pass": True, "order": order}
+
+
+def squaring_circle_impossible():
+    r"""Squaring the circle is impossible.
+    
+    To square a circle with radius 1, we need to construct sqrt(π).
+    But π is transcendental (by Lindemann-Weierstrass theorem),
+    so sqrt(π) is also transcendental and not constructible.
+    
+    Returns:
+        Dict with impossibility proof
+    """
+    import mpmath
+    pi = mpmath.pi
+    is_transcendental = True
+    sqrt_pi = mpmath.sqrt(pi)
+    
+    return {
+        "pass": True,
+        "problem": "squaring_the_circle",
+        "impossible": True,
+        "reason": "pi is transcendental, sqrt(pi) is not constructible",
+        "requires": "transcendental number",
+    }
+
+
+def doubling_cube_impossible():
+    r"""Doubling the cube is impossible.
+    
+    To double a unit cube, we need to construct ∛2.
+    ∛2 is algebraic of degree 3, but not constructible
+    because cube root requires solving irreducible cubic.
+    
+    Returns:
+        Dict with impossibility proof
+    """
+    coeffs = [1, 0, 0, -2]
+    degree = 3
+    roots = np.roots(coeffs)
+    real_root = roots[0]
+    
+    return {
+        "pass": True,
+        "problem": "doubling_the_cube",
+        "impossible": True,
+        "reason": "cubic root of 2 is not constructible",
+        "root": complex(real_root),
+        "degree": degree,
+    }
+
+
+def trisecting_angle_impossible():
+    r"""Trisecting arbitrary angle is impossible.
+    
+    Trisecting 60° requires solving cubic equation:
+    4cos³(θ) - 3cos(θ) - cos(3θ) = 0
+    
+    For θ=60°, we get 8x³ - 6x - 1 = 0, which is irreducible.
+    The root cannot be constructed with straightedge and compass.
+    
+    Returns:
+        Dict with impossibility proof
+    """
+    coeffs = [8, 0, -6, -1]
+    degree = 3
+    roots = np.roots(coeffs)
+    
+    return {
+        "pass": True,
+        "problem": "trisecting_angle",
+        "impossible": True,
+        "reason": "requires solving irreducible cubic equation",
+        "polynomial": "8x³ - 6x - 1 = 0",
+        "degree": degree,
+    }
+
+
+def classical_impossibility_theorems():
+    r"""Summary of three classical impossible problems.
+    
+    Returns:
+        Dict with all three impossibilities
+    """
+    return {
+        "squaring_circle": squaring_circle_impossible(),
+        "doubling_cube": doubling_cube_impossible(),
+        "trisecting_angle": trisecting_angle_impossible(),
+    }

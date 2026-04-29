@@ -110,76 +110,6 @@ def taylor_series(f: Callable[[float], float], x0: float, n: int = 5) -> Callabl
     return poly
 
 
-def gradient(f: Callable[[np.ndarray], float], x: np.ndarray, h: float = 1e-5) -> np.ndarray:
-    """多變數梯度。
-
-    Args:
-        f: 多變數函數
-        x: 點
-        h: 步長
-
-    Returns:
-        ∇f
-    """
-    grad = np.zeros_like(x)
-    for i in range(len(x)):
-        x_plus = x.copy()
-        x_minus = x.copy()
-        x_plus[i] += h
-        x_minus[i] -= h
-        grad[i] = (f(x_plus) - f(x_minus)) / (2 * h)
-    return grad
-
-
-def jacobian(f: Callable[[np.ndarray], np.ndarray], x: np.ndarray, h: float = 1e-5) -> np.ndarray:
-    """Jacobian 矩陣。
-
-    Args:
-        f: 向量函數
-        x: 點
-
-    Returns:
-        J matrix
-    """
-    n = len(x)
-    m = len(f(x))
-    J = np.zeros((m, n))
-    for i in range(n):
-        x_plus = x.copy()
-        x_minus = x.copy()
-        x_plus[i] += h
-        x_minus[i] -= h
-        J[:, i] = (f(x_plus) - f(x_minus)) / (2 * h)
-    return J
-
-
-def hessian(f: Callable[[np.ndarray], float], x: np.ndarray, h: float = 1e-5) -> np.ndarray:
-    """Hessian 矩陣。
-
-    Args:
-        f: 純量函數
-        x: 點
-
-    Returns:
-        H matrix
-    """
-    n = len(x)
-    H = np.zeros((n, n))
-    for i in range(n):
-        for j in range(i, n):
-            x_pp = x.copy()
-            x_pm = x.copy()
-            x_mp = x.copy()
-            x_mm = x.copy()
-            x_pp[i] += h; x_pp[j] += h
-            x_pm[i] += h; x_pm[j] -= h
-            x_mp[i] -= h; x_mp[j] += h
-            x_mm[i] -= h; x_mm[j] -= h
-            H[i, j] = (f(x_pp) - f(x_pm) - f(x_mp) + f(x_mm)) / (4 * h * h)
-            H[j, i] = H[i, j]
-    return H
-
-
 __all__ = [
     "derivative",
     "second_derivative",
@@ -188,7 +118,4 @@ __all__ = [
     "midpoint_rule",
     "limit",
     "taylor_series",
-    "gradient",
-    "jacobian",
-    "hessian",
 ]

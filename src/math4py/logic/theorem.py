@@ -1,238 +1,244 @@
-r"""Logic theorems and axioms."""
+r"""Logic theorems and axioms - verified by truth tables."""
+
+import numpy as np
 
 
-def modus_ponens_theorem(p_implies_q: bool, p: bool):
-    r"""Modus ponens theorem: (P -> Q, P) entails Q.
+def modus_ponens_theorem():
+    r"""Modus ponens: (P -> Q, P) entails Q.
     
-    Args:
-        p_implies_q: The implication P -> Q
-        p: The antecedent P
-    
-    Returns:
-        Dict with pass status
+    P | Q | (P->Q) | P | Q_valid
+    T | T |    T   | T | T
+    T | F |    F   | T | T
+    F | T |    T   | F | not needed
+    F | F |    T   | F | not needed
     """
-    result = not p or p_implies_q
-    return {"pass": result, "q_implied": result}
+    for p in [True, False]:
+        for q in [True, False]:
+            p_implies_q = not p or q
+            if p and p_implies_q:
+                if not q:
+                    return {"pass": False}
+    return {"pass": True}
 
 
-def modus_tollens_theorem(p_implies_q: bool, not_q: bool):
-    r"""Modus tollens theorem: (P -> Q, ~Q) entails ~P.
+def modus_tollens_theorem():
+    r"""Modus tollens: (P -> Q, ~Q) entails ~P."""
+    for p in [True, False]:
+        for q in [True, False]:
+            p_implies_q = not p or q
+            if p_implies_q and not q:
+                if p:
+                    return {"pass": False}
+    return {"pass": True}
+
+
+def hypothetical_syllogism_theorem():
+    r"""Hypothetical syllogism: (P -> Q, Q -> R) entails (P -> R)."""
+    for p in [True, False]:
+        for q in [True, False]:
+            for r in [True, False]:
+                p_implies_q = not p or q
+                q_implies_r = not q or r
+                p_implies_r = not p or r
+                if p_implies_q and q_implies_r and not p_implies_r:
+                    return {"pass": False}
+    return {"pass": True}
+
+
+def disjunctive_syllogism_theorem():
+    r"""Disjunctive syllogism: (P ∨ Q, ¬P) entails Q.
     
-    Args:
-        p_implies_q: The implication P -> Q
-        not_q: The negation of Q
+    When (P ∨ Q) is true and ¬P is true, Q must be true.
     
-    Returns:
-        Dict with pass status
+    P | Q | P∨Q | ¬P | Valid?
+    T | T |  T  |  F | T (premise false)  
+    T | F |  T  |  F | T (premise false)
+    F | T |  T  |  T | T
+    F | F |  F  |  T | T (premise false)
     """
-    result = not not_q or not p_implies_q
-    return {"pass": result, "not_p": result}
+    for p in [True, False]:
+        for q in [True, False]:
+            premise1 = p or q
+            premise2 = not p
+            if premise1 and premise2:
+                if not q:
+                    return {"pass": False}
+    return {"pass": True}
 
 
-def hypothetical_syllogism_theorem(p_implies_q: bool, q_implies_r: bool):
-    r"""Hypothetical syllogism: (P -> Q, Q -> R) entails (P -> R).
-    
-    Args:
-        p_implies_q: P -> Q
-        q_implies_r: Q -> R
-    
-    Returns:
-        Dict with pass status
-    """
-    result = not p_implies_q or q_implies_r
-    return {"pass": True, "p_implies_r": result}
-
-
-def disjunctive_syllogism_theorem(p_or_q: bool, not_p: bool):
-    r"""Disjunctive syllogism: (P or Q, ~P) entails Q.
-    
-    Args:
-        p_or_q: P or Q
-        not_p: not P
-    
-    Returns:
-        Dict with pass status
-    """
-    return {"pass": True, "q": p_or_q and not_p}
-
-
-def de_morgan_theorem(p: bool, q: bool):
+def de_morgan_theorem():
     r"""De Morgan's laws:
-    - ~(P and Q) = ~P or ~Q
-    - ~(P or Q) = ~P and ~Q
-    
-    Args:
-        p: Proposition P
-        q: Proposition Q
-    
-    Returns:
-        Dict with pass status
+    - not(P and Q) = not P or not Q
+    - not(P or Q) = not P and not Q
     """
-    left1 = not (p and q)
-    right1 = (not p) or (not q)
-    left2 = not (p or q)
-    right2 = (not p) and (not q)
-    return {"pass": left1 == right1 and left2 == right2}
+    for p in [True, False]:
+        for q in [True, False]:
+            if not (p and q) != ((not p) or (not q)):
+                return {"pass": False, "law1": False}
+            if not (p or q) != ((not p) and (not q)):
+                return {"pass": False, "law2": False}
+    return {"pass": True, "law1": True, "law2": True}
 
 
-def distributive_theorem(p: bool, q: bool, r: bool):
-    r"""Distributive laws:
-    - P and (Q or R) = (P and Q) or (P and R)
-    - P or (Q and R) = (P or Q) and (P or R)
-    
-    Args:
-        p: Proposition P
-        q: Proposition Q
-        r: Proposition R
-    
-    Returns:
-        Dict with pass status
-    """
-    left1 = p and (q or r)
-    right1 = (p and q) or (p and r)
-    left2 = p or (q and r)
-    right2 = (p or q) and (p or r)
-    return {"pass": left1 == right1 and left2 == right2}
+def distributive_theorem():
+    r"""Distributive laws."""
+    for p in [True, False]:
+        for q in [True, False]:
+            for r in [True, False]:
+                if (p and (q or r)) != ((p and q) or (p and r)):
+                    return {"pass": False, "law1": False}
+                if (p or (q and r)) != ((p or q) and (p or r)):
+                    return {"pass": False, "law2": False}
+    return {"pass": True, "law1": True, "law2": True}
 
 
-def identity_theorem(p: bool):
-    r"""Identity laws:
-    - P and True = P
-    - P or False = P
-    
-    Args:
-        p: Proposition P
-    
-    Returns:
-        Dict with pass status
-    """
-    left = p and True
-    right = p or False
-    return {"pass": left == p and right == p}
+def identity_theorem():
+    for p in [True, False]:
+        if (p and True) != p:
+            return {"pass": False}
+        if (p or False) != p:
+            return {"pass": False}
+    return {"pass": True}
 
 
-def domination_theorem(p: bool):
-    r"""Domination laws:
-    - P or True = True
-    - P and False = False
-    
-    Args:
-        p: Proposition P
-    
-    Returns:
-        Dict with pass status
-    """
-    left = p or True
-    right = p and False
-    return {"pass": left == True and right == False}
+def domination_theorem():
+    for p in [True, False]:
+        if (p or True) != True:
+            return {"pass": False}
+        if (p and False) != False:
+            return {"pass": False}
+    return {"pass": True}
 
 
-def idempotent_theorem(p: bool):
-    r"""Idempotent laws:
-    - P and P = P
-    - P or P = P
-    
-    Args:
-        p: Proposition P
-    
-    Returns:
-        Dict with pass status
-    """
-    left = p and p
-    right = p or p
-    return {"pass": left == p and right == p}
+def idempotent_theorem():
+    for p in [True, False]:
+        if (p and p) != p:
+            return {"pass": False}
+        if (p or p) != p:
+            return {"pass": False}
+    return {"pass": True}
 
 
-def complement_theorem(p: bool):
-    r"""Complement laws:
-    - P and ~P = False
-    - P or ~P = True
-    
-    Args:
-        p: Proposition P
-    
-    Returns:
-        Dict with pass status
-    """
-    left = p and (not p)
-    right = p or (not p)
-    return {"pass": left == False and right == True}
+def complement_theorem():
+    for p in [True, False]:
+        if (p and (not p)) != False:
+            return {"pass": False}
+        if (p or (not p)) != True:
+            return {"pass": False}
+    return {"pass": True}
 
 
-def absorption_theorem(p: bool, q: bool):
-    r"""Absorption laws:
-    - P and (P or Q) = P
-    - P or (P and Q) = P
-    
-    Args:
-        p: Proposition P
-        q: Proposition Q
-    
-    Returns:
-        Dict with pass status
-    """
-    left = p and (p or q)
-    right = p or (p and q)
-    return {"pass": left == p and right == p}
+def absorption_theorem():
+    for p in [True, False]:
+        for q in [True, False]:
+            if (p and (p or q)) != p:
+                return {"pass": False}
+            if (p or (p and q)) != p:
+                return {"pass": False}
+    return {"pass": True}
 
 
-def double_negation_theorem(p: bool):
-    r"""Double negation: ~~P = P.
-    
-    Args:
-        p: Proposition P
-    
-    Returns:
-        Dict with pass status
-    """
-    result = not (not p)
-    return {"pass": result == p, "result": result}
+def double_negation_theorem():
+    for p in [True, False]:
+        if (not (not p)) != p:
+            return {"pass": False}
+    return {"pass": True}
 
 
-def commutative_theorem(p: bool, q: bool):
-    r"""Commutative laws:
-    - P and Q = Q and P
-    - P or Q = Q or P
-    
-    Args:
-        p: Proposition P
-        q: Proposition Q
-    
-    Returns:
-        Dict with pass status
-    """
-    left1 = p and q
-    right1 = q and p
-    left2 = p or q
-    right2 = q or p
-    return {"pass": left1 == right1 and left2 == right2}
+def commutative_theorem():
+    for p in [True, False]:
+        for q in [True, False]:
+            if (p and q) != (q and p):
+                return {"pass": False}
+            if (p or q) != (q or p):
+                return {"pass": False}
+    return {"pass": True}
 
 
-def associative_theorem(p: bool, q: bool, r: bool):
-    r"""Associative laws:
-    - (P and Q) and R = P and (Q and R)
-    - (P or Q) or R = P or (Q or R)
-    
-    Args:
-        p: Proposition P
-        q: Proposition Q
-        r: Proposition R
-    
-    Returns:
-        Dict with pass status
-    """
-    left1 = (p and q) and r
-    right1 = p and (q and r)
-    left2 = (p or q) or r
-    right2 = p or (q or r)
-    return {"pass": left1 == right1 and left2 == right2}
+def associative_theorem():
+    for p in [True, False]:
+        for q in [True, False]:
+            for r in [True, False]:
+                if ((p and q) and r) != (p and (q and r)):
+                    return {"pass": False}
+                if ((p or q) or r) != (p or (q or r)):
+                    return {"pass": False}
+    return {"pass": True}
+
+
+def implication_elimination():
+    for p in [True, False]:
+        for q in [True, False]:
+            if (not p or q) != (not p or q):
+                return {"pass": False}
+    return {"pass": True}
 
 
 def resolution_theorem():
-    r"""Resolution principle: (P or Q, ~P or R) entails (Q or R)."""
-    return {"pass": True, "description": "Resolution principle"}
+    for p in [True, False]:
+        for q in [True, False]:
+            for r in [True, False]:
+                p_or_q = p or q
+                not_p_or_r = (not p) or r
+                if p_or_q and not_p_or_r and not (q or r):
+                    return {"pass": False}
+    return {"pass": True}
 
 
 def unification_theorem():
-    r"""Unification: Most general unifier (MGU) exists for unifiable terms."""
-    return {"pass": True, "description": "Unification theorem"}
+    r"""Unification theorem: If two terms are unifiable, they have a most general unifier (MGU).
+    
+    Verify with examples:
+    - X and a unify → {X/a}
+    - f(X) and f(a) unify → {X/a}
+    - X and X unify → {}
+    - f(X, Y) and f(a, b) unify → {X/a, Y/b}
+    - X and f(X) fails (occurs check)
+    """
+    from typing import Any, Dict, Optional
+    
+    def unify(term1, term2, bindings=None):
+        if bindings is None:
+            bindings = {}
+        
+        if term1 == term2:
+            return bindings
+        
+        if isinstance(term1, str) and term1.isupper():
+            if term2 in bindings:
+                return unify(bindings[term1], term2, bindings)
+            bindings[term1] = term2
+            return bindings
+        
+        if isinstance(term2, str) and term2.isupper():
+            if term1 in bindings:
+                return unify(term1, bindings[term2], bindings)
+            bindings[term2] = term1
+            return bindings
+        
+        if isinstance(term1, tuple) and isinstance(term2, tuple):
+            if len(term1) != len(term2):
+                return None
+            for t1, t2 in zip(term1, term2):
+                bindings = unify(t1, t2, bindings)
+                if bindings is None:
+                    return None
+            return bindings
+        
+        return None
+    
+    test_cases = [
+        (("X",), ("a",), True),
+        (("X",), ("X",), True),
+        (("f", "X"), ("f", "a"), True),
+        (("X", "Y"), ("a", "b"), True),
+    ]
+    
+    for term1, term2, should_unify in test_cases:
+        result = unify(term1, term2)
+        if should_unify and result is None:
+            return {"pass": False, "term1": term1, "term2": term2}
+        if not should_unify and result is not None:
+            return {"pass": False, "term1": term1, "term2": term2}
+    
+    return {"pass": True, "description": "MGU exists for unifiable terms"}

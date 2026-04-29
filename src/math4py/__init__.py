@@ -20,8 +20,6 @@ from .statistics import (
     entropy, cross_entropy, kl_divergence, mutual_information,
 )
 
-from . import number_theory
-from . import matrix
 from .plot import (
     plot, hist, boxplot, qqnorm,
     plot_entropy, plot_kl,
@@ -29,7 +27,7 @@ from .plot import (
 )
 
 __all__ = [
-    "Vector", "Point", "Line", "Plane",
+    "Vector", "Point", "Line3D", "Plane3D",
     "R",
     "Matrix",
     "det",

@@ -16,6 +16,12 @@ from math4py.differential_geometry.relativity import (
     proper_time,
     hubble_law,
     friedmann_equation,
+    einstein_field_equation,
+    newtonian_gravity,
+    gravitational_potential,
+    gravitoelectric_field,
+    gravitational_wave_strain,
+    kerr_metric_component,
 )
 from math4py.tensor.tensor import Tensor
 
@@ -205,3 +211,112 @@ class TestFriedmannEquation:
         H2 = friedmann_equation(1.0, 1.0, Lambda=3.0)
         expected = (8.0 * np.pi / 3.0) + 1.0
         assert abs(H2 - expected) < 1e-6
+
+
+class TestEinsteinFieldEquation:
+    def test_einstein_equation_flat_vacuum(self):
+        """平坦真空：G_μν = 0 (無宇宙常數)"""
+        G_tensor = Tensor(np.zeros((4, 4)))
+        T_tensor = Tensor(np.zeros((4, 4)))
+        result = einstein_field_equation(G_tensor, T_tensor, Lambda=0.0)
+        np.testing.assert_allclose(result.data, 0.0, atol=1e-6)
+
+    def test_einstein_equation_with_lambda(self):
+        """有宇宙常數時 result = Λ g_μν"""
+        G_tensor = Tensor(np.zeros((4, 4)))
+        T_tensor = Tensor(np.zeros((4, 4)))
+        Lambda = 1.0
+        result = einstein_field_equation(G_tensor, T_tensor, Lambda)
+        # metric = diag(-1,1,1,1), so result = Λ * metric = diag(-1,1,1,1)
+        expected = np.diag([-1.0, 1.0, 1.0, 1.0])
+        np.testing.assert_allclose(result.data, expected, atol=1e-6)
+
+    def test_einstein_equation_with_matter(self):
+        """有物質時 G_μν = 8π T_μν"""
+        G_tensor = Tensor(np.eye(4))
+        T_tensor = Tensor(np.eye(4) / (8.0 * np.pi))
+        result = einstein_field_equation(G_tensor, T_tensor, Lambda=0.0)
+        np.testing.assert_allclose(result.data, 0.0, atol=1e-6)
+
+
+class TestNewtonianGravity:
+    def test_newton_gravity_fourth_power(self):
+        """牛頓引力與質量乘積成正比"""
+        F = newtonian_gravity(1.0, 1.0, 1.0)
+        assert abs(F - 1.0) < 1e-6
+
+    def test_newton_gravity_distance(self):
+        """牛頓引力與距離平方成反比"""
+        F = newtonian_gravity(1.0, 1.0, 2.0)
+        assert abs(F - 0.25) < 1e-6
+
+    def test_newton_gravity_scales_mass(self):
+        F = newtonian_gravity(2.0, 3.0, 1.0)
+        assert abs(F - 6.0) < 1e-6
+
+
+class TestGravitationalPotential:
+    def test_potential_point_charge(self):
+        """重力位能 Φ = -GM/r"""
+        phi = gravitational_potential(1.0, 1.0)
+        assert abs(phi + 1.0) < 1e-6
+
+    def test_potential_far_field(self):
+        phi = gravitational_potential(1.0, 10.0)
+        assert abs(phi + 0.1) < 1e-6
+
+    def test_potential_scales_mass(self):
+        phi = gravitational_potential(2.0, 1.0)
+        assert abs(phi + 2.0) < 1e-6
+
+
+class TestGravitoelectricField:
+    def test_field_radial(self):
+        """重力場沿徑向內"""
+        r_src = np.array([0.0, 0.0, 0.0])
+        r_obs = np.array([1.0, 0.0, 0.0])
+        g = gravitoelectric_field(1.0, r_obs, r_src)
+        np.testing.assert_allclose(g, [-1.0, 0.0, 0.0], atol=1e-4)
+
+    def test_field_magnitude(self):
+        r_src = np.array([0.0, 0.0, 0.0])
+        r_obs = np.array([0.0, 2.0, 0.0])
+        g = gravitoelectric_field(1.0, r_obs, r_src)
+        assert abs(np.linalg.norm(g) - 0.25) < 1e-4
+
+    def test_field_zero_mass(self):
+        r_src = np.array([0.0, 0.0, 0.0])
+        r_obs = np.array([1.0, 0.0, 0.0])
+        g = gravitoelectric_field(0.0, r_obs, r_src)
+        np.testing.assert_allclose(g, [0.0, 0.0, 0.0])
+
+
+class TestGravitationalWaveStrain:
+    def test_wave_at_t0(self):
+        h = gravitational_wave_strain(1.0, 1.0, 0.0, phi0=0.0)
+        assert abs(h - 1.0) < 1e-6
+
+    def test_wave_amplitude(self):
+        h = gravitational_wave_strain(0.5, 1.0, 0.0, phi0=0.0)
+        assert abs(h - 0.5) < 1e-6
+
+    def test_wave_orthogonal(self):
+        """cos(π/2) = 0"""
+        h = gravitational_wave_strain(1.0, 1.0, 0.25, phi0=0.0)
+        assert abs(h) < 1e-6
+
+
+class TestKerrMetricComponent:
+    def test_kerr_sigma_no_spin(self):
+        Sigma, Delta = kerr_metric_component(0.0, 1.0, 0.0)
+        assert abs(Sigma - 1.0) < 1e-6
+        assert abs(Delta - (-1.0)) < 1e-6
+
+    def test_kerr_sigma_with_spin(self):
+        Sigma, Delta = kerr_metric_component(0.5, 2.0, 0.0)
+        assert abs(Sigma - 4.25) < 1e-6
+        assert abs(Delta - (4.0 - 4.0 + 0.25)) < 1e-6
+
+    def test_kerr_delta_horizon(self):
+        Sigma, Delta = kerr_metric_component(0.0, 2.0, 0.0)
+        assert abs(Delta - 0.0) < 1e-6

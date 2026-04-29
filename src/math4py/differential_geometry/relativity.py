@@ -245,6 +245,110 @@ def friedmann_equation(a: float, rho: float, k: float = 0.0, Lambda: float = 0.0
     return H2
 
 
+def einstein_field_equation(
+    G_tensor: Tensor,
+    T_tensor: Tensor,
+    Lambda: float = 0.0
+) -> Tensor:
+    """愛因斯坦重力場方程式 G_μν + Λ g_μν = (8πG/c⁴) T_μν。
+
+    簡化取 G=c=1: G_μν = 8π T_μν - Λ g_μν
+
+    Args:
+        G_tensor: 愛因斯坦張量 G_μν
+        T_tensor: 能量-動量張量 T_μν
+        Lambda: 宇宙學常數
+
+    Returns:
+        殘差張量 R_μν - (1/2)R g_μν + Λ g_μν - 8π T_μν
+    """
+    G = 1.0
+    metric = Tensor(np.diag([-1.0, 1.0, 1.0, 1.0]))
+    residual = G_tensor.data - (8.0 * np.pi * G) * T_tensor.data + Lambda * metric.data
+    return Tensor(residual)
+
+
+def newtonian_gravity(m1: float, m2: float, r: float) -> float:
+    """牛頓萬有引力 F = G m1 m2 / r²。
+
+    Args:
+        m1: 質量 1
+        m2: 質量 2
+        r: 距離
+
+    Returns:
+        引力大小
+    """
+    G = 1.0
+    return G * m1 * m2 / (r ** 2)
+
+
+def gravitational_potential(m: float, r: float) -> float:
+    """牛頓重力位能 Φ = -G M / r。
+
+    Args:
+        m: 質量
+        r: 距離
+
+    Returns:
+        重力位能
+    """
+    G = 1.0
+    return -G * m / r
+
+
+def gravitoelectric_field(m: float, r_obs: np.ndarray, r_src: np.ndarray) -> np.ndarray:
+    """重力電場 (類比電場) g = -GM r̂ / r²。
+
+    Args:
+        m: 質量
+        r_obs: 觀察點
+        r_src: 質量位置
+
+    Returns:
+        重力場向量 g
+    """
+    G = 1.0
+    r_vec = r_obs.astype(float) - r_src.astype(float)
+    r = np.linalg.norm(r_vec)
+    if r < 1e-12:
+        return np.zeros(3)
+    return -G * m * r_vec / (r ** 3)
+
+
+def gravitational_wave_strain(h0: float, f: float, t: float, phi0: float = 0.0) -> float:
+    """引力波應變 h(t) = h0 cos(2π f t + φ0)。
+
+    Args:
+        h0: 振幅
+        f: 頻率
+        t: 時間
+        phi0: 初相位
+
+    Returns:
+        應變值 h(t)
+    """
+    return h0 * np.cos(2.0 * np.pi * f * t + phi0)
+
+
+def kerr_metric_component(a: float, r: float, theta: float) -> np.ndarray:
+    """克爾度規（旋轉黑洞）的部分分量。
+
+    簡化：返回 Σ = r² + a² cos²θ 和 Δ = r² - 2Mr + a²。
+
+    Args:
+        a: 單位質量的角動量
+        r: 徑向座標
+        theta: 極角
+
+    Returns:
+        (Sigma, Delta)
+    """
+    Sigma = r ** 2 + a ** 2 * (np.cos(theta) ** 2)
+    Delta = r ** 2 - 2.0 * r + a ** 2
+    return np.array([Sigma, Delta])
+
+
 __all__ = [
     "lorentz_factor",
     "lorentz_boost",
@@ -260,4 +364,10 @@ __all__ = [
     "geodesic_in_schwarzschild",
     "hubble_law",
     "friedmann_equation",
+    "einstein_field_equation",
+    "newtonian_gravity",
+    "gravitational_potential",
+    "gravitoelectric_field",
+    "gravitational_wave_strain",
+    "kerr_metric_component",
 ]

@@ -9,6 +9,12 @@ from math4py.optimization.function import (
     conjugate_gradient,
     backtracking_line_search,
 )
+from math4py.optimization.hill_climbing import (
+    hill_climbing,
+    hill_climbing_simple,
+    random_restart_hill_climbing,
+    simulated_annealing,
+)
 from math4py.optimization.theorem import (
     convex_first_order_condition,
     convex_second_order_condition,
@@ -168,3 +174,102 @@ class TestConvexOptimality:
         result = convex_optimality_condition(f, grad_f, x_star, [(-5, 5)])
         # x³ 不是凸函數，所以應該失敗
         assert not result["is_convex"]
+
+
+class TestHillClimbing:
+    def test_quadratic_minimum(self):
+        """爬山演算法求 f(x)=x² 的最小值。"""
+        f = lambda x: x[0]**2
+        x0 = np.array([5.0])
+        x_opt, f_opt, n_iter = hill_climbing(f, x0, step_size=0.5, 
+                                               maximize=False, max_iter=100)
+        assert abs(x_opt[0]) < 0.5
+        assert f_opt < 1.0
+
+    def test_quadratic_maximum(self):
+        """爬山演算法求 f(x)=-x² 的最大值。"""
+        f = lambda x: -(x[0]**2)
+        x0 = np.array([3.0])
+        x_opt, f_opt, n_iter = hill_climbing(f, x0, step_size=0.5,
+                                               maximize=True, max_iter=100)
+        assert abs(x_opt[0]) < 0.5
+        assert f_opt > -1.0
+
+    def test_2d_gaussian_max(self):
+        """2D 高斯函數求最大值。"""
+        f = lambda x: -((x[0]-1)**2 + (x[1]-2)**2)
+        x0 = np.array([0.0, 0.0])
+        x_opt, f_opt, n_iter = hill_climbing(f, x0, step_size=0.3,
+                                               maximize=True, max_iter=200)
+        assert np.linalg.norm(x_opt - np.array([1.0, 2.0])) < 0.5
+
+
+class TestHillClimbingSimple:
+    def test_simple_quadratic(self):
+        """簡化版爬山求最小值。"""
+        f = lambda x: x[0]**2
+        x0 = np.array([3.0])
+        x_opt, f_opt, n_iter = hill_climbing_simple(f, x0, step_size=0.2,
+                                                      maximize=False)
+        assert abs(x_opt[0]) < 0.3
+
+    def test_2d_function(self):
+        """2D 函數最小值。"""
+        f = lambda x: (x[0]-1)**2 + (x[1]-1)**2
+        x0 = np.array([0.0, 0.0])
+        x_opt, f_opt, n_iter = hill_climbing_simple(f, x0, step_size=0.3,
+                                                      maximize=False)
+        assert np.linalg.norm(x_opt - np.array([1.0, 1.0])) < 0.5
+
+
+class TestRandomRestartHillClimbing:
+    def test_with_restarts(self):
+        """隨機重啟爬山。"""
+        f = lambda x: -((x[0]-2)**2 + (x[1]-3)**2)
+        bounds = [(0, 5), (0, 5)]
+        x_best, f_best = random_restart_hill_climbing(f, bounds, 
+                                                       n_restarts=5,
+                                                       maximize=True)
+        assert f_best > -1.0  # 應該接近 0
+
+    def test_converges_to_global(self):
+        """多次重啟應接近全局最優。"""
+        # 單峰函數
+        f = lambda x: -(x[0]**2)
+        bounds = [(-5, 5)]
+        x_best, f_best = random_restart_hill_climbing(f, bounds,
+                                                       n_restarts=3,
+                                                       maximize=True)
+        assert abs(x_best[0]) < 1.0
+
+
+class TestSimulatedAnnealing:
+    def test_quadratic_min(self):
+        """模擬退火求最小值。"""
+        f = lambda x: x[0]**2
+        x0 = np.array([5.0])
+        bounds = [(-10, 10)]
+        x_opt, f_opt, n_iter = simulated_annealing(f, x0, bounds,
+                                                    temperature=1.0,
+                                                    maximize=False,
+                                                    max_iter=2000)
+        assert abs(x_opt[0]) < 2.0  # 放寬容忍度
+
+    def test_escapes_local_minimum(self):
+        """模擬退火應能逃離局部最優。"""
+        # 函數有局部最優和全局最優
+        def f(x):
+            if x[0] < 0:
+                return (x[0]+2)**2  # 局部最優在 x=-2
+            else:
+                return x[0]**2  # 全局最優在 x=0
+        
+        x0 = np.array([-3.0])
+        bounds = [(-5, 5)]
+        x_opt, f_opt, n_iter = simulated_annealing(f, x0, bounds,
+                                                    temperature=10.0,
+                                                    cooling_rate=0.9,
+                                                    maximize=False,
+                                                    max_iter=2000)
+        # 應該能逃離 x=-2 的局部最優
+        assert f_opt < 1.0

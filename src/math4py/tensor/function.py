@@ -82,13 +82,7 @@ def tanh(x: Tensor) -> Tensor:
 
 def softmax(x: Tensor, axis: int = -1) -> Tensor:
     """Softmax 函數。"""
-    # 數值穩定：減去最大值
-    max_val = Tensor(np.max(x.data, axis=axis, keepdims=True), requires_grad=False)
-    exp_vals = (x - max_val).exp()
-    sum_exp = exp_vals.sum(axis=axis, keepdims=True)
-    result = exp_vals / sum_exp
-    
-    return result
+    return x.softmax(axis=axis)
 
 
 def cross_entropy(pred: Tensor, target: Tensor, axis: int = -1) -> Tensor:

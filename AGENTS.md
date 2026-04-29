@@ -99,3 +99,22 @@ Module structure:
 - `tensor.py` — Tensor class with autograd
 - `function.py` — Neural network functions and operations
 - `theorem.py` — 30 pytest tests verifying tensor operations and gradients
+
+### GPT Example
+
+A simple GPT model implemented using the math4py tensor gradient engine:
+
+```bash
+# Run GPT training and generation
+python examples/gpt/microgpt.py
+```
+
+Features:
+- Character-level tokenization
+- Token and position embeddings
+- Multi-layer transformer with self-attention
+- RMSNorm and residual connections
+- Adam optimizer with learning rate decay
+- Text generation with temperature sampling
+
+The model trains on `_data/corpus.txt` and generates text by sampling from the learned distribution.

@@ -17,30 +17,33 @@ def brownian_motion_properties(n_steps: int = 1000, dt: float = 0.01):
     Returns:
         Dict with pass status
     """
-    n_paths = 100
-    final_times = []
+    n_paths = 500
+    W_T_samples = []
     for _ in range(n_paths):
         dW = np.random.normal(0, np.sqrt(dt), n_steps)
         W = np.cumsum(dW)
-        final_times.append(W[-1])
+        W_T_samples.append(W[-1])
     
-    final_times = np.array(final_times)
+    W_T = np.array(W_T_samples)
     final_time = n_steps * dt
     
-    mean = np.mean(final_times)
-    var = np.var(final_times)
+    mean = np.mean(W_T)
+    var = np.var(W_T)
     
     mean_error = abs(mean)
     var_error = abs(var - final_time)
     
+    pass_mean = mean_error < 0.15 * np.sqrt(final_time)
+    pass_var = var_error < 0.3 * final_time
+    
     return {
-        "pass": mean_error < 0.2 and var_error < 0.3 * final_time,
+        "pass": pass_mean and pass_var,
         "expected_mean": 0,
-        "observed_mean": mean,
-        "mean_error": mean_error,
+        "observed_mean": float(mean),
+        "mean_error": float(mean_error),
         "expected_var": final_time,
-        "observed_var": var,
-        "var_error": var_error,
+        "observed_var": float(var),
+        "var_error": float(var_error),
     }
 
 

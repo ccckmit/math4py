@@ -23,6 +23,18 @@ from .analysis import (
     sequence_limit,
     cauchy_sequence,
 )
+from .measure import (
+    is_measure,
+    lebesgue_measure_1d,
+    lebesgue_measure_2d,
+    is_lebesgue_measurable,
+    outer_measure_1d,
+    counting_measure,
+    dirac_measure,
+    sigma_algebra_generated,
+    measure_space_check,
+    lebesgue_integral_simple,
+)
 
 __all__ = [
     "derivative",
@@ -47,4 +59,14 @@ __all__ = [
     "extreme_value_theorem",
     "sequence_limit",
     "cauchy_sequence",
+    "is_measure",
+    "lebesgue_measure_1d",
+    "lebesgue_measure_2d",
+    "is_lebesgue_measurable",
+    "outer_measure_1d",
+    "counting_measure",
+    "dirac_measure",
+    "sigma_algebra_generated",
+    "measure_space_check",
+    "lebesgue_integral_simple",
 ]

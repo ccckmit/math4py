@@ -1,7 +1,8 @@
 """測度論（Measure Theory）基礎函數。"""
 
+from typing import Callable, Dict, List, Set
+
 import numpy as np
-from typing import Callable, List, Dict, Set, Tuple
 
 
 def _trapezoid(y, x):
@@ -41,8 +42,7 @@ def lebesgue_measure_interval(a: float, b: float) -> float:
     return max(0.0, b - a)
 
 
-def is_lebesgue_integrable(f: Callable, a: float, b: float, 
-                           n: int = 1000) -> bool:
+def is_lebesgue_integrable(f: Callable, a: float, b: float, n: int = 1000) -> bool:
     """檢查函數在 [a, b] 上是否勒貝格可積。"""
     try:
         x = np.linspace(a, b, n)
@@ -52,18 +52,16 @@ def is_lebesgue_integrable(f: Callable, a: float, b: float,
         return False
 
 
-def lebesgue_integral(f: Callable, a: float, b: float,
-                          n: int = 10000) -> float:
+def lebesgue_integral(f: Callable, a: float, b: float, n: int = 10000) -> float:
     """勒貝格積分 ∫_a^b f dλ（梯形法）。"""
     x = np.linspace(a, b, n)
     y = f(x)
     return _trapezoid(y, x)
 
 
-def sigma_finite_measure(measure: Dict[frozenset, float], 
-                        universal: frozenset) -> bool:
+def sigma_finite_measure(measure: Dict[frozenset, float], universal: frozenset) -> bool:
     """檢查測度是否為 σ-有限。"""
-    finite_sets = [A for A in measure if measure[A] < float('inf')]
+    finite_sets = [A for A in measure if measure[A] < float("inf")]
     covered = frozenset()
     for A in finite_sets:
         covered = covered | A
@@ -89,43 +87,37 @@ def l_infty_norm(f: Callable, a: float, b: float, n: int = 1000) -> float:
 def l_p_norm(f: Callable, a: float, b: float, p: float, n: int = 10000) -> float:
     """L^p 範數 ||f||_p = (∫ |f|^p dλ)^{1/p}。"""
     x = np.linspace(a, b, n)
-    y = np.abs(f(x))**p
+    y = np.abs(f(x)) ** p
     integral = _trapezoid(y, x)
-    return float(integral ** (1.0/p))
+    return float(integral ** (1.0 / p))
 
 
-def holder_inequality(f: Callable, g: Callable, p: float, q: float,
-                        a: float, b: float) -> dict:
+def holder_inequality(f: Callable, g: Callable, p: float, q: float, a: float, b: float) -> dict:
     """赫爾德不等式 ||fg||_1 ≤ ||f||_p ||g||_q。"""
     norm_f = l_p_norm(f, a, b, p)
     norm_g = l_p_norm(g, a, b, q)
-    fg = lambda x: f(x) * g(x)
+
+    def fg(x):
+        return f(x) * g(x)
+
     norm_fg = l_p_norm(fg, a, b, 1.0)
-    
+
     holds = norm_fg <= norm_f * norm_g + 1e-10
-    return {
-        "pass": holds,
-        "lhs": norm_fg,
-        "rhs": norm_f * norm_g,
-        "p": p,
-        "q": q
-    }
+    return {"pass": holds, "lhs": norm_fg, "rhs": norm_f * norm_g, "p": p, "q": q}
 
 
-def minkowski_inequality(f: Callable, g: Callable, p: float,
-                         a: float, b: float) -> dict:
+def minkowski_inequality(f: Callable, g: Callable, p: float, a: float, b: float) -> dict:
     """閔可夫斯基不等式 ||f + g||_p ≤ ||f||_p + ||g||_p。"""
     norm_f = l_p_norm(f, a, b, p)
     norm_g = l_p_norm(g, a, b, p)
-    f_plus_g = lambda x: f(x) + g(x)
+
+    def f_plus_g(x):
+        return f(x) + g(x)
+
     norm_f_plus_g = l_p_norm(f_plus_g, a, b, p)
-    
+
     holds = norm_f_plus_g <= norm_f + norm_g + 1e-10
-    return {
-        "pass": holds,
-        "lhs": norm_f_plus_g,
-        "rhs": norm_f + norm_g
-    }
+    return {"pass": holds, "lhs": norm_f_plus_g, "rhs": norm_f + norm_g}
 
 
 __all__ = [

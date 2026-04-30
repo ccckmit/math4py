@@ -1,8 +1,8 @@
 """電磁學（Electromagnetism）基礎函數。"""
 
-import numpy as np
 from typing import Tuple
 
+import numpy as np
 
 # 物理常數
 EPSILON_0 = 8.8541878128e-12  # 真空介電常數
@@ -52,9 +52,9 @@ def faraday_law(dphi_B_dt: float) -> float:
     return -dphi_B_dt
 
 
-def maxwell_equations_check(E: np.ndarray, B: np.ndarray, 
-                          rho: float, J: np.ndarray,
-                          dt: float = 1e-6) -> Tuple[bool, str]:
+def maxwell_equations_check(
+    E: np.ndarray, B: np.ndarray, rho: float, J: np.ndarray, dt: float = 1e-6
+) -> Tuple[bool, str]:
     """檢查麥克斯韋方程組（簡化版）。"""
     # Gauss 定律: ∇·E = ρ/ε0
     # 簡化：假設滿足

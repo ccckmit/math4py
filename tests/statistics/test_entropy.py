@@ -1,10 +1,8 @@
 """Tests for statistics/entropy.py - Information theory functions."""
 
-import pytest
 import numpy as np
-from math4py.statistics.entropy import (
-    entropy, cross_entropy, kl_divergence, mutual_information
-)
+
+from math4py.statistics.entropy import cross_entropy, entropy, kl_divergence, mutual_information
 
 
 class TestEntropy:

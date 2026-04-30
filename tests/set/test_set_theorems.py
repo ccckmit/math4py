@@ -1,7 +1,5 @@
 r"""Set theory theorem tests."""
 
-import pytest
-
 
 class TestSetAxioms:
     def test_extensionality_true(self):
@@ -175,7 +173,10 @@ class TestReplacementAxiom:
         from math4py.set.theorem import replacement_axiom
 
         A = {1, 2, 3}
-        func = lambda x: x * 2
+
+        def func(x):
+            return x * 2
+
         result = replacement_axiom(A, func)
         assert result["pass"] is True
         assert result["image"] == {2, 4, 6}
@@ -186,7 +187,10 @@ class TestSeparationAxiom:
         from math4py.set.theorem import separation_axiom
 
         A = {1, 2, 3, 4, 5}
-        predicate = lambda x: x > 2
+
+        def predicate(x):
+            return x > 2
+
         result = separation_axiom(A, predicate)
         assert result["pass"] is True
         assert result["subset"] == {3, 4, 5}

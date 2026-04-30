@@ -1,8 +1,5 @@
 r"""Calculus theorem tests."""
 
-import pytest
-import math
-
 
 class TestFundamentalTheorem:
     def test_fundamental_theorem(self):

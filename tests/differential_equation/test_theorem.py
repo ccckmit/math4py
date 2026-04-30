@@ -1,36 +1,44 @@
 """微分方程定理驗證測試。"""
 
 import numpy as np
-import pytest
+
 from math4py.differential_equation.theorem import (
     euler_convergence_order,
-    rk4_superior_to_euler,
     heat_equation_decay_rate,
-    wave_equation_energy_conservation,
-    stability_criterion_heat,
-    stability_criterion_wave,
     lyapunov_negative_stable_fixed_point,
     lyapunov_positive_unstable_spiral,
+    rk4_superior_to_euler,
+    stability_criterion_heat,
+    stability_criterion_wave,
+    wave_equation_energy_conservation,
 )
 
 
 class TestEulerConvergenceOrder:
     def test_convergence_order_near_one(self):
         """Euler method convergence order should be ~1."""
-        f = lambda t, y: -y
+
+        def f(t, y):
+            return -y
+
         order = euler_convergence_order(f, np.array([1.0]), (0.0, 1.0))
         assert 0.8 < order < 1.2
 
     def test_zero_slope(self):
         """For zero slope, error should be small."""
-        f = lambda t, y: np.array([0.0])
+
+        def f(t, y):
+            return np.array([0.0])
+
         order = euler_convergence_order(f, np.array([1.0]), (0.0, 1.0))
         assert order >= 0
 
 
 class TestRK4SuperiorToEuler:
     def test_rk4_more_accurate(self):
-        f = lambda t, y: -y
+        def f(t, y):
+            return -y
+
         result = rk4_superior_to_euler(f, np.array([1.0]), (0.0, 1.0), dt=0.01)
         assert result
 

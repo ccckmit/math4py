@@ -1,6 +1,5 @@
 """泛函分析基礎函數。"""
 
-from typing import Callable, Tuple, List
 import numpy as np
 
 
@@ -48,10 +47,13 @@ def gram_schmidt_L2(functions, a, b, n=1000):
     ortho = []
     for f in functions:
         new_f = f
-        x = np.linspace(a, b, n)
+        np.linspace(a, b, n)
         for g, norm_sq in ortho:
             proj_coeff = inner_product_L2(lambda x: new_f(x), lambda x: g(x), a, b, n)
-            new_f = lambda x, coeff=proj_coeff, g=g, nf=new_f: nf(x) - coeff * g(x)
+
+            def new_f(x, coeff=proj_coeff, g=g, nf=new_f):
+                return nf(x) - coeff * g(x)
+
         norm_sq = inner_product_L2(new_f, new_f, a, b, n)
         ortho.append((new_f, norm_sq))
     return [lambda x, g=g, ns=norm_sq: g(x) / np.sqrt(ns) for g, ns in ortho]
@@ -103,7 +105,7 @@ def function_space_basis(n_terms=5):
     Returns:
         [1, x, x², ..., x^{n-1}]
     """
-    return [lambda x, k=k: x ** k for k in range(n_terms)]
+    return [lambda x, k=k: x**k for k in range(n_terms)]
 
 
 def weak_convergence_test(f_n, f, a, b, test_functions=None, n=1000):
@@ -121,9 +123,9 @@ def weak_convergence_test(f_n, f, a, b, test_functions=None, n=1000):
     """
     if test_functions is None:
         test_functions = function_space_basis(3)
-    
+
     max_error = 0.0
-    x = np.linspace(a, b, n)
+    np.linspace(a, b, n)
     for phi in test_functions:
         integral_f = inner_product_L2(f, phi, a, b, n)
         for fn in f_n:
@@ -147,7 +149,7 @@ def compact_operator_test(K, a, b, n=50):
     for i in range(n):
         for j in range(n):
             K_matrix[i, j] = K(x[i], y[j])
-    
+
     _, s, _ = np.linalg.svd(K_matrix, full_matrices=False)
     return s[-1]  # 最小的奇異值
 

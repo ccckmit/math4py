@@ -3,13 +3,12 @@
 隨機過程繪圖（仿 R 風格，無 class）。
 """
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+
 from . import rplot
 
-
-_PALETTE = ["#2196F3", "#F44336", "#4CAF50", "#FF9800", "#9C27B0",
-           "#00BCD4", "#FF5722", "#607D8B"]
+_PALETTE = ["#2196F3", "#F44336", "#4CAF50", "#FF9800", "#9C27B0", "#00BCD4", "#FF5722", "#607D8B"]
 
 
 def brownian_motion(t, paths, title="布朗運動路徑", figsize=(14, 9)):
@@ -30,7 +29,9 @@ def brownian_motion(t, paths, title="布朗運動路徑", figsize=(14, 9)):
     mu_path = paths.mean(axis=0)
     std_path = paths.std(axis=0)
     ax.plot(t, mu_path, "w--", lw=1.8, label="樣本均值")
-    ax.fill_between(t, mu_path - std_path, mu_path + std_path, alpha=0.15, color="white", label="±1σ")
+    ax.fill_between(
+        t, mu_path - std_path, mu_path + std_path, alpha=0.15, color="white", label="±1σ"
+    )
     ax.axhline(0, color="#aaa", lw=0.7, ls=":")
     ax.set_xlabel("時間 t")
     ax.set_ylabel("W(t)")
@@ -89,7 +90,9 @@ def ito_integral_plot(result: dict, figsize=(14, 10)):
     ax4.set_ylim(0, 1)
     ax4.axis("off")
     text = "伊藤引理\n\nf(W) = W²\ndf = 2W dW + dt\n\n∫₀ᵀ W dW\n= ½W(T)² - ½T"
-    ax4.text(0.05, 0.95, text, transform=ax4.transAxes, fontsize=9.5, va="top", fontfamily="monospace")
+    ax4.text(
+        0.05, 0.95, text, transform=ax4.transAxes, fontsize=9.5, va="top", fontfamily="monospace"
+    )
 
     plt.tight_layout()
 
@@ -154,7 +157,11 @@ def options_plot(bs_result, am_result, t_paths, S_paths, figsize=(16, 11)):
 
     ax5 = axes[1, 1]
     ax5.axis("off")
-    summary = [["指標", "歐式", "美式"], ["定價", "BS", "LSM"], ["Put", f"${am_result['eu_put']:.2f}", f"${am_result['am_put_tree']:.2f}"]]
+    summary = [
+        ["指標", "歐式", "美式"],
+        ["定價", "BS", "LSM"],
+        ["Put", f"${am_result['eu_put']:.2f}", f"${am_result['am_put_tree']:.2f}"],
+    ]
     ax5.table(cellText=summary[1:], colLabels=summary[0], loc="center", cellLoc="center")
     ax5.set_title("期權比較")
 

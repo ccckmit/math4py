@@ -1,7 +1,8 @@
 """Linear Algebra Theorems."""
 
+from typing import List
+
 import numpy as np
-from typing import List, Callable
 
 
 def rank_nullity_theorem(matrix: List[List[float]]) -> dict:
@@ -43,7 +44,7 @@ def eigenvalues_theorem(matrix: List[List[float]]) -> dict:
         Dict with verification result
     """
     A = np.array(matrix)
-    n = A.shape[0]
+    A.shape[0]
 
     trace_A = np.trace(A)
     det_A = np.linalg.det(A)

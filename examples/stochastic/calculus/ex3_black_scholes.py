@@ -11,24 +11,28 @@
 • 隱含波動率
 """
 
-import sys, os
+import os
+import sys
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-import numpy as np
+import os
+
 import matplotlib
-import os; os.makedirs("./out", exist_ok=True)
+
+os.makedirs("./out", exist_ok=True)
 matplotlib.use("Agg")
 
-from math4py.stochastic import BlackScholes, AmericanOption
 from math4py.plot import StochPlot
+from math4py.stochastic import AmericanOption, BlackScholes
 
 # ─── 參數設定 ────────────────────────────────────────────────────────────────
 
-S0    = 100.0   # 現貨價格
-K     = 100.0   # 履約價（平值）
-T     = 1.0     # 到期 1 年
-r     = 0.05    # 無風險利率 5%
-sigma = 0.20    # 波動率 20%
+S0 = 100.0  # 現貨價格
+K = 100.0  # 履約價（平值）
+T = 1.0  # 到期 1 年
+r = 0.05  # 無風險利率 5%
+sigma = 0.20  # 波動率 20%
 
 print("=" * 65)
 print("Black-Scholes 模型參數")
@@ -44,7 +48,7 @@ print("=" * 65)
 bs = BlackScholes(S=S0, K=K, T=T, r=r, sigma=sigma)
 
 call_res = bs.price("call")
-put_res  = bs.price("put")
+put_res = bs.price("put")
 
 print("\n  歐式 Call:")
 print(f"    d₁ = {call_res.d1:.6f}")
@@ -78,7 +82,11 @@ print(f"  Call                  = {parity['call']:.8f}")
 print(f"  Put                   = {parity['put']:.8f}")
 print(f"  C - P                 = {parity['C-P']:.8f}")
 print(f"  S·e⁻ᵠᵀ - K·e⁻ʳᵀ      = {parity['S·e⁻ᵠᵀ-K·e⁻ʳᵀ']:.8f}")
-print(f"  誤差                  = {parity['parity_error']:.2e}  ✓" if parity["parity_error"] < 1e-8 else "  ⚠ 誤差過大")
+print(
+    f"  誤差                  = {parity['parity_error']:.2e}  ✓"
+    if parity["parity_error"] < 1e-8
+    else "  ⚠ 誤差過大"
+)
 
 # ─── 3. Monte-Carlo vs 解析 比較 ─────────────────────────────────────────────
 
@@ -87,7 +95,7 @@ print("Monte-Carlo 定價 vs Black-Scholes 解析解")
 print("=" * 65)
 
 mc_call, se_call = bs.monte_carlo("call", n_paths=200_000, seed=42)
-mc_put,  se_put  = bs.monte_carlo("put",  n_paths=200_000, seed=42)
+mc_put, se_put = bs.monte_carlo("put", n_paths=200_000, seed=42)
 
 print(f"  Call  BS解析={call_res.price:.6f}  MC={mc_call:.6f} ±{se_call:.6f}")
 print(f"  Put   BS解析={put_res.price:.6f}   MC={mc_put:.6f}  ±{se_put:.6f}")
@@ -117,16 +125,16 @@ am_put_price, am_put_se = am.lsm("put", n_paths=50_000, n_steps=50, seed=42)
 am_call_price, am_call_se = am.lsm("call", n_paths=50_000, n_steps=50, seed=42)
 
 # 二項樹
-am_put_tree  = am.binomial_tree("put",  n_steps=500)
+am_put_tree = am.binomial_tree("put", n_steps=500)
 am_call_tree = am.binomial_tree("call", n_steps=500)
 
-print(f"\n  美式 Put：")
+print("\n  美式 Put：")
 print(f"    LSM        = {am_put_price:.6f}  ±{am_put_se:.6f}")
 print(f"    二項樹     = {am_put_tree:.6f}")
 print(f"    歐式 BS    = {put_res.price:.6f}")
 print(f"    提前執行溢價 = {am_put_price - put_res.price:.6f}")
 
-print(f"\n  美式 Call（無股利時理論上不提前執行）：")
+print("\n  美式 Call（無股利時理論上不提前執行）：")
 print(f"    LSM        = {am_call_price:.6f}  ±{am_call_se:.6f}")
 print(f"    二項樹     = {am_call_tree:.6f}")
 print(f"    歐式 BS    = {call_res.price:.6f}")
@@ -141,7 +149,7 @@ print(f"  {'σ':>6}  {'歐式 Put':>10}  {'美式 Put (Tree)':>16}  {'溢價':>8
 for sig in [0.10, 0.15, 0.20, 0.25, 0.30, 0.40]:
     eu = BlackScholes(S0, K, T, r, sig).price("put").price
     am_t = AmericanOption(S0, K, T, r, sig).binomial_tree("put", 300)
-    print(f"  {sig:>6.0%}  {eu:>10.4f}  {am_t:>16.4f}  {am_t-eu:>8.4f}")
+    print(f"  {sig:>6.0%}  {eu:>10.4f}  {am_t:>16.4f}  {am_t - eu:>8.4f}")
 
 # ─── 7. 繪圖 ────────────────────────────────────────────────────────────────
 
@@ -150,10 +158,14 @@ print("\n繪製 Black-Scholes 比較圖...")
 t_paths, S_paths = bs.simulate_paths(n_paths=50, n_steps=252, seed=42)
 
 am_summary = {
-    "K": K, "S0": S0, "T": T, "r": r, "sigma": sigma,
-    "eu_put":      put_res.price,
-    "eu_call":     call_res.price,
-    "am_put_lsm":  am_put_price,
+    "K": K,
+    "S0": S0,
+    "T": T,
+    "r": r,
+    "sigma": sigma,
+    "eu_put": put_res.price,
+    "eu_call": call_res.price,
+    "am_put_lsm": am_put_price,
     "am_put_tree": am_put_tree,
     "am_call_tree": am_call_tree,
     "early_exercise_premium": am_put_price - put_res.price,

@@ -1,8 +1,5 @@
 r"""Stochastic theorem tests."""
 
-import pytest
-import numpy as np
-
 
 class TestBrownianMotion:
     def test_brownian_properties(self):
@@ -28,9 +25,7 @@ class TestGeometricBrownianMotion:
     def test_gbm(self):
         from math4py.stochastic.theorem import geometric_brownian_motion
 
-        result = geometric_brownian_motion(
-            S0=100.0, mu=0.05, sigma=0.2, T=1.0, n_paths=1000
-        )
+        result = geometric_brownian_motion(S0=100.0, mu=0.05, sigma=0.2, T=1.0, n_paths=1000)
         assert result["pass"]
 
 
@@ -46,9 +41,7 @@ class TestBlackScholes:
     def test_call_put_parity(self):
         from math4py.stochastic.theorem import black_scholes_call_put_parity
 
-        result = black_scholes_call_put_parity(
-            S=100.0, K=100.0, r=0.05, sigma=0.2, T=1.0
-        )
+        result = black_scholes_call_put_parity(S=100.0, K=100.0, r=0.05, sigma=0.2, T=1.0)
         assert result["pass"]
         assert abs(result["parity_left"] - result["parity_right"]) < 1e-10
 
@@ -65,7 +58,9 @@ class TestItoLemma:
     def test_ito_lemma(self):
         from math4py.stochastic.theorem import ito_lemma_verify
 
-        f = lambda x: x**2
+        def f(x):
+            return x**2
+
         result = ito_lemma_verify(f, S0=100.0, mu=0.05, sigma=0.2, T=0.1, n_paths=1000)
         assert result["pass"]
 

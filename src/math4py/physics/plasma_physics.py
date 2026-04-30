@@ -1,8 +1,6 @@
 """電漿體物理（Plasma Physics）基礎函數。"""
 
 import numpy as np
-from typing import Tuple
-
 
 # 物理常數
 ELECTRON_CHARGE = 1.602176634e-19  # C
@@ -23,24 +21,24 @@ def plasma_frequency(n_e: float) -> float:
     return np.sqrt(n_e * ELECTRON_CHARGE**2 / (EPSILON_0 * ELECTRON_MASS))
 
 
-def cyclotron_frequency(B: float, q: float = ELECTRON_CHARGE, 
-                       m: float = ELECTRON_MASS) -> float:
+def cyclotron_frequency(B: float, q: float = ELECTRON_CHARGE, m: float = ELECTRON_MASS) -> float:
     """迴旋頻率 ω_c = qB/m。"""
     return q * B / m
 
 
-def larmor_radius(v_perp: float, B: float, m: float = ELECTRON_MASS,
-                   q: float = ELECTRON_CHARGE) -> float:
+def larmor_radius(
+    v_perp: float, B: float, m: float = ELECTRON_MASS, q: float = ELECTRON_CHARGE
+) -> float:
     """拉莫爾半徑 r_L = mv_perp / (qB)。"""
     if B == 0:
-        return float('inf')
+        return float("inf")
     return m * v_perp / (q * B)
 
 
 def alfven_speed(B: float, mu0: float, rho: float) -> float:
     """阿爾芬速度 v_A = B / sqrt(μ0 ρ)。"""
     if rho == 0:
-        return float('inf')
+        return float("inf")
     return B / np.sqrt(mu0 * rho)
 
 
@@ -53,7 +51,13 @@ def sound_speed_ionacoustic(T_e: float, T_i: float, m_i: float) -> float:
 def collision_frequency(n_e: float, T_e: float) -> float:
     """碰撞頻率 ν_ei（簡化）。"""
     k = 1.380649e-23
-    return n_e * ELECTRON_CHARGE**4 / (4.0 * EPSILON_0**2 * np.sqrt(k**3 * T_e**3 / m_e)) * 4.0 * np.sqrt(np.pi)
+    return (
+        n_e
+        * ELECTRON_CHARGE**4
+        / (4.0 * EPSILON_0**2 * np.sqrt(k**3 * T_e**3 / m_e))
+        * 4.0
+        * np.sqrt(np.pi)
+    )
 
 
 def plasma_beta(B: float, n_e: float, T_e: float) -> float:

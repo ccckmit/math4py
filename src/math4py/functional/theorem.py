@@ -1,18 +1,13 @@
 """泛函分析定理驗證。"""
 
 import numpy as np
-from typing import Callable
+
 from math4py.functional.function import (
-    norm_Lp,
-    norm_L2,
     inner_product_L2,
-    gram_schmidt_L2,
-    is_orthogonal_L2,
-    spectral_radius,
+    norm_L2,
     resolvent_set,
-    function_space_basis,
+    spectral_radius,
     weak_convergence_test,
-    compact_operator_test,
 )
 
 
@@ -34,8 +29,10 @@ def triangle_inequality_L2(f, g, a, b):
     Returns:
         不等式殘差（應 ≥ 0）
     """
+
     def f_plus_g(x):
         return f(x) + g(x)
+
     norm_sum = norm_L2(f_plus_g, a, b)
     return norm_sum - (norm_L2(f, a, b) + norm_L2(g, a, b))
 
@@ -50,7 +47,7 @@ def bessel_inequality(f, basis, a, b):
     sum_squares = 0.0
     for e in basis:
         inner = inner_product_L2(f, e, a, b)
-        sum_squares += inner ** 2
+        sum_squares += inner**2
     return norm_f_sq - sum_squares
 
 
@@ -64,7 +61,7 @@ def parseval_identity(f, orthonormal_basis, a, b):
     sum_squares = 0.0
     for e in orthonormal_basis:
         inner = inner_product_L2(f, e, a, b)
-        sum_squares += inner ** 2
+        sum_squares += inner**2
     return abs(sum_squares - norm_f_sq)
 
 
@@ -76,11 +73,15 @@ def riesz_representation_test(phi, a, b):
     Returns:
         表示誤差
     """
+
     def g_representative(x):
         return np.ones_like(x)
 
-    x = np.linspace(a, b, 100)
-    f_test = lambda x: x
+    np.linspace(a, b, 100)
+
+    def f_test(x):
+        return x
+
     phi_f = phi(f_test) if callable(phi(f_test)) else phi(f_test)
     inner = inner_product_L2(f_test, g_representative, a, b)
     return abs(phi_f - inner)

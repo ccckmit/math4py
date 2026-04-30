@@ -1,7 +1,8 @@
 """變分法（Calculus of Variations）基礎函數。"""
 
-import numpy as np
 from typing import Callable
+
+import numpy as np
 
 
 def shortest_path_length(f: Callable, a: float, b: float, n: int = 1000) -> float:
@@ -31,7 +32,7 @@ def brachistochrone_time(y0: float, y1: float, g: float = 9.81) -> float:
 
 def euler_lagrange_simple(y_prime: np.ndarray, x: np.ndarray) -> np.ndarray:
     """簡化版歐拉-拉格朗日方程，適用於 L = L(y') 的情況。
-    
+
     對於 L = F(y')，方程為 d/dx(∂L/∂y') = 0。
     返回 d/dx(y') = y''。
     """

@@ -1,21 +1,18 @@
 """ZFC 公理系統測試。"""
 
-import pytest
 from math4py.logic.zfc import (
-    Set,
     EMPTY_SET,
-    extensionality_axiom,
-    pair_set_axiom,
-    union_axiom,
-    power_set_axiom,
-    infinity_axiom,
-    foundation_axiom,
+    Set,
     choice_axiom,
+    construct_natural_numbers,
+    extensionality_axiom,
+    foundation_axiom,
     is_set_element,
     is_subset,
-    construct_natural_numbers,
-    separation_schema,
     ordered_pair,
+    pair_set_axiom,
+    separation_schema,
+    union_axiom,
     verify_zfc_axioms,
 )
 
@@ -142,7 +139,10 @@ class TestSeparationSchema:
     def test_filter_even(self):
         """分離公理：抽取偶數。"""
         A = Set(elements={1, 2, 3, 4, 5, 6})
-        even_pred = lambda x: x % 2 == 0
+
+        def even_pred(x):
+            return x % 2 == 0
+
         evens = separation_schema(even_pred, A)
         assert is_set_element(2, evens)
         assert is_set_element(4, evens)
@@ -151,7 +151,10 @@ class TestSeparationSchema:
     def test_empty_result(self):
         """分離結果可能為空。"""
         A = Set(elements={1, 2, 3})
-        pred = lambda x: x > 10
+
+        def pred(x):
+            return x > 10
+
         result = separation_schema(pred, A)
         assert len(result.elements) == 0
 

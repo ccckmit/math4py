@@ -1,6 +1,6 @@
 """向量空間 (Vector Space) 定義。"""
 
-from typing import List, Callable, Optional
+from typing import List, Optional
 
 
 class VectorSpace:
@@ -58,7 +58,9 @@ class VectorSpace:
 
     def basis(self) -> List[List[float]]:
         """返回向量空間的一組基 (標準基)。"""
-        return [[1.0 if i == j else 0.0 for j in range(self.dimension)] for i in range(self.dimension)]
+        return [
+            [1.0 if i == j else 0.0 for j in range(self.dimension)] for i in range(self.dimension)
+        ]
 
     def dimension_of_subspace(self, vectors: List[List[float]]) -> int:
         """計算子空間維度。"""

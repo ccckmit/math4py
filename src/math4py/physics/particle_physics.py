@@ -1,8 +1,8 @@
 """粒子物理（Particle Physics）基礎函數。"""
 
-import numpy as np
-from typing import List, Dict
+from typing import Dict, List
 
+import numpy as np
 
 # 基本粒子質量 (MeV/c²)
 ELECTRON_MASS = 0.511  # MeV
@@ -15,10 +15,10 @@ QUARK_STRANGE_MASS = 96.0  # MeV (奇夸克)
 
 def lorentz_invariant_mass(particles: List[Dict]) -> float:
     """不變質量 m² = (ΣE)² - |Σp|²c²。
-    
+
     Args:
         particles: [{"E": energy, "px": px, "py": py, "pz": pz}, ...]
-    
+
     Returns:
         不變質量 (MeV/c²)
     """
@@ -26,7 +26,7 @@ def lorentz_invariant_mass(particles: List[Dict]) -> float:
     total_px = sum(p["px"] for p in particles)
     total_py = sum(p["py"] for p in particles)
     total_pz = sum(p["pz"] for p in particles)
-    
+
     m2 = total_E**2 - (total_px**2 + total_py**2 + total_pz**2)
     return np.sqrt(max(0, m2))
 
@@ -35,7 +35,7 @@ def decay_width_to_lifetime(Gamma: float) -> float:
     """衰變寬度與壽命關係 τ = ℏ/Γ。"""
     hbar = 6.582119569e-22  # MeV·s
     if Gamma == 0:
-        return float('inf')
+        return float("inf")
     return hbar / Gamma
 
 
@@ -53,7 +53,6 @@ def center_of_mass_energy(sqrt_s: float) -> float:
 
 def relativistic_kinetic_energy(m0: float, p: float) -> float:
     """相對論動能 T = sqrt(p²c² + m0²c⁴) - m0c²。"""
-    c = 299792458e-3  # m/s to mm/ns (簡化)
     m0c2 = m0  # 假設輸入為 MeV，c=1 單位
     pc = p  # 簡化
     return np.sqrt(pc**2 + m0c2**2) - m0c2
@@ -74,12 +73,8 @@ def ckms_matrix_element(V_us: float, V_ub: float, V_cb: float) -> np.ndarray:
     V_td = 0.0  # 簡化
     V_ts = 0.0
     V_tb = 1.0
-    
-    return np.array([
-        [V_ud, V_us, V_ub],
-        [V_cd, V_cs, V_cb],
-        [V_td, V_ts, V_tb]
-    ])
+
+    return np.array([[V_ud, V_us, V_ub], [V_cd, V_cs, V_cb], [V_td, V_ts, V_tb]])
 
 
 def particle_composition(particle: str) -> List[str]:

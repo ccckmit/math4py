@@ -8,11 +8,11 @@ def empty_set_axiom():
 
 def extensionality_axiom(set1: set, set2: set):
     r"""Extensionality axiom: Two sets are equal iff they have the same elements.
-    
+
     Args:
         set1: First set
         set2: Second set
-    
+
     Returns:
         Dict with pass status and equality check
     """
@@ -22,11 +22,11 @@ def extensionality_axiom(set1: set, set2: set):
 
 def pair_set_axiom(a, b):
     r"""Pair set axiom: {a, b} exists.
-    
+
     Args:
         a: First element
         b: Second element
-    
+
     Returns:
         Dict with pass status
     """
@@ -36,10 +36,10 @@ def pair_set_axiom(a, b):
 
 def union_axiom(sets: list):
     r"""Union axiom: ⋃S exists.
-    
+
     Args:
         sets: List of sets
-    
+
     Returns:
         Dict with pass status
     """
@@ -51,10 +51,10 @@ def union_axiom(sets: list):
 
 def power_set_axiom(set1: set):
     r"""Power set axiom: P(A) exists.
-    
+
     Args:
         set1: Input set
-    
+
     Returns:
         Dict with pass status and power set size
     """
@@ -71,10 +71,10 @@ def power_set_axiom(set1: set):
 
 def foundation_axiom(set1: set):
     r"""Foundation axiom: Every non-empty set has an ∈-minimal element.
-    
+
     Args:
         set1: Set to check
-    
+
     Returns:
         Dict with pass status
     """
@@ -83,11 +83,11 @@ def foundation_axiom(set1: set):
 
 def replacement_axiom(set1: set, func):
     r"""Replacement axiom: Image of set under function is a set.
-    
+
     Args:
         set1: Input set
         func: Function to apply
-    
+
     Returns:
         Dict with pass status
     """
@@ -100,11 +100,11 @@ def replacement_axiom(set1: set, func):
 
 def separation_axiom(set1: set, predicate):
     r"""Separation axiom: {x ∈ A | φ(x)} is a set.
-    
+
     Args:
         set1: Input set
         predicate: Function that returns bool
-    
+
     Returns:
         Dict with pass status
     """
@@ -117,11 +117,11 @@ def separation_axiom(set1: set, predicate):
 
 def commutativity_union(set1: set, set2: set):
     r"""Commutativity: A ∪ B = B ∪ A.
-    
+
     Args:
         set1: First set
         set2: Second set
-    
+
     Returns:
         Dict with pass status
     """
@@ -131,11 +131,11 @@ def commutativity_union(set1: set, set2: set):
 
 def commutativity_intersection(set1: set, set2: set):
     r"""Commutativity: A ∩ B = B ∩ A.
-    
+
     Args:
         set1: First set
         set2: Second set
-    
+
     Returns:
         Dict with pass status
     """
@@ -145,12 +145,12 @@ def commutativity_intersection(set1: set, set2: set):
 
 def associativity_union(set1: set, set2: set, set3: set):
     r"""Associativity: (A ∪ B) ∪ C = A ∪ (B ∪ C).
-    
+
     Args:
         set1: First set
         set2: Second set
         set3: Third set
-    
+
     Returns:
         Dict with pass status
     """
@@ -161,12 +161,12 @@ def associativity_union(set1: set, set2: set, set3: set):
 
 def associativity_intersection(set1: set, set2: set, set3: set):
     r"""Associativity: (A ∩ B) ∩ C = A ∩ (B ∩ C).
-    
+
     Args:
         set1: First set
         set2: Second set
         set3: Third set
-    
+
     Returns:
         Dict with pass status
     """
@@ -177,12 +177,12 @@ def associativity_intersection(set1: set, set2: set, set3: set):
 
 def distributivity_union_intersection(set1: set, set2: set, set3: set):
     r"""Distributivity: A ∪ (B ∩ C) = (A ∪ B) ∩ (A ∪ C).
-    
+
     Args:
         set1: First set
         set2: Second set
         set3: Third set
-    
+
     Returns:
         Dict with pass status
     """
@@ -193,12 +193,12 @@ def distributivity_union_intersection(set1: set, set2: set, set3: set):
 
 def distributivity_intersection_union(set1: set, set2: set, set3: set):
     r"""Distributivity: A ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C).
-    
+
     Args:
         set1: First set
         set2: Second set
         set3: Third set
-    
+
     Returns:
         Dict with pass status
     """
@@ -209,12 +209,12 @@ def distributivity_intersection_union(set1: set, set2: set, set3: set):
 
 def demorgans_law_union(set1: set, set2: set, universal: set):
     r"""De Morgan's law: (A ∪ B)' = A' ∩ B'.
-    
+
     Args:
         set1: First set
         set2: Second set
         universal: Universal set
-    
+
     Returns:
         Dict with pass status
     """
@@ -225,12 +225,12 @@ def demorgans_law_union(set1: set, set2: set, universal: set):
 
 def demorgans_law_intersection(set1: set, set2: set, universal: set):
     r"""De Morgan's law: (A ∩ B)' = A' ∪ B'.
-    
+
     Args:
         set1: First set
         set2: Second set
         universal: Universal set
-    
+
     Returns:
         Dict with pass status
     """
@@ -241,11 +241,11 @@ def demorgans_law_intersection(set1: set, set2: set, universal: set):
 
 def double_complement(set1: set, universal: set):
     r"""Double complement: (A')' = A.
-    
+
     Args:
         set1: Set to complement
         universal: Universal set
-    
+
     Returns:
         Dict with pass status
     """
@@ -255,10 +255,10 @@ def double_complement(set1: set, universal: set):
 
 def identity(set1: set):
     r"""Identity: A ∪ ∅ = A and A ∩ U = A.
-    
+
     Args:
         set1: Set to test
-    
+
     Returns:
         Dict with pass status
     """
@@ -269,11 +269,11 @@ def identity(set1: set):
 
 def domination(set1: set, universal: set):
     r"""Domination: A ∪ U = U and A ∩ ∅ = ∅.
-    
+
     Args:
         set1: Set to test
         universal: Universal set
-    
+
     Returns:
         Dict with pass status
     """
@@ -285,10 +285,10 @@ def domination(set1: set, universal: set):
 
 def idempotent(set1: set):
     r"""Idempotent: A ∪ A = A and A ∩ A = A.
-    
+
     Args:
         set1: Set to test
-    
+
     Returns:
         Dict with pass status
     """
@@ -299,11 +299,11 @@ def idempotent(set1: set):
 
 def absorption(set1: set, set2: set):
     r"""Absorption: A ∪ (A ∩ B) = A and A ∩ (A ∪ B) = A.
-    
+
     Args:
         set1: First set
         set2: Second set
-    
+
     Returns:
         Dict with pass status
     """

@@ -3,11 +3,14 @@
 布朗運動、伊藤積分、Black-Scholes 等計算函數。
 """
 
-import numpy as np
 from typing import Callable, Tuple
 
+import numpy as np
 
-def brownian_motion(T: float, n_steps: int = 100, seed: int = None) -> Tuple[np.ndarray, np.ndarray]:
+
+def brownian_motion(
+    T: float, n_steps: int = 100, seed: int = None
+) -> Tuple[np.ndarray, np.ndarray]:
     """標準布朗運動模擬。
 
     Args:
@@ -31,7 +34,15 @@ def brownian_motion(T: float, n_steps: int = 100, seed: int = None) -> Tuple[np.
     return t, W
 
 
-def geometric_brownian_motion(S0: float, mu: float, sigma: float, T: float, n_steps: int = 100, n_paths: int = 1, seed: int = None) -> Tuple[np.ndarray, np.ndarray]:
+def geometric_brownian_motion(
+    S0: float,
+    mu: float,
+    sigma: float,
+    T: float,
+    n_steps: int = 100,
+    n_paths: int = 1,
+    seed: int = None,
+) -> Tuple[np.ndarray, np.ndarray]:
     """幾何布朗運動模擬。
 
     dS = μS dt + σS dW
@@ -135,7 +146,9 @@ def black_scholes_put(S0: float, K: float, T: float, r: float, sigma: float) -> 
     return K * np.exp(-r * T) * norm.cdf(-d2) - S0 * norm.cdf(-d1)
 
 
-def greeks(S0: float, K: float, T: float, r: float, sigma: float, option_type: str = "call") -> dict:
+def greeks(
+    S0: float, K: float, T: float, r: float, sigma: float, option_type: str = "call"
+) -> dict:
     """計算 Black-Scholes Greeks。
 
     Args:
@@ -163,18 +176,16 @@ def greeks(S0: float, K: float, T: float, r: float, sigma: float, option_type: s
 
     gamma = norm.pdf(d1) / (S0 * sigma * np.sqrt(T))
     vega = S0 * norm.pdf(d1) * np.sqrt(T)
-    theta = -S0 * norm.pdf(d1) * sigma / (2 * np.sqrt(T)) - r * K * np.exp(-r * T) * norm.cdf(d2 if option_type == "call" else -d2)
+    theta = -S0 * norm.pdf(d1) * sigma / (2 * np.sqrt(T)) - r * K * np.exp(-r * T) * norm.cdf(
+        d2 if option_type == "call" else -d2
+    )
 
     if option_type == "put":
-        theta = -S0 * norm.pdf(d1) * sigma / (2 * np.sqrt(T)) + r * K * np.exp(-r * T) * norm.cdf(-d2)
+        theta = -S0 * norm.pdf(d1) * sigma / (2 * np.sqrt(T)) + r * K * np.exp(-r * T) * norm.cdf(
+            -d2
+        )
 
-    return {
-        "delta": delta,
-        "gamma": gamma,
-        "vega": vega,
-        "theta": theta,
-        "rho": rho
-    }
+    return {"delta": delta, "gamma": gamma, "vega": vega, "theta": theta, "rho": rho}
 
 
 __all__ = [

@@ -50,9 +50,9 @@ def main():
 
     print("\n--- Angle Between Vectors ---")
     angle = v1.angle_to(v2)
-    print(f"Angle between v1 and v2: {angle:.4f} rad ({angle/np.pi*180:.2f}°)")
+    print(f"Angle between v1 and v2: {angle:.4f} rad ({angle / np.pi * 180:.2f}°)")
     angle = v1.angle_to(v3)
-    print(f"Angle between v1 and v3: {angle:.4f} rad ({angle/np.pi*180:.2f}°)")
+    print(f"Angle between v1 and v3: {angle:.4f} rad ({angle / np.pi * 180:.2f}°)")
 
     print("\n--- Parallel & Perpendicular Check ---")
     v4 = geom.Vector(2, 0, 0)
@@ -64,4 +64,5 @@ def main():
 
 if __name__ == "__main__":
     import numpy as np
+
     main()

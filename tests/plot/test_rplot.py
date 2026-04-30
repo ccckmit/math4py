@@ -1,9 +1,9 @@
 """Tests for plot/rplot.py - R-style plotting functions."""
 
-import pytest
 import numpy as np
-from math4py.plot import pdf, dev_off
-from math4py.plot.rplot import plot, hist, boxplot, qqnorm
+
+from math4py.plot import dev_off, pdf
+from math4py.plot.rplot import boxplot, hist, plot, qqnorm
 from math4py.plot.rplot_entropy import plot_entropy, plot_kl
 
 
@@ -19,7 +19,7 @@ class TestPlot:
     def test_plot_line(self):
         """Test line plot (type='l')."""
         pdf("test_plot_line.pdf")
-        x = np.linspace(0, 2*np.pi, 100)
+        x = np.linspace(0, 2 * np.pi, 100)
         y = np.sin(x)
         plot(x, y, type="l", main="Sine Wave")
         dev_off()

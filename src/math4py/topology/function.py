@@ -1,7 +1,6 @@
 """拓撲學（Topology）基礎函數。"""
 
-import numpy as np
-from typing import Callable, List, Set, Tuple, Dict
+from typing import Callable, Dict, List, Set
 
 
 def is_open_set(points: Set, topology: Dict) -> bool:
@@ -22,7 +21,7 @@ def is_connected(topology: Dict) -> bool:
     """檢查拓撾空間是否連通。"""
     open_sets = topology.get("open_sets", set())
     universal = topology.get("universal", set())
-    
+
     # 簡化：檢查是否存在非平凡既開又閉的集合
     for s in open_sets:
         if s != frozenset() and s != frozenset(universal):
@@ -39,9 +38,9 @@ def euler_characteristic(vertices: int, edges: int, faces: int) -> int:
 
 def is_compact(topology: Dict, covering: List[Set]) -> bool:
     """檢查空間是否緊緻（有限子覆蓋性）。"""
-    open_sets = topology.get("open_sets", set())
+    topology.get("open_sets", set())
     universal = topology.get("universal", set())
-    
+
     # 簡化：檢查覆蓋是否包含有限子覆蓋
     covered = set()
     for s in covering:
@@ -55,7 +54,7 @@ def is_hausdorff(points: List, distance_fn: Callable) -> bool:
     """檢查空間是否為豪斯多夫空間。"""
     n = len(points)
     for i in range(n):
-        for j in range(i+1, n):
+        for j in range(i + 1, n):
             # 存在不相交的開鄰域
             if distance_fn(points[i], points[j]) < 1e-10:
                 return False
@@ -81,14 +80,13 @@ def boundary(set_A: Set, closure_A: Set, interior_A: Set) -> Set:
     return closure_A - interior_A
 
 
-def homeomorphism_check(f: Callable, f_inv: Callable, 
-                       domain: List, codomain: List) -> bool:
+def homeomorphism_check(f: Callable, f_inv: Callable, domain: List, codomain: List) -> bool:
     """檢查 f 是否為同胚（雙射、連續、反函數連續）。"""
     # 檢查雙射
     images = [f(x) for x in domain]
     if len(images) != len(set(images)):
         return False
-    
+
     # 簡化：檢查 f(f_inv(x)) = x
     for x in domain[:5]:  # 只檢查幾個點
         if abs(f(f_inv(x)) - x) > 1e-6:
@@ -107,10 +105,10 @@ def topological_sort(graph: Dict[int, List[int]]) -> List[int]:
     for node in graph:
         for neighbor in graph[node]:
             in_degree[neighbor] = in_degree.get(neighbor, 0) + 1
-    
+
     queue = [node for node in in_degree if in_degree[node] == 0]
     result = []
-    
+
     while queue:
         node = queue.pop(0)
         result.append(node)
@@ -118,7 +116,7 @@ def topological_sort(graph: Dict[int, List[int]]) -> List[int]:
             in_degree[neighbor] -= 1
             if in_degree[neighbor] == 0:
                 queue.append(neighbor)
-    
+
     return result
 
 

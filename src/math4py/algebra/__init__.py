@@ -1,5 +1,8 @@
 """algebra - 代數模組，包裝 numpy/sympy 提供一致 API."""
 
+from math4py.linear_algebra.vector import cross_product, dot_product, norm_vector
+from math4py.linear_algebra.vector_space import VectorSpace
+
 from .complex import (
     argument,
     complex_add,
@@ -33,8 +36,6 @@ from .theorem import (
     identity_element,
     inverse_element,
 )
-from math4py.linear_algebra.vector import cross_product, dot_product, norm_vector
-from math4py.linear_algebra.vector_space import VectorSpace
 
 __all__ = [
     "closure_axiom",

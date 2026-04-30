@@ -1,7 +1,5 @@
 r"""Logic theorem tests with truth table verification."""
 
-import pytest
-
 
 class TestModusPonens:
     def test_modus_ponens(self):

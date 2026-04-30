@@ -6,7 +6,7 @@
 - 查詢
 """
 
-from typing import Dict, List, Optional, Union
+from typing import Dict, List
 
 
 def parse_term(s: str):

@@ -30,7 +30,10 @@ def entropy(p, base=2):
     elif base == 10:
         log = np.log10
     else:
-        log = lambda x: np.log(x) / np.log(base)
+
+        def log(x):
+            return np.log(x) / np.log(base)
+
     return -np.sum(p * log(p))
 
 
@@ -70,7 +73,10 @@ def cross_entropy(p, q, base=2):
     elif base == 10:
         log = np.log10
     else:
-        log = lambda x: np.log(x) / np.log(base)
+
+        def log(x):
+            return np.log(x) / np.log(base)
+
     return -np.sum(p_masked * log(q_masked))
 
 
@@ -108,7 +114,10 @@ def kl_divergence(p, q, base=2):
     elif base == 10:
         log = np.log10
     else:
-        log = lambda x: np.log(x) / np.log(base)
+
+        def log(x):
+            return np.log(x) / np.log(base)
+
     return np.sum(p_masked * log(p_masked / q_masked))
 
 

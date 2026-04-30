@@ -1,16 +1,14 @@
 """Line Intersection Examples - Example for math4py.geometry."""
 
-import math4py.geometry as geom
 from math4py.geometry.threed import Line
+
+import math4py.geometry as geom
 
 
 def main():
     print("=== Line Distance and Closest Point ===\n")
 
-    line = Line.from_points(
-        geom.Point(0, 0, 0),
-        geom.Point(1, 0, 0)
-    )
+    line = Line.from_points(geom.Point(0, 0, 0), geom.Point(1, 0, 0))
     print(f"Line: {line}")
 
     p = geom.Point(0, 2, 0)
@@ -23,10 +21,7 @@ def main():
     print(f"Closest point on line: {closest}")
 
     print("\n--- 3D Example ---")
-    line2 = Line.from_points(
-        geom.Point(0, 0, 0),
-        geom.Point(1, 1, 1)
-    )
+    line2 = Line.from_points(geom.Point(0, 0, 0), geom.Point(1, 1, 1))
     print(f"Line: {line2}")
 
     p2 = geom.Point(1, 0, 0)

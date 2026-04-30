@@ -94,6 +94,7 @@ class Matrix:
     def lu(self):
         """LU 分解 (使用 scipy)。"""
         import scipy.linalg
+
         P, L, U = scipy.linalg.lu(self._np_mat)
         return Matrix(P), Matrix(L), Matrix(U)
 

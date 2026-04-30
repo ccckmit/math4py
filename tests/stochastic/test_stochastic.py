@@ -1,13 +1,13 @@
 import numpy as np
-import pytest
+
 from math4py.stochastic.calculus import (
+    AmericanOption,
+    BlackScholes,
+    BrownianBridge,
     BrownianMotion,
     GeometricBrownianMotion,
-    OrnsteinUhlenbeck,
-    BrownianBridge,
-    BlackScholes,
-    AmericanOption,
     ItoIntegral,
+    OrnsteinUhlenbeck,
     ito_lemma_demo,
 )
 
@@ -71,7 +71,7 @@ class TestOrnsteinUhlenbeck:
 
     def test_stationary_variance(self):
         ou = OrnsteinUhlenbeck(mu=0.0, theta=2.0, sigma=1.0, seed=42)
-        expected_var = 1.0 ** 2 / (2 * 2.0)
+        expected_var = 1.0**2 / (2 * 2.0)
         assert np.isclose(ou.stationary_variance(), expected_var)
 
 
@@ -170,6 +170,7 @@ class TestItoIntegral:
 class TestIntegration:
     def test_imports_work(self):
         from math4py.stochastic.calculus import brownian_motion, ito_integral_plot, options_plot
+
         assert brownian_motion is not None
         assert ito_integral_plot is not None
         assert options_plot is not None

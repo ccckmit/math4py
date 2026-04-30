@@ -6,11 +6,11 @@ options.py — 期權定價模組
   - AmericanOption : 美式期權（最優停止）— Longstaff-Schwartz LSM + 二項樹
 """
 
+from dataclasses import dataclass
+from typing import Literal, Optional, Tuple
+
 import numpy as np
 from scipy import stats
-from typing import Literal, Optional, Tuple
-from dataclasses import dataclass
-
 
 OptionType = Literal["call", "put"]
 
@@ -18,6 +18,7 @@ OptionType = Literal["call", "put"]
 # ---------------------------------------------------------------------------
 # 1. Black-Scholes 歐式期權（英國期權）
 # ---------------------------------------------------------------------------
+
 
 @dataclass
 class BSResult:
@@ -65,10 +66,9 @@ class BlackScholes:
         self.q = q
 
     def _d1_d2(self) -> Tuple[float, float]:
-        d1 = (
-            np.log(self.S / self.K)
-            + (self.r - self.q + 0.5 * self.sigma ** 2) * self.T
-        ) / (self.sigma * np.sqrt(self.T))
+        d1 = (np.log(self.S / self.K) + (self.r - self.q + 0.5 * self.sigma**2) * self.T) / (
+            self.sigma * np.sqrt(self.T)
+        )
         d2 = d1 - self.sigma * np.sqrt(self.T)
         return d1, d2
 
@@ -86,30 +86,29 @@ class BlackScholes:
 
         if option_type == "call":
             price = (
-                self.S * np.exp(-self.q * self.T) * Nd1
-                - self.K * np.exp(-self.r * self.T) * Nd2
+                self.S * np.exp(-self.q * self.T) * Nd1 - self.K * np.exp(-self.r * self.T) * Nd2
             )
             delta = np.exp(-self.q * self.T) * Nd1
-            rho   = self.K * self.T * np.exp(-self.r * self.T) * Nd2 / 100
+            rho = self.K * self.T * np.exp(-self.r * self.T) * Nd2 / 100
         else:  # put
-            price = (
-                self.K * np.exp(-self.r * self.T) * stats.norm.cdf(-d2)
-                - self.S * np.exp(-self.q * self.T) * stats.norm.cdf(-d1)
-            )
+            price = self.K * np.exp(-self.r * self.T) * stats.norm.cdf(-d2) - self.S * np.exp(
+                -self.q * self.T
+            ) * stats.norm.cdf(-d1)
             delta = np.exp(-self.q * self.T) * (Nd1 - 1)
-            rho   = -self.K * self.T * np.exp(-self.r * self.T) * stats.norm.cdf(-d2) / 100
+            rho = -self.K * self.T * np.exp(-self.r * self.T) * stats.norm.cdf(-d2) / 100
 
-        gamma = (
-            np.exp(-self.q * self.T)
-            * nd1
-            / (self.S * self.sigma * sqrt_T)
-        )
+        gamma = np.exp(-self.q * self.T) * nd1 / (self.S * self.sigma * sqrt_T)
         theta = (
-            -np.exp(-self.q * self.T) * self.S * nd1 * self.sigma
-            / (2 * sqrt_T)
-            - self.r * self.K * np.exp(-self.r * self.T) * (Nd2 if option_type == "call" else stats.norm.cdf(-d2))
-            + self.q * self.S * np.exp(-self.q * self.T) * (Nd1 if option_type == "call" else stats.norm.cdf(-d1))
-        ) / 365   # 日為單位
+            -np.exp(-self.q * self.T) * self.S * nd1 * self.sigma / (2 * sqrt_T)
+            - self.r
+            * self.K
+            * np.exp(-self.r * self.T)
+            * (Nd2 if option_type == "call" else stats.norm.cdf(-d2))
+            + self.q
+            * self.S
+            * np.exp(-self.q * self.T)
+            * (Nd1 if option_type == "call" else stats.norm.cdf(-d1))
+        ) / 365  # 日為單位
         vega = self.S * np.exp(-self.q * self.T) * nd1 * sqrt_T / 100
 
         return BSResult(
@@ -138,7 +137,7 @@ class BlackScholes:
             diff = res.price - market_price
             if abs(diff) < tol:
                 return sigma
-            sigma -= diff / (res.vega * 100)   # vega 單位修正
+            sigma -= diff / (res.vega * 100)  # vega 單位修正
             sigma = max(sigma, 1e-8)
         return sigma
 
@@ -156,7 +155,7 @@ class BlackScholes:
         """
         rng = np.random.default_rng(seed)
         dt = self.T / n_steps
-        drift = (self.r - self.q - 0.5 * self.sigma ** 2) * dt
+        drift = (self.r - self.q - 0.5 * self.sigma**2) * dt
         vol = self.sigma * np.sqrt(dt)
 
         half = n_paths // 2 if antithetic else n_paths
@@ -180,11 +179,16 @@ class BlackScholes:
     def parity_check(self) -> dict:
         """驗證 Put-Call Parity：C - P = S·e^{-qT} - K·e^{-rT}"""
         call = self.price("call").price
-        put  = self.price("put").price
-        lhs  = call - put
-        rhs  = self.S * np.exp(-self.q * self.T) - self.K * np.exp(-self.r * self.T)
-        return {"call": call, "put": put, "C-P": lhs, "S·e⁻ᵠᵀ-K·e⁻ʳᵀ": rhs,
-                "parity_error": abs(lhs - rhs)}
+        put = self.price("put").price
+        lhs = call - put
+        rhs = self.S * np.exp(-self.q * self.T) - self.K * np.exp(-self.r * self.T)
+        return {
+            "call": call,
+            "put": put,
+            "C-P": lhs,
+            "S·e⁻ᵠᵀ-K·e⁻ʳᵀ": rhs,
+            "parity_error": abs(lhs - rhs),
+        }
 
     def simulate_paths(
         self,
@@ -194,6 +198,7 @@ class BlackScholes:
     ) -> Tuple[np.ndarray, np.ndarray]:
         """產生 GBM 路徑用於視覺化。"""
         from ..process import GeometricBrownianMotion
+
         gbm = GeometricBrownianMotion(self.S, self.r - self.q, self.sigma, seed)
         return gbm.simulate(self.T, n_steps, n_paths)
 
@@ -201,6 +206,7 @@ class BlackScholes:
 # ---------------------------------------------------------------------------
 # 2. 美式期權 (American Option)
 # ---------------------------------------------------------------------------
+
 
 class AmericanOption:
     """
@@ -264,8 +270,8 @@ class AmericanOption:
         if antithetic:
             Z = np.vstack([Z, -Z])
 
-        drift = (self.r - self.q - 0.5 * self.sigma ** 2) * dt
-        vol   = self.sigma * np.sqrt(dt)
+        drift = (self.r - self.q - 0.5 * self.sigma**2) * dt
+        vol = self.sigma * np.sqrt(dt)
 
         log_S = np.log(self.S) + np.cumsum(drift + vol * Z, axis=1)
         S_paths = np.concatenate(
@@ -274,17 +280,21 @@ class AmericanOption:
 
         # ── 到期日收益 ────────────────────────────────────────────────────
         if option_type == "call":
-            payoff = lambda S: np.maximum(S - self.K, 0.0)
-        else:
-            payoff = lambda S: np.maximum(self.K - S, 0.0)
 
-        cash_flows = payoff(S_paths[:, -1]).copy()   # 到期日現金流
+            def payoff(S):
+                return np.maximum(S - self.K, 0.0)
+        else:
+
+            def payoff(S):
+                return np.maximum(self.K - S, 0.0)
+
+        cash_flows = payoff(S_paths[:, -1]).copy()  # 到期日現金流
 
         # ── 向後歸納 ──────────────────────────────────────────────────────
         for step in range(n_steps - 1, 0, -1):
             S_now = S_paths[:, step]
             immediate = payoff(S_now)
-            itm = immediate > 0           # 只對價內路徑回歸
+            itm = immediate > 0  # 只對價內路徑回歸
 
             if itm.sum() < poly_degree + 1:
                 cash_flows *= discount
@@ -295,9 +305,7 @@ class AmericanOption:
 
             # 多項式基函數回歸（Laguerre-like）
             X = S_now[itm]
-            basis = np.column_stack(
-                [X ** k for k in range(poly_degree + 1)]
-            )
+            basis = np.column_stack([X**k for k in range(poly_degree + 1)])
             coef, *_ = np.linalg.lstsq(basis, future_pv, rcond=None)
             continuation = basis @ coef
 
@@ -311,7 +319,7 @@ class AmericanOption:
         cash_flows *= discount  # 折現到 t=0
 
         price = float(cash_flows.mean())
-        se    = float(cash_flows.std() / np.sqrt(n_paths))
+        se = float(cash_flows.std() / np.sqrt(n_paths))
         return price, se
 
     # ── (b) CRR 二項樹 ──────────────────────────────────────────────────────
@@ -337,7 +345,7 @@ class AmericanOption:
 
         # 到期日資產價格
         j = np.arange(n_steps + 1)
-        S_T = self.S * (u ** (n_steps - j)) * (d ** j)
+        S_T = self.S * (u ** (n_steps - j)) * (d**j)
 
         if option_type == "call":
             V = np.maximum(S_T - self.K, 0.0)
@@ -371,21 +379,19 @@ class AmericanOption:
           歐式價格（BS 解析）
           提前執行溢價 = 美式 - 歐式
         """
-        american_price, american_se = self.lsm(
-            option_type, n_paths, n_steps, seed=seed
-        )
+        american_price, american_se = self.lsm(option_type, n_paths, n_steps, seed=seed)
         bs = BlackScholes(self.S, self.K, self.T, self.r, self.sigma, self.q)
         european_price = bs.price(option_type).price
         premium = american_price - european_price
         binomial_price = self.binomial_tree(option_type)
 
         return {
-            "american_lsm":     american_price,
-            "american_se":      american_se,
+            "american_lsm": american_price,
+            "american_se": american_se,
             "american_binomial": binomial_price,
-            "european_bs":      european_price,
+            "european_bs": european_price,
             "early_exercise_premium": premium,
-            "option_type":      option_type,
+            "option_type": option_type,
         }
 
     def optimal_exercise_boundary(
@@ -404,17 +410,19 @@ class AmericanOption:
         t = np.linspace(0, self.T, n_steps + 1)
 
         Z = rng.standard_normal((n_paths, n_steps))
-        drift = (self.r - self.q - 0.5 * self.sigma ** 2) * dt
-        vol   = self.sigma * np.sqrt(dt)
+        drift = (self.r - self.q - 0.5 * self.sigma**2) * dt
+        vol = self.sigma * np.sqrt(dt)
         log_S = np.log(self.S) + np.cumsum(drift + vol * Z, axis=1)
-        S_paths = np.concatenate(
-            [np.full((n_paths, 1), self.S), np.exp(log_S)], axis=1
-        )
+        S_paths = np.concatenate([np.full((n_paths, 1), self.S), np.exp(log_S)], axis=1)
 
         if option_type == "call":
-            payoff = lambda S: np.maximum(S - self.K, 0.0)
+
+            def payoff(S):
+                return np.maximum(S - self.K, 0.0)
         else:
-            payoff = lambda S: np.maximum(self.K - S, 0.0)
+
+            def payoff(S):
+                return np.maximum(self.K - S, 0.0)
 
         cash_flows = payoff(S_paths[:, -1]).copy()
         boundary = [np.nan] * (n_steps + 1)
@@ -427,7 +435,7 @@ class AmericanOption:
 
             if itm.sum() > 5:
                 X = S_now[itm]
-                basis = np.column_stack([X ** k for k in range(4)])
+                basis = np.column_stack([X**k for k in range(4)])
                 future_pv = cash_flows[itm]
                 try:
                     coef, *_ = np.linalg.lstsq(basis, future_pv, rcond=None)
@@ -445,8 +453,6 @@ class AmericanOption:
                     pass
 
             exercise_idx = np.where(itm)[0]
-            cash_flows[exercise_idx] = np.maximum(
-                immediate[itm], cash_flows[exercise_idx]
-            )
+            cash_flows[exercise_idx] = np.maximum(immediate[itm], cash_flows[exercise_idx])
 
         return t, np.array(boundary)

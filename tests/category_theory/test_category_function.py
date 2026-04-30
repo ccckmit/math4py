@@ -1,7 +1,7 @@
 """Test category theory function module."""
 
 import math4py.category_theory.function as cat
-from math4py.category_theory.function import Object, Morphism, Category
+from math4py.category_theory.function import Category, Morphism, Object
 
 
 class TestObject:
@@ -62,7 +62,7 @@ class TestCategory:
         C = Category("C")
         id_A = Morphism(source="A", target="A", name="id_A")
         C.add_morphism(id_A)
-        assert C.is_valid() == True
+        assert C.is_valid()
 
 
 class TestFunctor:
@@ -72,11 +72,11 @@ class TestFunctor:
         target = Category("D")
         obj_map = {"A": "X", "B": "Y"}
         morph_map = {"f": "g"}
-        
+
         result = cat.functor_map("F", source, target, obj_map, morph_map)
         assert result["name"] == "F"
         assert result["object_mapping"] == obj_map
-        assert result["preserves_identity"] == True
+        assert result["preserves_identity"]
 
 
 class TestNaturalTransformation:
@@ -85,9 +85,9 @@ class TestNaturalTransformation:
         F = {"name": "F"}
         G = {"name": "G"}
         components = {"A": "η_A", "B": "η_B"}
-        
+
         result = cat.natural_transformation(F, G, components)
-        assert result["is_natural"] == True
+        assert result["is_natural"]
         assert result["components"] == components
 
 
@@ -96,10 +96,10 @@ class TestLimitProduct:
         """測試乘積極限。"""
         objects = ["A", "B", "C"]
         projections = {"P": ["π1", "π2", "π3"]}
-        
+
         result = cat.limit_product(objects, projections)
         assert result["product_object"] == "P"
-        assert result["universal"] == True
+        assert result["universal"]
 
 
 class TestColimitCoproduct:
@@ -107,10 +107,10 @@ class TestColimitCoproduct:
         """測試餘乘積餘極限。"""
         objects = ["A", "B"]
         injections = {"Q": ["i1", "i2"]}
-        
+
         result = cat.colimit_coproduct(objects, injections)
         assert result["coproduct_object"] == "Q"
-        assert result["universal"] == True
+        assert result["universal"]
 
 
 class TestAdjointFunctors:
@@ -120,9 +120,9 @@ class TestAdjointFunctors:
         G = {"name": "G"}
         unit = {"η": "unit"}
         counit = {"ε": "counit"}
-        
+
         result = cat.adjoint_functors(F, G, unit, counit)
-        assert result["is_adjoint"] == True
+        assert result["is_adjoint"]
         assert result["left_adjoint"] == "F"
 
 
@@ -132,7 +132,7 @@ class TestYonedaLemma:
         C = Category("C")
         F = {"value_at_A": "x"}
         result = cat.yoneda_lemma(C, F, "A")
-        assert result["isomorphism"] == True
+        assert result["isomorphism"]
 
 
 class TestInitialObject:
@@ -141,7 +141,7 @@ class TestInitialObject:
         objects = ["I", "A", "B"]
         morphisms = [
             Morphism(source="I", target="A", name="f"),
-            Morphism(source="I", target="B", name="g")
+            Morphism(source="I", target="B", name="g"),
         ]
         result = cat.initial_object(objects, morphisms)
         assert result == "I"
@@ -153,7 +153,7 @@ class TestTerminalObject:
         objects = ["A", "B", "T"]
         morphisms = [
             Morphism(source="A", target="T", name="f"),
-            Morphism(source="B", target="T", name="g")
+            Morphism(source="B", target="T", name="g"),
         ]
         result = cat.terminal_object(objects, morphisms)
         assert result == "T"

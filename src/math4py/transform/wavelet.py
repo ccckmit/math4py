@@ -1,6 +1,7 @@
 """小波轉換。"""
 
-from typing import Tuple, List
+from typing import List, Tuple
+
 import numpy as np
 
 
@@ -21,16 +22,18 @@ def haar_wavelet(t: np.ndarray) -> np.ndarray:
 
 def daubechies4_coefficients() -> np.ndarray:
     """Daubechies-4 (db4) 小波濾波器系數。"""
-    c = np.array([
-        0.4829629131445341,
-        0.8365163037378077,
-        0.2241438680418574,
-        -0.1294095225512603,
-        -0.8373651210868268,
-        0.4830025253896963,
-        0.2241438680418574,
-        -0.1294095225512603,
-    ])
+    c = np.array(
+        [
+            0.4829629131445341,
+            0.8365163037378077,
+            0.2241438680418574,
+            -0.1294095225512603,
+            -0.8373651210868268,
+            0.4830025253896963,
+            0.2241438680418574,
+            -0.1294095225512603,
+        ]
+    )
     return c[:4]  # 簡化取前4個
 
 
@@ -50,8 +53,8 @@ def dwt(signal: np.ndarray, wavelet: str = "haar") -> Tuple[np.ndarray, np.ndarr
     detail = np.zeros(half)
 
     for i in range(half):
-        approx[i] = (signal[2*i] + signal[2*i+1]) / np.sqrt(2)
-        detail[i] = (signal[2*i] - signal[2*i+1]) / np.sqrt(2)
+        approx[i] = (signal[2 * i] + signal[2 * i + 1]) / np.sqrt(2)
+        detail[i] = (signal[2 * i] - signal[2 * i + 1]) / np.sqrt(2)
 
     return approx, detail
 
@@ -61,8 +64,8 @@ def idwt(approx: np.ndarray, detail: np.ndarray, wavelet: str = "haar") -> np.nd
     n = len(approx) * 2
     signal = np.zeros(n)
     for i in range(len(approx)):
-        signal[2*i] = (approx[i] + detail[i]) / np.sqrt(2)
-        signal[2*i+1] = (approx[i] - detail[i]) / np.sqrt(2)
+        signal[2 * i] = (approx[i] + detail[i]) / np.sqrt(2)
+        signal[2 * i + 1] = (approx[i] - detail[i]) / np.sqrt(2)
     return signal
 
 
@@ -110,7 +113,9 @@ def wavelet_denoise(signal: np.ndarray, threshold: float, wavelet: str = "haar")
     return reconstructed
 
 
-def continuous_wavelet_transform(signal: np.ndarray, scales: np.ndarray, wavelet: callable) -> np.ndarray:
+def continuous_wavelet_transform(
+    signal: np.ndarray, scales: np.ndarray, wavelet: callable
+) -> np.ndarray:
     """連續小波轉換 (CWT)。
 
     Args:

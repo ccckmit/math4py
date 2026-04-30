@@ -1,7 +1,8 @@
 """Test plasma physics module theorems."""
 
-import math4py.physics.plasma_physics as pp
 import numpy as np
+
+import math4py.physics.plasma_physics as pp
 
 
 class TestDebyeLength:
@@ -28,5 +29,5 @@ class TestCyclotronFrequency:
 class TestAlfvenSpeed:
     def test_alfven_speed_positive(self):
         # 阿爾文速度應為正
-        v_A = pp.alfven_speed(1.0, 4*np.pi*1e-7, 1e15)  # B, mu0, rho
+        v_A = pp.alfven_speed(1.0, 4 * np.pi * 1e-7, 1e15)  # B, mu0, rho
         assert v_A > 0

@@ -1,7 +1,8 @@
 """Test measure theory function module."""
 
-import math4py.measure_theory.function as mt
 import numpy as np
+
+import math4py.measure_theory.function as mt
 
 
 class TestSigmaAlgebra:
@@ -9,13 +10,13 @@ class TestSigmaAlgebra:
         """檢查有效的 σ-代數。"""
         universal = frozenset({1, 2, 3})
         sets = {frozenset(), frozenset({1, 2, 3})}
-        assert mt.is_sigma_algebra(sets, universal) == True
+        assert mt.is_sigma_algebra(sets, universal)
 
     def test_missing_complement(self):
         """缺少補集則不是 σ-代數。"""
         universal = frozenset({1, 2, 3})
         sets = {frozenset(), frozenset({1})}
-        assert mt.is_sigma_algebra(sets, universal) == False
+        assert not mt.is_sigma_algebra(sets, universal)
 
 
 class TestMeasureAdditivity:
@@ -24,7 +25,7 @@ class TestMeasureAdditivity:
         A1 = frozenset({1})
         A2 = frozenset({2})
         measure = {A1: 1.0, A2: 2.0, frozenset({1, 2}): 3.0}
-        assert mt.measure_additivity([A1, A2], measure) == True
+        assert mt.measure_additivity([A1, A2], measure)
 
 
 class TestLebesgueMeasure:
@@ -42,20 +43,29 @@ class TestLebesgueMeasure:
 class TestLebesgueIntegrable:
     def test_continuous_function(self):
         """連續函數在閉區間上可積。"""
-        f = lambda x: x**2
-        assert mt.is_lebesgue_integrable(f, 0.0, 1.0) == True
+
+        def f(x):
+            return x**2
+
+        assert mt.is_lebesgue_integrable(f, 0.0, 1.0)
 
 
 class TestLebesgueIntegral:
     def test_constant_function(self):
         """常數函數的積分。"""
-        f = lambda x: 2.0
+
+        def f(x):
+            return 2.0
+
         result = mt.lebesgue_integral(f, 0.0, 1.0)
         assert abs(result - 2.0) < 0.01
 
     def test_linear_function(self):
         """f(x) = x 在 [0,1] 的積分應為 0.5。"""
-        f = lambda x: x
+
+        def f(x):
+            return x
+
         result = mt.lebesgue_integral(f, 0.0, 1.0)
         assert abs(result - 0.5) < 0.01
 
@@ -65,20 +75,26 @@ class TestSigmaFinite:
         """有限測度是 σ-有限的。"""
         measure = {frozenset({1}): 1.0, frozenset({2}): 1.0}
         universal = frozenset({1, 2})
-        assert mt.sigma_finite_measure(measure, universal) == True
+        assert mt.sigma_finite_measure(measure, universal)
 
 
 class TestLPNorm:
     def test_l2_norm(self):
         """L^2 範數計算。"""
-        f = lambda x: x
+
+        def f(x):
+            return x
+
         result = mt.l_p_norm(f, 0.0, 1.0, p=2.0)
-        expected = np.sqrt(1.0/3.0)
+        expected = np.sqrt(1.0 / 3.0)
         assert abs(result - expected) < 0.01
 
     def test_l1_norm(self):
         """L^1 範數。"""
-        f = lambda x: 1.0
+
+        def f(x):
+            return 1.0
+
         result = mt.l_p_norm(f, 0.0, 1.0, p=1.0)
         assert abs(result - 1.0) < 0.01
 
@@ -86,16 +102,26 @@ class TestLPNorm:
 class TestHolderInequality:
     def test_holder_p2_q2(self):
         """赫爾德不等式 p=q=2。"""
-        f = lambda x: x
-        g = lambda x: x**2
+
+        def f(x):
+            return x
+
+        def g(x):
+            return x**2
+
         result = mt.holder_inequality(f, g, p=2.0, q=2.0, a=0.0, b=1.0)
-        assert result["pass"] == True
+        assert result["pass"]
 
 
 class TestMinkowskiInequality:
     def test_minkowski_p2(self):
         """閔可夫斯基不等式 p=2。"""
-        f = lambda x: x
-        g = lambda x: x**2
+
+        def f(x):
+            return x
+
+        def g(x):
+            return x**2
+
         result = mt.minkowski_inequality(f, g, p=2.0, a=0.0, b=1.0)
-        assert result["pass"] == True
+        assert result["pass"]

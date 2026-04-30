@@ -1,16 +1,19 @@
 """Example 2: Brownian Motion - math4py.stochastic.calculus"""
 
-import numpy as np
 import matplotlib
+import numpy as np
+
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
 import os
+
+import matplotlib.gridspec as gridspec
+import matplotlib.pyplot as plt
+
 os.makedirs("./out", exist_ok=True)
 
-from math4py.stochastic.calculus import BrownianMotion, OrnsteinUhlenbeck, BrownianBridge
 # from math4py.stochastic.calculus.plot import StochPlot, _style, PALETTE, BG, TEXT, GRID
-from math4py.plot import StochPlot, _style, PALETTE, BG, TEXT, GRID
+from math4py.plot import BG, PALETTE, TEXT, StochPlot, _style
+from math4py.stochastic.calculus import BrownianBridge, BrownianMotion, OrnsteinUhlenbeck
 
 # ─── 1. 標準布朗運動 ────────────────────────────────────────────────────────
 
@@ -21,7 +24,7 @@ print("=" * 60)
 bm = BrownianMotion(mu=0.0, sigma=1.0, seed=2024)
 t, paths = bm.simulate(T=1.0, n_steps=10_000, n_paths=200)
 
-print(f"路徑數：{paths.shape[0]},  時間步：{paths.shape[1]-1}")
+print(f"路徑數：{paths.shape[0]},  時間步：{paths.shape[1] - 1}")
 print(f"終點均值（樣本）：{paths[:, -1].mean():.6f}  （理論：0）")
 print(f"終點標準差（樣本）：{paths[:, -1].std():.6f}  （理論：{1.0:.6f}）")
 
@@ -55,9 +58,9 @@ ou = OrnsteinUhlenbeck(mu=2.0, theta=1.5, sigma=0.5, X0=0.0, seed=42)
 t_ou, paths_ou = ou.simulate(T=10.0, n_steps=5000, n_paths=500)
 
 print(f"穩態均值（理論）：{ou.stationary_mean():.4f}")
-print(f"穩態均值（樣本，後半段）：{paths_ou[:, paths_ou.shape[1]//2:].mean():.4f}")
+print(f"穩態均值（樣本，後半段）：{paths_ou[:, paths_ou.shape[1] // 2 :].mean():.4f}")
 print(f"穩態方差（理論）：{ou.stationary_variance():.4f}")
-print(f"穩態方差（樣本，後半段）：{paths_ou[:, paths_ou.shape[1]//2:].var():.4f}")
+print(f"穩態方差（樣本，後半段）：{paths_ou[:, paths_ou.shape[1] // 2 :].var():.4f}")
 
 # ─── 4. 布朗橋 ──────────────────────────────────────────────────────────────
 
@@ -69,7 +72,7 @@ bb = BrownianBridge(a=0.0, b=0.0, seed=42)
 t_bb, paths_bb = bb.simulate(T=1.0, n_steps=5000, n_paths=200)
 print(f"B(0)：{paths_bb[:, 0].mean():.8f}  （應為 0）")
 print(f"B(1)：{paths_bb[:, -1].mean():.8f}  （應為 0）")
-print(f"B(0.5) 標準差：{paths_bb[:, paths_bb.shape[1]//2].std():.6f}  （理論：0.5）")
+print(f"B(0.5) 標準差：{paths_bb[:, paths_bb.shape[1] // 2].std():.6f}  （理論：0.5）")
 
 # ─── 5. 繪圖：綜合 4 種過程 ───────────────────────────────────────────────────
 
@@ -85,47 +88,52 @@ for i in range(min(30, paths.shape[0])):
 mean_p = paths.mean(axis=0)
 std_p = paths.std(axis=0)
 ax1.plot(t, mean_p, "w-", lw=1.8, label="樣本均值")
-ax1.fill_between(t, mean_p - 2*std_p, mean_p + 2*std_p,
-                 alpha=0.12, color="white", label="±2σ 帶")
-ax1.fill_between(t, np.sqrt(t), -np.sqrt(t),
-                 alpha=0.08, color="cyan", label="理論 ±√t")
+ax1.fill_between(
+    t, mean_p - 2 * std_p, mean_p + 2 * std_p, alpha=0.12, color="white", label="±2σ 帶"
+)
+ax1.fill_between(t, np.sqrt(t), -np.sqrt(t), alpha=0.08, color="cyan", label="理論 ±√t")
 ax1.set_title("標準布朗運動 W(t)", color=TEXT)
-ax1.set_xlabel("t"); ax1.set_ylabel("W(t)")
+ax1.set_xlabel("t")
+ax1.set_ylabel("W(t)")
 ax1.legend(fontsize=7, facecolor=BG, labelcolor=TEXT)
 _style(fig, ax1)
 
 # ── (B) Ornstein-Uhlenbeck ─────────────────────────────────────────────
 ax2 = fig.add_subplot(gs[0, 1])
 for i in range(min(20, paths_ou.shape[0])):
-    ax2.plot(t_ou, paths_ou[i], lw=0.7, alpha=0.5,
-             color=PALETTE[i % len(PALETTE)])
+    ax2.plot(t_ou, paths_ou[i], lw=0.7, alpha=0.5, color=PALETTE[i % len(PALETTE)])
 ax2.axhline(ou.mu, color="gold", lw=1.8, ls="--", label=f"均值 μ={ou.mu}")
 var_th = ou.stationary_variance()
-ax2.fill_between(t_ou,
-                 ou.mu - 2*np.sqrt(var_th),
-                 ou.mu + 2*np.sqrt(var_th),
-                 alpha=0.12, color="gold", label="±2σ（穩態）")
+ax2.fill_between(
+    t_ou,
+    ou.mu - 2 * np.sqrt(var_th),
+    ou.mu + 2 * np.sqrt(var_th),
+    alpha=0.12,
+    color="gold",
+    label="±2σ（穩態）",
+)
 ax2.set_title(f"O-U 過程 (θ={ou.theta}, μ={ou.mu}, σ={ou.sigma})", color=TEXT)
-ax2.set_xlabel("t"); ax2.set_ylabel("X(t)")
+ax2.set_xlabel("t")
+ax2.set_ylabel("X(t)")
 ax2.legend(fontsize=7, facecolor=BG, labelcolor=TEXT)
 _style(fig, ax2)
 
 # ── (C) 布朗橋 ──────────────────────────────────────────────────────────
 ax3 = fig.add_subplot(gs[1, 0])
 for i in range(min(30, paths_bb.shape[0])):
-    ax3.plot(t_bb, paths_bb[i], lw=0.8, alpha=0.5,
-             color=PALETTE[i % len(PALETTE)])
+    ax3.plot(t_bb, paths_bb[i], lw=0.8, alpha=0.5, color=PALETTE[i % len(PALETTE)])
 # 理論標準差：sqrt(t(1-t))
 std_bb_th = np.sqrt(t_bb * (1 - t_bb))
-ax3.fill_between(t_bb, -2*std_bb_th, 2*std_bb_th,
-                 alpha=0.15, color="white", label="±2√(t(1-t))")
+ax3.fill_between(
+    t_bb, -2 * std_bb_th, 2 * std_bb_th, alpha=0.15, color="white", label="±2√(t(1-t))"
+)
 ax3.set_title("布朗橋 B(0)=B(1)=0", color=TEXT)
-ax3.set_xlabel("t"); ax3.set_ylabel("B(t)")
+ax3.set_xlabel("t")
+ax3.set_ylabel("B(t)")
 ax3.legend(fontsize=7, facecolor=BG, labelcolor=TEXT)
 _style(fig, ax3)
 
 # ── (D) 二次變分 + 終點分布 ─────────────────────────────────────────────
-from scipy import stats as sp_stats
 
 ax4 = fig.add_subplot(gs[1, 1])
 # 多條路徑的二次變分
@@ -133,16 +141,15 @@ n_qv = 5
 bm_qv = BrownianMotion(seed=999)
 for i in range(n_qv):
     t_q, qv_path = bm_qv.quadratic_variation(T=1.0, n_steps=10_000)
-    ax4.plot(t_q, qv_path, lw=0.9, alpha=0.7,
-             color=PALETTE[i], label=f"[W]_t 路徑{i+1}")
+    ax4.plot(t_q, qv_path, lw=0.9, alpha=0.7, color=PALETTE[i], label=f"[W]_t 路徑{i + 1}")
 ax4.plot(t_q, t_q, "w--", lw=2, label="理論值 t")
 ax4.set_title("二次變分 [W]_t → t（驗證）", color=TEXT)
-ax4.set_xlabel("t"); ax4.set_ylabel("[W]_t")
+ax4.set_xlabel("t")
+ax4.set_ylabel("[W]_t")
 ax4.legend(fontsize=7, facecolor=BG, labelcolor=TEXT)
 _style(fig, ax4)
 
-plt.suptitle("布朗運動：標準 / O-U / 布朗橋 / 二次變分",
-             fontsize=14, color=TEXT, fontweight="bold")
+plt.suptitle("布朗運動：標準 / O-U / 布朗橋 / 二次變分", fontsize=14, color=TEXT, fontweight="bold")
 plt.tight_layout()
 fig.savefig("./out/brownian_motion.png", dpi=150, bbox_inches="tight", facecolor=BG)
 

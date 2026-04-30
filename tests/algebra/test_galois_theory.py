@@ -1,7 +1,5 @@
 r"""Galois theory theorem tests."""
 
-import pytest
-
 
 class TestGaloisSolvability:
     def test_quadratic_solvable(self):
@@ -50,7 +48,7 @@ class TestDiscriminant:
     def test_quadratic_discriminant(self):
         from math4py.algebra.galois_theory import discriminant_quadratic_theorem
 
-        a, b, c = 1, 0,-1
+        a, b, c = 1, 0, -1
         result = discriminant_quadratic_theorem(a, b, c)
         assert result["pass"]
         assert result["discriminant"] == 4
@@ -109,7 +107,7 @@ class TestFunctionAPI:
     def test_quadratic_formula(self):
         from math4py.algebra.galois_theory import quadratic_formula
 
-        r1, r2 = quadratic_formula(1, 0,-1)
+        r1, r2 = quadratic_formula(1, 0, -1)
         assert r1 == complex(1, 0) or r1 == complex(-1, 0)
 
     def test_solvable_by_radicals(self):

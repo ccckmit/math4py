@@ -1,7 +1,5 @@
 r"""First-order logic tests."""
 
-import pytest
-
 
 class TestFOLTerms:
     def test_variable_creation(self):
@@ -34,7 +32,7 @@ class TestFOLTerms:
 
 class TestAtom:
     def test_atom_creation(self):
-        from math4py.logic.first_order_logic import Predicate, Atom, Variable, Constant
+        from math4py.logic.first_order_logic import Atom, Constant, Predicate, Variable
 
         likes = Predicate("likes", 2)
         alice = Constant("alice")
@@ -43,7 +41,7 @@ class TestAtom:
         assert repr(atom) == "likes(alice, X)"
 
     def test_atom_equality(self):
-        from math4py.logic.first_order_logic import Predicate, Atom, Constant
+        from math4py.logic.first_order_logic import Atom, Constant, Predicate
 
         likes = Predicate("likes", 2)
         alice = Constant("alice")
@@ -55,7 +53,7 @@ class TestAtom:
 
 class TestLiteral:
     def test_literal_positive(self):
-        from math4py.logic.first_order_logic import Predicate, Atom, Literal, Constant
+        from math4py.logic.first_order_logic import Atom, Constant, Literal, Predicate
 
         likes = Predicate("likes", 2)
         alice = Constant("alice")
@@ -65,7 +63,7 @@ class TestLiteral:
         assert lit.positive is True
 
     def test_literal_negative(self):
-        from math4py.logic.first_order_logic import Predicate, Atom, Literal, Constant
+        from math4py.logic.first_order_logic import Atom, Constant, Literal, Predicate
 
         likes = Predicate("likes", 2)
         alice = Constant("alice")
@@ -77,7 +75,7 @@ class TestLiteral:
 
 class TestUnification:
     def test_unify_variable_constant(self):
-        from math4py.logic.first_order_logic import Variable, Constant, unify
+        from math4py.logic.first_order_logic import Constant, Variable, unify
 
         X = Variable("X")
         alice = Constant("alice")
@@ -94,18 +92,18 @@ class TestUnification:
         assert result == {}
 
     def test_unify_not_unifiable(self):
-        from math4py.logic.first_order_logic import Constant, Variable, Function, unify
+        from math4py.logic.first_order_logic import Constant, Variable, unify
 
         alice = Constant("alice")
         bob = Constant("bob")
-        X = Variable("X")
+        Variable("X")
         result = unify(alice, bob)
         assert result is None
 
 
 class TestSubstitution:
     def test_substitute_variable(self):
-        from math4py.logic.first_order_logic import Variable, Constant, substitute
+        from math4py.logic.first_order_logic import Constant, Variable, substitute
 
         X = Variable("X")
         bindings = {"X": Constant("alice")}
@@ -116,7 +114,12 @@ class TestSubstitution:
 class TestResolution:
     def test_resolution_same_literal(self):
         from math4py.logic.first_order_logic import (
-            Clause, Literal, Predicate, Atom, Constant, resolution
+            Atom,
+            Clause,
+            Constant,
+            Literal,
+            Predicate,
+            resolution,
         )
 
         likes = Predicate("likes", 2)
@@ -132,13 +135,11 @@ class TestResolution:
 
 class TestForwardChaining:
     def test_forward_chaining(self):
-        from math4py.logic.first_order_logic import (
-            Predicate, Atom, Constant, forward_chaining
-        )
+        from math4py.logic.first_order_logic import Constant, Predicate, forward_chaining
 
-        likes = Predicate("likes", 2)
-        alice = Constant("alice")
-        bob = Constant("bob")
+        Predicate("likes", 2)
+        Constant("alice")
+        Constant("bob")
         facts = set()
         rules = []
         result = forward_chaining(facts, rules)
@@ -147,7 +148,7 @@ class TestForwardChaining:
 
 class TestMakeAtom:
     def test_make_atom(self):
-        from math4py.logic.first_order_logic import make_atom, Variable, Constant
+        from math4py.logic.first_order_logic import Constant, Variable, make_atom
 
         atom = make_atom("likes", Constant("alice"), Variable("X"))
         assert atom.predicate.name == "likes"

@@ -3,8 +3,9 @@
 提供帶指標的張量類別，實作張量積、縮並、指標升降等運算。
 """
 
+from typing import List, Tuple
+
 import numpy as np
-from typing import List, Tuple, Dict, Optional
 
 
 class Tensor:
@@ -46,26 +47,26 @@ class Tensor:
     def __repr__(self):
         return f"Tensor(indices={self.indices}, shape={self.shape})"
 
-    def __add__(self, other: 'Tensor') -> 'Tensor':
+    def __add__(self, other: "Tensor") -> "Tensor":
         """張量加法（需相同指標類型）。"""
         if self.indices != other.indices:
             raise ValueError("Cannot add tensors with different index types")
         result_data = self.data + other.data
         return Tensor(result_data, self.indices.copy(), self.dim)
 
-    def __sub__(self, other: 'Tensor') -> 'Tensor':
+    def __sub__(self, other: "Tensor") -> "Tensor":
         """張量減法。"""
         if self.indices != other.indices:
             raise ValueError("Cannot subtract tensors with different index types")
         result_data = self.data - other.data
         return Tensor(result_data, self.indices.copy(), self.dim)
 
-    def __mul__(self, scalar: float) -> 'Tensor':
+    def __mul__(self, scalar: float) -> "Tensor":
         """張量數乘。"""
         result_data = self.data * scalar
         return Tensor(result_data, self.indices.copy(), self.dim)
 
-    def tensor_product(self, other: 'Tensor') -> 'Tensor':
+    def tensor_product(self, other: "Tensor") -> "Tensor":
         """張量積（Tensor Product）⊗。
 
         兩個張量的張量積，指標依序合併。
@@ -92,7 +93,7 @@ class Tensor:
 
         return Tensor(result_data, new_indices, self.dim)
 
-    def contract(self, index1: int, index2: int) -> 'Tensor':
+    def contract(self, index1: int, index2: int) -> "Tensor":
         """張量縮並（Contraction）。
 
         將一個上標（逆變）與一個下標（協變）縮並，
@@ -111,21 +112,21 @@ class Tensor:
         ndim = self.data.ndim
         # 使用 einsum 進行縮並
         # 構造輸入下標字母
-        letters = 'abcdefghijklmnopqrstuvwxyz'[:ndim]
+        letters = "abcdefghijklmnopqrstuvwxyz"[:ndim]
         input_str = list(letters)
         # 讓兩個縮並指標使用相同字母
         input_str[index2] = input_str[index1]
-        input_str = ''.join(input_str)
-        
+        input_str = "".join(input_str)
+
         # 輸出下標：排除被縮並的指標
         output_indices = [letters[i] for i in range(ndim) if i != index1 and i != index2]
-        output_str = ''.join(output_indices)
-        
+        output_str = "".join(output_indices)
+
         if output_str:
             einsum_expr = f"{input_str}->{output_str}"
         else:
             einsum_expr = f"{input_str}->"
-        
+
         result_data = np.einsum(einsum_expr, self.data)
 
         # 移除被縮並的指標
@@ -133,7 +134,7 @@ class Tensor:
 
         return Tensor(result_data, new_indices, self.dim)
 
-    def raise_index(self, index: int, metric: np.ndarray) -> 'Tensor':
+    def raise_index(self, index: int, metric: np.ndarray) -> "Tensor":
         """用度規張量昇指標（協變 → 逆變）。
 
         A^μ = g^{μν} A_ν
@@ -145,12 +146,12 @@ class Tensor:
         Returns:
             昇指標後的張量
         """
-        if self.indices[index] != 'd':
+        if self.indices[index] != "d":
             raise ValueError("Can only raise covariant (lower) indices")
 
         # 構造新指標列表
         new_indices = self.indices.copy()
-        new_indices[index] = 'u'
+        new_indices[index] = "u"
 
         # 對指定指標做矩陣乘法
         axes = list(range(len(self.indices)))
@@ -161,7 +162,7 @@ class Tensor:
 
         return Tensor(result_data, new_indices, self.dim)
 
-    def lower_index(self, index: int, metric: np.ndarray) -> 'Tensor':
+    def lower_index(self, index: int, metric: np.ndarray) -> "Tensor":
         """用度規張量降指標（逆變 → 協變）。
 
         A_μ = g_{μν} A^ν
@@ -173,12 +174,12 @@ class Tensor:
         Returns:
             降指標後的張量
         """
-        if self.indices[index] != 'u':
+        if self.indices[index] != "u":
             raise ValueError("Can only lower contravariant (upper) indices")
 
         # 構造新指標列表
         new_indices = self.indices.copy()
-        new_indices[index] = 'd'
+        new_indices[index] = "d"
 
         # 對指定指標做矩陣乘法
         result_data = np.tensordot(metric, self.data, axes=(1, index))
@@ -194,7 +195,7 @@ class Tensor:
         Returns:
             跡（純量）
         """
-        if self.rank != 2 or self.indices != ['u', 'd']:
+        if self.rank != 2 or self.indices != ["u", "d"]:
             raise ValueError("Trace only defined for (1,1) tensors")
 
         return float(np.trace(self.data))

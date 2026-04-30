@@ -1,8 +1,5 @@
 r"""Graph theory theorem tests."""
 
-import pytest
-import networkx as nx
-
 
 class TestGraphTheorems:
     def test_eulerian_path_theorem_valid(self):

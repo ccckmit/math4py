@@ -7,11 +7,11 @@
   - 規則：rule(名稱) :- condition(模式) -> action(結果).
 """
 
-import sys
 import os
+import sys
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-from math4py.logic import Fact, Rule, ReteEngine, create_fact
+from math4py.logic import Fact, ReteEngine, Rule, create_fact
 
 
 def parse_kb_file(filepath: str) -> Tuple[List[Fact], List[Rule]]:
@@ -177,7 +177,7 @@ def _parse_single_condition(cond_str: str) -> Optional[Dict]:
         if idx == -1:
             return None
 
-        func_name = cond_str[:idx].strip()
+        cond_str[:idx].strip()
         inner = cond_str[idx + 1 : -1].strip()
 
         kwargs = _parse_key_value_pairs(inner)
@@ -288,7 +288,9 @@ def print_results(engine: ReteEngine):
 
     # 查詢各種關係
     print("\n[查詢結果]")
-    relations = set(f.attributes.get("relation") for f in engine.facts if "relation" in f.attributes)
+    relations = set(
+        f.attributes.get("relation") for f in engine.facts if "relation" in f.attributes
+    )
 
     for rel in sorted(relations):
         matching = engine.query_facts({"relation": rel})

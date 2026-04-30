@@ -4,6 +4,7 @@
 """
 
 from typing import Callable
+
 import numpy as np
 
 
@@ -68,7 +69,7 @@ def midpoint_rule(f: Callable[[float], float], a: float, b: float, n: int = 100)
         ∫f(x)dx
     """
     h = (b - a) / n
-    x = np.linspace(a + h/2, b - h/2, n)
+    x = np.linspace(a + h / 2, b - h / 2, n)
     return h * np.sum(f(x))
 
 
@@ -97,16 +98,16 @@ def taylor_series(f: Callable[[float], float], x0: float, n: int = 5) -> Callabl
     Returns:
         逼近函數
     """
+
     def poly(x):
         result = f(x0)
-        fp = f
         for i in range(1, n + 1):
             try:
-                deriv = fp
-                result += (x - x0)**i / np.math.factorial(i)
+                result += (x - x0) ** i / np.math.factorial(i)
             except:
                 break
         return result
+
     return poly
 
 

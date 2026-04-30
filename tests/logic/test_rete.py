@@ -1,6 +1,6 @@
 """Tests for logic/rete_inference.py."""
 
-from math4py.logic import Fact, Rule, ReteEngine, create_fact
+from math4py.logic import ReteEngine, Rule, create_fact
 
 
 class TestFact:

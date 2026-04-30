@@ -1,8 +1,9 @@
 """Tests for Vector class."""
 
-import pytest
-import math4py.geometry as geom
 import numpy as np
+import pytest
+
+import math4py.geometry as geom
 
 
 class TestVectorCreation:
@@ -93,7 +94,7 @@ class TestVectorMetrics:
         v1 = geom.Vector(1, 0, 0)
         v2 = geom.Vector(0, 1, 0)
         angle = v1.angle_to(v2)
-        assert abs(angle - np.pi/2) < 1e-9
+        assert abs(angle - np.pi / 2) < 1e-9
 
 
 class TestVectorRelations:

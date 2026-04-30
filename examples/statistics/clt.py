@@ -1,12 +1,17 @@
 """Example: Central Limit Theorem - math4py.statistics"""
 
-import math4py.statistics as R
-import numpy as np
 import matplotlib
+import numpy as np
+
+import math4py.statistics as R
+
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt
 import os
+
+import matplotlib.pyplot as plt
+
 os.makedirs("./out", exist_ok=True)
+
 
 def sample_sum(distribution, n):
     """Draw n samples and return their sum."""
@@ -15,24 +20,29 @@ def sample_sum(distribution, n):
         total += distribution()
     return total
 
+
 def coin_flip():
     return np.random.choice([0, 1])
+
 
 def dice_roll():
     return np.random.choice([1, 2, 3, 4, 5, 6])
 
+
 def uniform():
     return np.random.uniform(0, 1)
 
+
 def normal():
     return np.random.normal(0, 1)
+
 
 def plot_clt(distribution, name, n_values, n_trials=10000, filename=None):
     """Plot CLT demonstration for given distribution."""
     fig, axes = plt.subplots(2, 2, figsize=(14, 10))
     fig.suptitle(f"Central Limit Theorem: {name}", fontsize=14, fontweight="bold")
 
-    colors = ['#2196F3', '#F44336', '#4CAF50', '#FF9800']
+    colors = ["#2196F3", "#F44336", "#4CAF50", "#FF9800"]
 
     for idx, n in enumerate(n_values):
         ax = axes[idx // 2, idx % 2]
@@ -41,14 +51,14 @@ def plot_clt(distribution, name, n_values, n_trials=10000, filename=None):
         sums = [sample_sum(distribution, n) for _ in range(n_trials)]
 
         # Plot histogram
-        ax.hist(sums, bins=50, density=True, alpha=0.7, color=colors[idx], edgecolor='white')
+        ax.hist(sums, bins=50, density=True, alpha=0.7, color=colors[idx], edgecolor="white")
 
         # Overlay normal distribution fit
         mean = np.mean(sums)
         std = np.std(sums)
         x = np.linspace(min(sums), max(sums), 200)
         y = R.dnorm(x, mean, std)
-        ax.plot(x, y, 'r-', lw=2, label=f'N({mean:.2f}, {std:.2f})')
+        ax.plot(x, y, "r-", lw=2, label=f"N({mean:.2f}, {std:.2f})")
 
         ax.set_title(f"n = {n} samples (trials = {n_trials})")
         ax.set_xlabel("Sum")
@@ -60,6 +70,7 @@ def plot_clt(distribution, name, n_values, n_trials=10000, filename=None):
         plt.savefig(filename, dpi=150, bbox_inches="tight")
         print(f"Saved to {filename}")
     return fig
+
 
 print("=" * 60)
 print("Central Limit Theorem Demonstration")

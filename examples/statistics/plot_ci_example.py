@@ -33,7 +33,7 @@ print("-" * 40)
 groups = [[22, 25, 28, 24], [30, 33, 28, 31], [18, 20, 22, 19]]
 labels = ["Group A", "Group B", "Group C"]
 means = [R.mean(g) for g in groups]
-ses = [R.sd(g)/len(g)**0.5 for g in groups]
+ses = [R.sd(g) / len(g) ** 0.5 for g in groups]
 print(f"Groups: {groups}")
 print(f"Means: {means}")
 print("\nTo show plot, uncomment:")

@@ -3,14 +3,16 @@
 驗證數值解法是否滿足理論性質。
 """
 
-import numpy as np
 from typing import Callable, Tuple
+
+import numpy as np
+
 from math4py.differential_equation.function import (
     euler_method,
-    rk4_method,
     heat_equation_explicit,
-    wave_equation_explicit,
     lyapunov_exponent,
+    rk4_method,
+    wave_equation_explicit,
 )
 
 
@@ -38,7 +40,9 @@ def euler_convergence_order(f: Callable, y0: np.ndarray, t_span: Tuple[float, fl
     return order
 
 
-def rk4_superior_to_euler(f: Callable, y0: np.ndarray, t_span: Tuple[float, float], dt: float = 0.01) -> bool:
+def rk4_superior_to_euler(
+    f: Callable, y0: np.ndarray, t_span: Tuple[float, float], dt: float = 0.01
+) -> bool:
     """驗證 RK4 比歐拉法更精確。
 
     Args:
@@ -90,8 +94,8 @@ def wave_equation_energy_conservation(c: float = 1.0) -> float:
     dx = x[1] - x[0]
     dt = t[1] - t[0]
     energies = []
-    for n in range(1, len(t)-1):
-        ut = (u[n+1] - u[n-1]) / (2*dt)
+    for n in range(1, len(t) - 1):
+        ut = (u[n + 1] - u[n - 1]) / (2 * dt)
         ux = (u[n, 1:] - u[n, :-1]) / dx
         E = np.sum(ut**2) + c**2 * np.sum(ux**2)
         energies.append(E)

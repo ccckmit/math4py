@@ -1,7 +1,6 @@
 """相對論（Special & General Relativity）計算。"""
 
 import numpy as np
-from typing import Tuple
 
 # 光速常數
 _C = 299792458  # m/s
@@ -18,7 +17,7 @@ def lorentz_factor(v: np.ndarray) -> float:
 def lorentz_transformation(beta: np.ndarray) -> np.ndarray:
     """勞侖茲變換矩陣 Λ。"""
     beta_x = beta[0] if len(beta) >= 1 else 0.0
-    gamma = 1.0 / np.sqrt(1.0 - beta_x ** 2)
+    gamma = 1.0 / np.sqrt(1.0 - beta_x**2)
     Lambda = np.eye(4)
     Lambda[0, 0] = gamma
     Lambda[0, 1] = -gamma * beta_x
@@ -46,12 +45,12 @@ def relativistic_momentum(m: float, v: np.ndarray) -> np.ndarray:
 def relativistic_energy(m: float, v: np.ndarray) -> float:
     """相對論能量 E = γ m c²。"""
     gamma = lorentz_factor(v)
-    return gamma * m * _C ** 2
+    return gamma * m * _C**2
 
 
 def mass_energy_equivalence(m: float) -> float:
     """質能方程 E = mc²。"""
-    return m * _C ** 2
+    return m * _C**2
 
 
 def spacetime_interval(x1, x2) -> float:
@@ -60,18 +59,18 @@ def spacetime_interval(x1, x2) -> float:
     dx = x2[1] - x1[1]
     dy = x2[2] - x1[2]
     dz = x2[3] - x1[3]
-    return -(_C * dt)**2 + dx**2 + dy**2 + dz**2
+    return -((_C * dt) ** 2) + dx**2 + dy**2 + dz**2
 
 
-def schwarzschild_metric(r: float, theta: float = np.pi/2) -> np.ndarray:
+def schwarzschild_metric(r: float, theta: float = np.pi / 2) -> np.ndarray:
     """史瓦西度規。"""
     M = 1.0  # 簡化質量
     Rs = 2 * 6.67430e-11 * M / _C**2  # 史瓦西半徑
     g = np.zeros((4, 4))
-    g[0, 0] = -(1 - Rs/r)
-    g[1, 1] = 1.0 / (1 - Rs/r)
+    g[0, 0] = -(1 - Rs / r)
+    g[1, 1] = 1.0 / (1 - Rs / r)
     g[2, 2] = r**2
-    g[3, 3] = r**2 * np.sin(theta)**2
+    g[3, 3] = r**2 * np.sin(theta) ** 2
     return g
 
 

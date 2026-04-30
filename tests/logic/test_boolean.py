@@ -1,7 +1,5 @@
 r"""Boolean logic tests."""
 
-import pytest
-
 
 class TestBooleanOperations:
     def test_boolean_and(self):
@@ -90,7 +88,10 @@ class TestTruthTable:
         from math4py.logic.boolean_logic import create_truth_table
 
         props = ["P", "Q"]
-        func = lambda P, Q: P and Q
+
+        def func(P, Q):
+            return P and Q
+
         table = create_truth_table(props, func)
         assert len(table) == 4
 
@@ -98,19 +99,28 @@ class TestTruthTable:
         from math4py.logic.boolean_logic import is_tautology
 
         props = ["P"]
-        func = lambda P: P or not P
+
+        def func(P):
+            return P or not P
+
         assert is_tautology(props, func) is True
 
     def test_contradiction(self):
         from math4py.logic.boolean_logic import is_contradiction
 
         props = ["P"]
-        func = lambda P: P and not P
+
+        def func(P):
+            return P and not P
+
         assert is_contradiction(props, func) is True
 
     def test_contingent(self):
         from math4py.logic.boolean_logic import is_contingent
 
         props = ["P", "Q"]
-        func = lambda P, Q: P and Q
+
+        def func(P, Q):
+            return P and Q
+
         assert is_contingent(props, func) is True

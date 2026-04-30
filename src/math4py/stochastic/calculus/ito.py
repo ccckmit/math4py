@@ -6,8 +6,9 @@ ito.py — 伊藤積分模組
   - ito_lemma_demo : 驗證伊藤引理 df = f'dW + ½f''dt
 """
 
+from typing import Callable, Optional, Tuple
+
 import numpy as np
-from typing import Callable, Tuple, Optional
 
 
 class ItoIntegral:
@@ -51,17 +52,13 @@ class ItoIntegral:
         t = np.linspace(0, T, n_steps + 1)
 
         dW = self.rng.normal(0.0, np.sqrt(dt), size=(n_paths, n_steps))
-        W = np.concatenate(
-            [np.zeros((n_paths, 1)), np.cumsum(dW, axis=1)], axis=1
-        )
+        W = np.concatenate([np.zeros((n_paths, 1)), np.cumsum(dW, axis=1)], axis=1)
 
         # 左端點：f(tᵢ, W(tᵢ)) * ΔWᵢ
-        f_vals = self.f(t[:-1], W[:, :-1])          # (n_paths, n_steps)
-        increments = f_vals * dW                      # 伊藤積分增量
+        f_vals = self.f(t[:-1], W[:, :-1])  # (n_paths, n_steps)
+        increments = f_vals * dW  # 伊藤積分增量
 
-        I = np.concatenate(
-            [np.zeros((n_paths, 1)), np.cumsum(increments, axis=1)], axis=1
-        )
+        I = np.concatenate([np.zeros((n_paths, 1)), np.cumsum(increments, axis=1)], axis=1)
         return t, W, I
 
     def expected_value(
@@ -82,6 +79,7 @@ class ItoIntegral:
 # ---------------------------------------------------------------------------
 # 經典範例：∫ W dW = ½W² - ½T  （伊藤引理驗證）
 # ---------------------------------------------------------------------------
+
 
 def ito_lemma_demo(
     T: float = 1.0,
@@ -111,25 +109,19 @@ def ito_lemma_demo(
     t = np.linspace(0, T, n_steps + 1)
 
     dW = rng.normal(0.0, np.sqrt(dt), size=(n_paths, n_steps))
-    W = np.concatenate(
-        [np.zeros((n_paths, 1)), np.cumsum(dW, axis=1)], axis=1
-    )
+    W = np.concatenate([np.zeros((n_paths, 1)), np.cumsum(dW, axis=1)], axis=1)
 
     # ── 伊藤積分（左端點）∫ W dW ─────────────────────────────────────────
     ito_inc = W[:, :-1] * dW
-    ito_integral = np.concatenate(
-        [np.zeros((n_paths, 1)), np.cumsum(ito_inc, axis=1)], axis=1
-    )
+    ito_integral = np.concatenate([np.zeros((n_paths, 1)), np.cumsum(ito_inc, axis=1)], axis=1)
 
     # ── 解析解：½W(t)² - ½t ─────────────────────────────────────────────
-    analytic = 0.5 * W ** 2 - 0.5 * t[np.newaxis, :]
+    analytic = 0.5 * W**2 - 0.5 * t[np.newaxis, :]
 
     # ── Stratonovich 積分（中點）對比 ─────────────────────────────────────
     W_mid = 0.5 * (W[:, :-1] + W[:, 1:])
     strat_inc = W_mid * dW
-    strat_integral = np.concatenate(
-        [np.zeros((n_paths, 1)), np.cumsum(strat_inc, axis=1)], axis=1
-    )
+    strat_integral = np.concatenate([np.zeros((n_paths, 1)), np.cumsum(strat_inc, axis=1)], axis=1)
 
     return {
         "t": t,
@@ -148,6 +140,7 @@ def ito_lemma_demo(
 # 二次變分驗證
 # ---------------------------------------------------------------------------
 
+
 def quadratic_variation_demo(
     T: float = 1.0,
     n_steps: int = 10_000,
@@ -163,6 +156,6 @@ def quadratic_variation_demo(
     dW = rng.normal(0.0, np.sqrt(dt), size=n_steps)
     W = np.concatenate([[0.0], np.cumsum(dW)])
 
-    qv = np.concatenate([[0.0], np.cumsum(dW ** 2)])        # 二次變分
-    fv = np.concatenate([[0.0], np.cumsum(np.abs(dW))])     # 一次變分（∞）
+    qv = np.concatenate([[0.0], np.cumsum(dW**2)])  # 二次變分
+    fv = np.concatenate([[0.0], np.cumsum(np.abs(dW))])  # 一次變分（∞）
     return {"t": t, "W": W, "quadratic_variation": qv, "first_variation": fv}

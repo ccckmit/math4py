@@ -15,30 +15,27 @@ class TestCategoryAxioms:
         C.add_morphism(id_B)
         C.add_morphism(f)
         C.composition_table = {("f", "id_B"): "f", ("id_A", "f"): "f"}
-        
+
         result = catt.category_axioms(C)
-        assert result["pass"] == True
-        assert result["has_identity"] == True
-        assert result["identity_law"] == True
+        assert result["pass"]
+        assert result["has_identity"]
+        assert result["identity_law"]
 
     def test_invalid_category(self):
         """檢查無恆等態射的範疇。"""
         C = Category("C")
         # 沒有恆等態射
         result = catt.category_axioms(C)
-        assert result["pass"] == False
+        assert not result["pass"]
 
 
 class TestFunctorLaws:
     def test_functor_preserves_structure(self):
         """檢查函子保持結構。"""
-        F = {
-            "preserves_identity": True,
-            "preserves_composition": True
-        }
+        F = {"preserves_identity": True, "preserves_composition": True}
         result = catt.functor_laws(F)
-        assert result["pass"] == True
-        assert result["preserves_identity"] == True
+        assert result["pass"]
+        assert result["preserves_identity"]
 
 
 class TestYonedaEmbedding:
@@ -46,9 +43,9 @@ class TestYonedaEmbedding:
         """檢查米田嵌入定理。"""
         C = Category("C")
         result = catt.yoneda_embedding_theorem(C)
-        assert result["pass"] == True
-        assert result["full"] == True
-        assert result["faithful"] == True
+        assert result["pass"]
+        assert result["full"]
+        assert result["faithful"]
 
 
 class TestAdjointFunctorTheorem:
@@ -57,8 +54,8 @@ class TestAdjointFunctorTheorem:
         unit = {"η": "unit"}
         counit = {"ε": "counit"}
         result = catt.adjoint_functor_theorem(unit, counit)
-        assert result["pass"] == True
-        assert result["triangle_identities"] == True
+        assert result["pass"]
+        assert result["triangle_identities"]
 
 
 class TestLimitUniqueness:
@@ -67,21 +64,21 @@ class TestLimitUniqueness:
         limit1 = {"object": "P1"}
         limit2 = {"object": "P2"}
         result = catt.limit_uniqueness(limit1, limit2)
-        assert result["pass"] == True
-        assert result["unique_up_to_isomorphism"] == True
+        assert result["pass"]
+        assert result["unique_up_to_isomorphism"]
 
 
 class TestInitialObjectUniqueness:
     def test_initial_unique(self):
         """檢查始物件的唯一性。"""
         result = catt.initial_object_uniqueness("I1", "I2")
-        assert result["pass"] == True
-        assert result["unique"] == True
+        assert result["pass"]
+        assert result["unique"]
 
 
 class TestTerminalObjectUniqueness:
     def test_terminal_unique(self):
         """檢查終物件的唯一性。"""
         result = catt.terminal_object_uniqueness("T1", "T2")
-        assert result["pass"] == True
-        assert result["unique"] == True
+        assert result["pass"]
+        assert result["unique"]

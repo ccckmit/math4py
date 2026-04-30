@@ -4,8 +4,8 @@
 """
 
 import math
+
 import numpy as np
-from .function import derivative, integral, simpson, trapezoidal
 
 
 def fundamental_theorem():
@@ -13,8 +13,12 @@ def fundamental_theorem():
 
     若 F'(x) = f(x)，則 ∫[a,b] f(x)dx = F(b) - F(a)
     """
-    F = lambda x: -math.cos(x)
-    f = lambda x: math.sin(x)
+
+    def F(x):
+        return -math.cos(x)
+
+    def f(x):
+        return math.sin(x)
 
     a, b = 0, math.pi
     exact = -math.cos(b) - (-math.cos(a))
@@ -27,7 +31,9 @@ def fundamental_theorem():
     x_arr2 = np.linspace(a, b, 101)
     y_arr2 = np.array([f(x) for x in x_arr2])
     h2 = (b - a) / 100
-    num_sim = h2 / 3 * (y_arr2[0] + y_arr2[-1] + 4 * np.sum(y_arr2[1:-1:2]) + 2 * np.sum(y_arr2[2:-2:2]))
+    num_sim = (
+        h2 / 3 * (y_arr2[0] + y_arr2[-1] + 4 * np.sum(y_arr2[1:-1:2]) + 2 * np.sum(y_arr2[2:-2:2]))
+    )
 
     error_int = abs(num_int - exact)
     error_sim = abs(num_sim - exact)
@@ -38,13 +44,16 @@ def fundamental_theorem():
         "simpson_approx": num_sim,
         "integral_error": error_int,
         "simpson_error": error_sim,
-        "pass": bool(error_int < 1e-3 and error_sim < 1e-3)
+        "pass": bool(error_int < 1e-3 and error_sim < 1e-3),
     }
 
 
 def mean_value_theorem():
     """均值定理驗證。"""
-    f = lambda x: x ** 2
+
+    def f(x):
+        return x**2
+
     a, b = 0, 2
 
     slope = (f(b) - f(a)) / (b - a)
@@ -60,13 +69,16 @@ def mean_value_theorem():
         "f_prime_at_c": deriv_at_c,
         "c": c,
         "error": error,
-        "pass": error < 1e-5
+        "pass": error < 1e-5,
     }
 
 
 def rolle_theorem():
     """Rolle 定理驗證。"""
-    f = lambda x: x ** 2 - x
+
+    def f(x):
+        return x**2 - x
+
     a, b = 0, 1
 
     if abs(f(a) - f(b)) > 1e-10:
@@ -76,18 +88,15 @@ def rolle_theorem():
     h = 1e-5
     deriv = (f(c + h) - f(c - h)) / (2 * h)
 
-    return {
-        "f_a": f(a),
-        "f_b": f(b),
-        "c": c,
-        "f_prime_at_c": deriv,
-        "pass": abs(deriv) < 1e-10
-    }
+    return {"f_a": f(a), "f_b": f(b), "c": c, "f_prime_at_c": deriv, "pass": abs(deriv) < 1e-10}
 
 
 def intermediate_value_theorem():
     """中介值定理驗證。"""
-    f = lambda x: x ** 2
+
+    def f(x):
+        return x**2
+
     a, b = 0, 2
     y = 2.0
 
@@ -96,12 +105,7 @@ def intermediate_value_theorem():
 
     c = math.sqrt(y)
 
-    return {
-        "y": y,
-        "c": c,
-        "f(c)": f(c),
-        "pass": abs(f(c) - y) < 1e-10
-    }
+    return {"y": y, "c": c, "f(c)": f(c), "pass": abs(f(c) - y) < 1e-10}
 
 
 def taylor_theorem():
@@ -109,16 +113,11 @@ def taylor_theorem():
     x_val = 0.5
     exact = math.exp(x_val)
 
-    approx = 1 + x_val + x_val**2/2 + x_val**3/6 + x_val**4/24 + x_val**5/120
+    approx = 1 + x_val + x_val**2 / 2 + x_val**3 / 6 + x_val**4 / 24 + x_val**5 / 120
 
     error = abs(approx - exact)
 
-    return {
-        "exact": exact,
-        "approx": approx,
-        "error": error,
-        "pass": bool(error < 0.01)
-    }
+    return {"exact": exact, "approx": approx, "error": error, "pass": bool(error < 0.01)}
 
 
 def leibniz_rule(limit=1000):
@@ -131,12 +130,7 @@ def leibniz_rule(limit=1000):
     exact = math.pi / 4
     error = abs(total - exact)
 
-    return {
-        "approximation": total,
-        "exact": exact,
-        "error": error,
-        "pass": error < 1e-3
-    }
+    return {"approximation": total, "exact": exact, "error": error, "pass": error < 1e-3}
 
 
 def wallis_product(limit=1000):
@@ -150,12 +144,7 @@ def wallis_product(limit=1000):
     exact = math.pi
     error = abs(result - exact)
 
-    return {
-        "approximation": result,
-        "exact": exact,
-        "error": error,
-        "pass": error < 0.1
-    }
+    return {"approximation": result, "exact": exact, "error": error, "pass": error < 0.1}
 
 
 __all__ = [

@@ -1,37 +1,36 @@
 r"""Graph theory tests using networkx."""
 
-import numpy as np
-import pytest
 import networkx as nx
+
 from math4py.graph_theory.function import (
-    create_graph,
-    create_weighted_graph,
     adjacency_matrix,
-    laplacian_matrix,
-    degree_sequence,
-    degree_distribution,
+    articulation_points,
     average_degree,
+    betweenness_centrality,
+    closeness_centrality,
     clustering_coefficient,
     connected_components,
-    number_of_connected_components,
-    is_connected,
-    is_bipartite,
-    shortest_path,
-    shortest_path_length,
-    dijkstra_shortest_path,
-    dijkstra_path_length,
-    pagerank,
-    betweenness_centrality,
+    create_graph,
+    create_weighted_graph,
     degree_centrality,
-    closeness_centrality,
+    degree_distribution,
+    degree_sequence,
+    density,
+    diameter,
+    dijkstra_path_length,
+    dijkstra_shortest_path,
+    is_biconnected,
+    is_bipartite,
+    is_connected,
+    laplacian_matrix,
     minimum_spanning_tree,
+    number_of_connected_components,
     number_of_edges,
     number_of_nodes,
-    density,
+    pagerank,
     radius,
-    diameter,
-    articulation_points,
-    is_biconnected,
+    shortest_path,
+    shortest_path_length,
 )
 
 

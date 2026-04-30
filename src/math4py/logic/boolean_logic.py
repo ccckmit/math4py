@@ -1,6 +1,6 @@
 r"""Boolean logic operations and functions."""
 
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple
+from typing import Callable, Dict, List
 
 
 class Boolean:
@@ -67,11 +67,11 @@ def boolean_implies(a: bool, b: bool) -> bool:
 
 def evaluate_expression(expression: str, variables: Dict[str, bool]) -> bool:
     r"""Evaluate a boolean expression.
-    
+
     Args:
         expression: Boolean expression string
         variables: Dictionary of variable values
-    
+
     Returns:
         Boolean result
     """
@@ -84,10 +84,10 @@ def evaluate_expression(expression: str, variables: Dict[str, bool]) -> bool:
 
 def simplify_expression(expr: str) -> str:
     r"""Simplify a boolean expression using algebraic laws.
-    
+
     Args:
         expr: Boolean expression
-    
+
     Returns:
         Simplified expression
     """
@@ -96,11 +96,11 @@ def simplify_expression(expr: str) -> str:
 
 def create_truth_table(propositions: List[str], func: Callable) -> List[Dict]:
     r"""Create truth table for propositions.
-    
+
     Args:
         propositions: List of proposition names
         func: Boolean function
-    
+
     Returns:
         List of truth assignments
     """
@@ -116,11 +116,11 @@ def create_truth_table(propositions: List[str], func: Callable) -> List[Dict]:
 
 def is_tautology(propositions: List[str], func: Callable) -> bool:
     r"""Check if function is always True.
-    
+
     Args:
         propositions: Proposition names
         func: Boolean function
-    
+
     Returns:
         True if tautology
     """
@@ -130,11 +130,11 @@ def is_tautology(propositions: List[str], func: Callable) -> bool:
 
 def is_contradiction(propositions: List[str], func: Callable) -> bool:
     r"""Check if function is always False.
-    
+
     Args:
         propositions: Proposition names
         func: Boolean function
-    
+
     Returns:
         True if contradiction
     """
@@ -144,11 +144,11 @@ def is_contradiction(propositions: List[str], func: Callable) -> bool:
 
 def is_contingent(propositions: List[str], func: Callable) -> bool:
     r"""Check if function is neither tautology nor contradiction.
-    
+
     Args:
         propositions: Proposition names
         func: Boolean function
-    
+
     Returns:
         True if contingent
     """
@@ -159,11 +159,11 @@ def is_contingent(propositions: List[str], func: Callable) -> bool:
 
 def boolean_to_minterm(variables: List[str], values: List[bool]) -> str:
     r"""Convert truth assignment to minterm (product form).
-    
+
     Args:
         variables: List of variables
         values: List of boolean values
-    
+
     Returns:
         Minterm string
     """
@@ -178,11 +178,11 @@ def boolean_to_minterm(variables: List[str], values: List[bool]) -> str:
 
 def boolean_to_maxterm(variables: List[str], values: List[bool]) -> str:
     r"""Convert truth assignment to maxterm (sum form).
-    
+
     Args:
         variables: List of variables
         values: List of boolean values
-    
+
     Returns:
         Maxterm string
     """
@@ -197,11 +197,11 @@ def boolean_to_maxterm(variables: List[str], values: List[bool]) -> str:
 
 def karnaugh_map(variables: List[str], values: List[bool]) -> Dict:
     r"""Generate Karnaugh map for simplification.
-    
+
     Args:
         variables: List of variables
         values: Truth table values
-    
+
     Returns:
         Karnaugh map structure
     """
@@ -210,10 +210,10 @@ def karnaugh_map(variables: List[str], values: List[bool]) -> Dict:
 
 def quine_mccluskey(truth_table: List[Dict]) -> str:
     r"""Quine-McCluskey method for boolean simplification.
-    
+
     Args:
         truth_table: Truth table with minterms
-    
+
     Returns:
         Simplified expression
     """

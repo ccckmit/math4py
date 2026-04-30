@@ -3,11 +3,14 @@ r"""Statistics theorems.
 Contains limit theorems (CLT, LLN), inequalities, and information theory.
 """
 
+from typing import Callable, List
+
 import numpy as np
-from typing import Callable, Dict, List
 
 
-def central_limit_theorem(sample_fn: Callable, true_mean: float, true_var: float, n: int, n_samples: int = 1000):
+def central_limit_theorem(
+    sample_fn: Callable, true_mean: float, true_var: float, n: int, n_samples: int = 1000
+):
     r"""Central Limit Theorem: sample means approach N(μ, σ²/n)."""
     sample_means = [np.mean(sample_fn(n)) for _ in range(n_samples)]
     expected_se = np.sqrt(true_var / n)
@@ -48,7 +51,7 @@ def law_of_large_numbers(sample_fn: Callable, true_mean: float, n: int):
 
 def chebyshev_inequality(var: float, k: float):
     r"""Chebyshev inequality: P(|X-μ| ≥ kσ) ≤ 1/k²."""
-    bound = 1.0 / (k ** 2)
+    bound = 1.0 / (k**2)
     return {
         "pass": True,
         "bound": bound,
@@ -66,7 +69,7 @@ def chebyshev_verify(samples: List[float], k: float):
         return {"pass": True, "note": "zero variance"}
 
     violations = np.sum(np.abs(samples - mean) >= k * std) / len(samples)
-    bound = 1.0 / (k ** 2)
+    bound = 1.0 / (k**2)
 
     return {
         "pass": violations <= bound,
@@ -111,20 +114,21 @@ def markov_verify(samples: List[float]):
 def bernoulli_trials(n: int, p: float, k: int):
     r"""Bernoulli/binomial: P(X=k) = C(n,k) p^k (1-p)^(n-k)."""
     from scipy.stats import binom
+
     pmf = binom.pmf(k, n, p)
     return {"pass": True, "n": n, "p": p, "k": k, "pmf": pmf}
 
 
 def bernoulli_verify(n: int, p: float, n_samples: int = 1000):
     r"""Verify binomial distribution experimentally."""
-    from scipy.stats import binom
     expected_mean = n * p
     expected_var = n * p * (1 - p)
     experiments = [np.sum(np.random.rand(n) < p) for _ in range(n_samples)]
     observed_mean = np.mean(experiments)
     observed_var = np.var(experiments)
     return {
-        "pass": abs(observed_mean - expected_mean) < 0.1 * n and abs(observed_var - expected_var) < 0.1 * n,
+        "pass": abs(observed_mean - expected_mean) < 0.1 * n
+        and abs(observed_var - expected_var) < 0.1 * n,
         "expected_mean": expected_mean,
         "observed_mean": observed_mean,
         "expected_var": expected_var,
@@ -135,6 +139,7 @@ def bernoulli_verify(n: int, p: float, n_samples: int = 1000):
 def multinomial_prob(counts: List[int], probs: List[float]):
     r"""Multinomial distribution."""
     from scipy.stats import multinomial
+
     pmf = multinomial.pmf(counts, sum(counts), probs)
     return {"pass": True, "pmf": pmf}
 
@@ -142,6 +147,7 @@ def multinomial_prob(counts: List[int], probs: List[float]):
 def normal_approx_binom(n: int, p: float, k: int):
     r"""Normal approximation to binomial."""
     from scipy.stats import norm
+
     mu = n * p
     sigma = np.sqrt(n * p * (1 - p))
     pdf = norm.pdf(k, mu, sigma)
@@ -151,6 +157,7 @@ def normal_approx_binom(n: int, p: float, k: int):
 def poisson_approx_binom(n: int, p: float, k: int):
     r"""Poisson approximation to binomial."""
     from scipy.stats import poisson
+
     lam = n * p
     pmf = poisson.pmf(k, lam)
     return {"pass": True, "pmf": pmf}
@@ -225,14 +232,21 @@ def mutual_information(x: List[float], y: List[float]):
 
 
 __all__ = [
-    "central_limit_theorem", "law_of_large_numbers",
-    "chebyshev_inequality", "chebyshev_verify",
-    "markov_inequality", "markov_verify",
-    "bernoulli_trials", "bernoulli_verify",
+    "central_limit_theorem",
+    "law_of_large_numbers",
+    "chebyshev_inequality",
+    "chebyshev_verify",
+    "markov_inequality",
+    "markov_verify",
+    "bernoulli_trials",
+    "bernoulli_verify",
     "multinomial_prob",
-    "normal_approx_binom", "poisson_approx_binom",
-    "bayes_theorem", "bayes_verify",
+    "normal_approx_binom",
+    "poisson_approx_binom",
+    "bayes_theorem",
+    "bayes_verify",
     "crlb_lower_bound",
-    "information_entropy", "information_entropy_verify",
+    "information_entropy",
+    "information_entropy_verify",
     "mutual_information",
 ]

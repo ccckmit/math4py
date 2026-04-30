@@ -1,7 +1,6 @@
 """Test condensed matter module theorems."""
 
 import math4py.physics.condensed_matter as cm
-import numpy as np
 
 
 class TestBandGapToWavelength:

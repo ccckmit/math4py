@@ -4,8 +4,8 @@
 """
 
 import math
+
 from .point import Point
-from .vector import Vector
 
 
 def distance(p1: Point, p2: Point) -> float:
@@ -37,7 +37,7 @@ def midpoint(p1: Point, p2: Point) -> Point:
     return Point(
         (p1.x + p2.x) / 2,
         (p1.y + p2.y) / 2,
-        (p1.z + p2.z) / 2 if hasattr(p1, "z") and hasattr(p2, "z") else 0
+        (p1.z + p2.z) / 2 if hasattr(p1, "z") and hasattr(p2, "z") else 0,
     )
 
 
@@ -116,7 +116,7 @@ def volume_sphere(radius: float) -> float:
     Returns:
         體積
     """
-    return (4/3) * math.pi * radius**3
+    return (4 / 3) * math.pi * radius**3
 
 
 def surface_area_sphere(radius: float) -> float:
@@ -154,7 +154,7 @@ def volume_cone(radius: float, height: float) -> float:
     Returns:
         體積
     """
-    return (1/3) * math.pi * radius**2 * height
+    return (1 / 3) * math.pi * radius**2 * height
 
 
 __all__ = [

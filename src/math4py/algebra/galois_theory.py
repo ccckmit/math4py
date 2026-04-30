@@ -1,7 +1,8 @@
 r"""Galois theory functions and theorems."""
 
-import numpy as np
 from typing import List, Optional, Tuple
+
+import numpy as np
 
 
 def polynomial_degree(coeffs: List) -> int:
@@ -63,18 +64,21 @@ def galois_group_solvable(coeffs: List) -> bool:
 def symetric_group_order(n: int) -> int:
     r"""Order of symmetric group S_n."""
     from math import factorial
+
     return factorial(n)
 
 
 def alternating_group_order(n: int) -> int:
     r"""Order of alternating group A_n."""
     from math import factorial
+
     return factorial(n) // 2
 
 
 def cyclic_group_mod(n: int, m: int) -> int:
     r"""Check cyclic group Z_n."""
     from math import gcd
+
     return gcd(n, m)
 
 
@@ -137,7 +141,6 @@ def discriminant_quadratic_theorem(a: float, b: float, c: float):
 
 def cyclic_group_theorem(mod_n: int, m: int):
     r"""Cyclic group has element of order m if m | n."""
-    from math import gcd
     divides = (mod_n % m) == 0
     return {"pass": divides, "mod_n": mod_n, "m": m, "divides": divides}
 
@@ -145,6 +148,7 @@ def cyclic_group_theorem(mod_n: int, m: int):
 def symmetric_group_order_theorem(n: int):
     r"""Order of S_n is n!."""
     from math import factorial
+
     order = factorial(n)
     return {"pass": True, "order": order}
 
@@ -152,25 +156,26 @@ def symmetric_group_order_theorem(n: int):
 def alternating_group_order_theorem(n: int):
     r"""Order of A_n is n!/2."""
     from math import factorial
+
     order = factorial(n) // 2
     return {"pass": True, "order": order}
 
 
 def squaring_circle_impossible():
     r"""Squaring the circle is impossible.
-    
+
     To square a circle with radius 1, we need to construct sqrt(π).
     But π is transcendental (by Lindemann-Weierstrass theorem),
     so sqrt(π) is also transcendental and not constructible.
-    
+
     Returns:
         Dict with impossibility proof
     """
     import mpmath
+
     pi = mpmath.pi
-    is_transcendental = True
-    sqrt_pi = mpmath.sqrt(pi)
-    
+    mpmath.sqrt(pi)
+
     return {
         "pass": True,
         "problem": "squaring_the_circle",
@@ -182,11 +187,11 @@ def squaring_circle_impossible():
 
 def doubling_cube_impossible():
     r"""Doubling the cube is impossible.
-    
+
     To double a unit cube, we need to construct ∛2.
     ∛2 is algebraic of degree 3, but not constructible
     because cube root requires solving irreducible cubic.
-    
+
     Returns:
         Dict with impossibility proof
     """
@@ -194,7 +199,7 @@ def doubling_cube_impossible():
     degree = 3
     roots = np.roots(coeffs)
     real_root = roots[0]
-    
+
     return {
         "pass": True,
         "problem": "doubling_the_cube",
@@ -207,20 +212,20 @@ def doubling_cube_impossible():
 
 def trisecting_angle_impossible():
     r"""Trisecting arbitrary angle is impossible.
-    
+
     Trisecting 60° requires solving cubic equation:
     4cos³(θ) - 3cos(θ) - cos(3θ) = 0
-    
+
     For θ=60°, we get 8x³ - 6x - 1 = 0, which is irreducible.
     The root cannot be constructed with straightedge and compass.
-    
+
     Returns:
         Dict with impossibility proof
     """
     coeffs = [8, 0, -6, -1]
     degree = 3
-    roots = np.roots(coeffs)
-    
+    np.roots(coeffs)
+
     return {
         "pass": True,
         "problem": "trisecting_angle",
@@ -233,7 +238,7 @@ def trisecting_angle_impossible():
 
 def classical_impossibility_theorems():
     r"""Summary of three classical impossible problems.
-    
+
     Returns:
         Dict with all three impossibilities
     """

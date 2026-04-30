@@ -1,6 +1,5 @@
 r"""Statistics theorem tests."""
 
-import pytest
 import numpy as np
 
 
@@ -20,7 +19,9 @@ class TestCentralLimitTheorem:
         def sample_fn(n):
             return np.random.uniform(0, 10, n)
 
-        result = central_limit_theorem(sample_fn, true_mean=5.0, true_var=100/12, n=100, n_samples=500)
+        result = central_limit_theorem(
+            sample_fn, true_mean=5.0, true_var=100 / 12, n=100, n_samples=500
+        )
         assert result["pass"]
 
     def test_clt_exponential(self):

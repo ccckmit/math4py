@@ -1,7 +1,8 @@
 """Test statistical mechanics module theorems."""
 
-import math4py.physics.statistical_mechanics as sm
 import numpy as np
+
+import math4py.physics.statistical_mechanics as sm
 
 
 class TestBoltzmannDistribution:

@@ -3,7 +3,7 @@
 支援事實、規則、查詢，語法接近 Prolog。
 """
 
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Set
 
 
 class Variable:
@@ -187,7 +187,9 @@ class PrologEngine:
                 rest_results = self._prove(rest, new_bindings)
                 results.extend(rest_results)
             else:
-                new_goals = [unify(g, clause.head, new_bindings.copy()) or g for g in clause.body] + rest
+                new_goals = [
+                    unify(g, clause.head, new_bindings.copy()) or g for g in clause.body
+                ] + rest
                 new_goals = [g for g in new_goals if g is not None]
                 combined_results = self._prove(new_goals, new_bindings)
                 results.extend(combined_results)

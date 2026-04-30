@@ -1,7 +1,6 @@
 """控制理論（Control Theory）基礎函數。"""
 
 import numpy as np
-from typing import Callable, Tuple, List
 
 
 def transfer_function(num: list, den: list, dt: float = None):
@@ -21,7 +20,7 @@ def controllability_matrix(A: np.ndarray, B: np.ndarray) -> np.ndarray:
     m = B.shape[1]
     Qc = np.zeros((n, n * m))
     for i in range(n):
-        Qc[:, i*m:(i+1)*m] = np.linalg.matrix_power(A, i) @ B
+        Qc[:, i * m : (i + 1) * m] = np.linalg.matrix_power(A, i) @ B
     return Qc
 
 

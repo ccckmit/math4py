@@ -14,10 +14,10 @@ print("-" * 40)
 data = [101, 102, 100, 99, 101, 103, 100, 101]
 result = R.t_test(data, mu=100)
 print(f"Data: {data}")
-print(f"H0: mu = 100")
+print("H0: mu = 100")
 print(f"Result: {result}")
 print(f"Interpretation: p-value = {result['p_value']:.4f}")
-if result['p_value'] < 0.05:
+if result["p_value"] < 0.05:
     print("  => Reject H0 at alpha=0.05")
 else:
     print("  => Fail to reject H0 at alpha=0.05")

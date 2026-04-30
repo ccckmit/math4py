@@ -5,20 +5,21 @@
 """
 
 import os
-import numpy as np
+
 import matplotlib.pyplot as plt
-from typing import Optional, Union, List, Tuple, Dict, Any
+import numpy as np
 
 # 預設輸出目錄
 # 從 rplot.py: plot/ -> math4py/ -> src/ -> (專案根目錄 math4py/) -> out
-_OUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), "out")
+_OUT_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), "out"
+)
 
 # 調色板
-_PALETTE = ["#2196F3", "#F44336", "#4CAF50", "#FF9800", "#9C27B0",
-           "#00BCD4", "#FF5722", "#607D8B"]
+_PALETTE = ["#2196F3", "#F44336", "#4CAF50", "#FF9800", "#9C27B0", "#00BCD4", "#FF5722", "#607D8B"]
 
 # 全域設備設定（仿 R 的 device 概念）
-_device = None      # None = 螢幕, "pdf", "png"
+_device = None  # None = 螢幕, "pdf", "png"
 _device_params = {}  # 存放設備參數
 _active_fig = None  # 追蹤目前圖形
 
@@ -86,23 +87,16 @@ def _save_current_figure():
         # 螢幕模式，不需要在這裡儲存
         return
     os.makedirs(_OUT_DIR, exist_ok=True)
-    
+
     filepath = _device_params.get("filename")
     if not os.path.dirname(filepath):
         filepath = os.path.join(_OUT_DIR, filepath)
-    
+
     if _device == "pdf":
-        _active_fig.savefig(
-            filepath,
-            format="pdf",
-            bbox_inches="tight"
-        )
+        _active_fig.savefig(filepath, format="pdf", bbox_inches="tight")
     elif _device == "png":
         _active_fig.savefig(
-            filepath,
-            format="png",
-            dpi=_device_params.get("dpi", 150),
-            bbox_inches="tight"
+            filepath, format="png", dpi=_device_params.get("dpi", 150), bbox_inches="tight"
         )
     plt.close(_active_fig)
     _active_fig = None
@@ -111,11 +105,11 @@ def _save_current_figure():
 def _new_figure():
     """建立新圖形，處理設備切換。"""
     global _active_fig
-    
+
     # 如果有開啟的圖形且正在寫入檔案，先儲存
     if _active_fig is not None and _device is not None:
         _save_current_figure()
-    
+
     if _device is None:
         # 螢幕輸出
         return plt.subplots()
@@ -126,9 +120,22 @@ def _new_figure():
         return fig, fig.add_subplot(111)
 
 
-def plot(x, y=None, type="p", main="", xlab="", ylab="",
-         col="blue", pch="o", lty=1, lwd=1,
-         xlim=None, ylim=None, axes=True, **kwargs):
+def plot(
+    x,
+    y=None,
+    type="p",
+    main="",
+    xlab="",
+    ylab="",
+    col="blue",
+    pch="o",
+    lty=1,
+    lwd=1,
+    xlim=None,
+    ylim=None,
+    axes=True,
+    **kwargs,
+):
     """泛型繪圖函數（仿 R plot()）。
 
     Args:
@@ -194,14 +201,13 @@ def plot(x, y=None, type="p", main="", xlab="", ylab="",
         ax.axis("off")
 
     plt.tight_layout()
-    
+
     if _device is None:
         plt.show()
     # 若正在寫入檔案，等待 dev_off() 時才儲存
 
 
-def hist(x, breaks=10, main="", xlab="", col="skyblue",
-         border="black", freq=True, **kwargs):
+def hist(x, breaks=10, main="", xlab="", col="skyblue", border="black", freq=True, **kwargs):
     """直方圖（仿 R hist()）。
 
     Args:
@@ -217,10 +223,9 @@ def hist(x, breaks=10, main="", xlab="", col="skyblue",
     fig, ax = _new_figure()
     global _active_fig
     _active_fig = fig
-    
+
     x = np.asarray(x)
-    ax.hist(x, bins=breaks, color=col, edgecolor=border,
-            density=not freq, **kwargs)
+    ax.hist(x, bins=breaks, color=col, edgecolor=border, density=not freq, **kwargs)
 
     if main:
         ax.set_title(main, fontsize=14)
@@ -229,7 +234,7 @@ def hist(x, breaks=10, main="", xlab="", col="skyblue",
     ax.set_ylabel("Frequency" if freq else "Density")
 
     plt.tight_layout()
-    
+
     if _device is None:
         plt.show()
 
@@ -249,7 +254,7 @@ def boxplot(*data, names=None, main="", xlab="", ylab="", col="skyblue", **kwarg
     fig, ax = _new_figure()
     global _active_fig
     _active_fig = fig
-    
+
     data = [np.asarray(d) for d in data]
     bp = ax.boxplot(data, tick_labels=names, patch_artist=True, **kwargs)
     for box in bp["boxes"]:
@@ -263,13 +268,14 @@ def boxplot(*data, names=None, main="", xlab="", ylab="", col="skyblue", **kwarg
         ax.set_ylabel(ylab)
 
     plt.tight_layout()
-    
+
     if _device is None:
         plt.show()
 
 
-def qqnorm(x, main="Q-Q Plot", xlab="Theoretical Quantiles",
-          ylab="Sample Quantiles", col="blue", **kwargs):
+def qqnorm(
+    x, main="Q-Q Plot", xlab="Theoretical Quantiles", ylab="Sample Quantiles", col="blue", **kwargs
+):
     """Q-Q 圖（仿 R qqnorm()），用於檢驗常態性。
 
     Args:
@@ -281,16 +287,16 @@ def qqnorm(x, main="Q-Q Plot", xlab="Theoretical Quantiles",
         **kwargs: 其他傳給 matplotlib 的參數
     """
     from math4py.statistics.distributions import qnorm
-    
+
     fig, ax = _new_figure()
     global _active_fig
     _active_fig = fig
-    
+
     x = np.asarray(x)
     x_sorted = np.sort(x)
     n = len(x_sorted)
 
-    p = (np.arange(1, n+1) - 0.5) / n
+    p = (np.arange(1, n + 1) - 0.5) / n
     theoretical = qnorm(p, mean=0, sd=1)
     sample = (x_sorted - x_sorted.mean()) / x_sorted.std()
 
@@ -307,6 +313,7 @@ def qqnorm(x, main="Q-Q Plot", xlab="Theoretical Quantiles",
         ax.set_ylabel(ylab)
 
     plt.tight_layout()
-    
+
+
 if _device is None:
-        plt.show()
+    plt.show()

@@ -3,8 +3,9 @@
 描述統計、假設檢定輔助函數。
 """
 
+from typing import Callable, List, Tuple
+
 import numpy as np
-from typing import List, Tuple, Callable
 
 
 def mean(x: List[float]) -> float:
@@ -127,7 +128,9 @@ def standardize(x: List[float]) -> List[float]:
     return [(xi - mu) / sigma for xi in x]
 
 
-def bootstrap_ci(x: List[float], statistic_fn: Callable, n_bootstrap: int = 1000, alpha: float = 0.05) -> Tuple[float, float]:
+def bootstrap_ci(
+    x: List[float], statistic_fn: Callable, n_bootstrap: int = 1000, alpha: float = 0.05
+) -> Tuple[float, float]:
     """Bootstrap 信賴區間。
 
     Args:
@@ -139,7 +142,9 @@ def bootstrap_ci(x: List[float], statistic_fn: Callable, n_bootstrap: int = 1000
     Returns:
         (下界, 上界)
     """
-    stats = [statistic_fn(np.random.choice(x, size=len(x), replace=True)) for _ in range(n_bootstrap)]
+    stats = [
+        statistic_fn(np.random.choice(x, size=len(x), replace=True)) for _ in range(n_bootstrap)
+    ]
     lower = np.quantile(stats, alpha / 2)
     upper = np.quantile(stats, 1 - alpha / 2)
     return lower, upper
@@ -155,7 +160,7 @@ def log_likelihood(y: List[float], y_pred: List[float]) -> float:
     Returns:
         log-likelihood
     """
-    return -np.sum((np.array(y) - np.array(y_pred))**2) / 2
+    return -np.sum((np.array(y) - np.array(y_pred)) ** 2) / 2
 
 
 def aic(n: int, log_lik: float, k: int) -> float:
@@ -170,8 +175,8 @@ def median(x) -> float:
     s = sorted(x)
     n = len(s)
     if n % 2 == 0:
-        return (s[n//2 - 1] + s[n//2]) / 2
-    return s[n//2]
+        return (s[n // 2 - 1] + s[n // 2]) / 2
+    return s[n // 2]
 
 
 def summary(x) -> dict:
@@ -184,7 +189,7 @@ def summary(x) -> dict:
         "Max": max(x),
         "SD": std(x),
         "Variance": variance(x),
-        "N": len(x)
+        "N": len(x),
     }
 
 
@@ -193,7 +198,20 @@ def range_stat(x) -> float:
 
 
 __all__ = [
-    "mean", "median", "variance", "std", "covariance", "correlation",
-    "quantile", "iqr", "z_score", "standardize", "bootstrap_ci",
-    "log_likelihood", "aic", "bic", "summary", "range_stat",
+    "mean",
+    "median",
+    "variance",
+    "std",
+    "covariance",
+    "correlation",
+    "quantile",
+    "iqr",
+    "z_score",
+    "standardize",
+    "bootstrap_ci",
+    "log_likelihood",
+    "aic",
+    "bic",
+    "summary",
+    "range_stat",
 ]

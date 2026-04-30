@@ -1,7 +1,6 @@
 """Test particle physics module theorems."""
 
 import math4py.physics.particle_physics as pp
-import numpy as np
 
 
 class TestLorentzInvariantMass:

@@ -1,18 +1,30 @@
 """Pytest tests for math4py statistics module"""
 
-import pytest
 import math
 
 from math4py.statistics.distributions import (
-    dnorm, pnorm, qnorm, rnorm,
-    dt, pt, qt, rt,
-    dchisq, pchisq, qchisq, rchisq,
-    dbinom, pbinom, qbinom, rbinom,
-    dpois, ppois, qpois, rpois,
-    df as f_distr, pf as f_pf
+    dbinom,
+    dchisq,
+    dnorm,
+    dpois,
+    dt,
+    pbinom,
+    pchisq,
+    pnorm,
+    ppois,
+    pt,
+    qchisq,
+    qnorm,
+    qt,
+    rnorm,
 )
-from math4py.statistics.function import mean, median, variance as var, std, std as sd, covariance as cov, correlation as cor, quantile, summary
-from math4py.statistics.tests import t_test, z_test, chisq_test, anova, conf_interval
+from math4py.statistics.distributions import df as f_distr
+from math4py.statistics.distributions import pf as f_pf
+from math4py.statistics.function import mean, median, quantile, summary
+from math4py.statistics.function import std as sd
+from math4py.statistics.function import variance as var
+from math4py.statistics.tests import anova, chisq_test, conf_interval, t_test, z_test
+
 
 class TestNormalDistribution:
     def test_dnorm(self):
@@ -29,6 +41,7 @@ class TestNormalDistribution:
         assert len(samples) == 100
         assert abs(mean(samples)) < 0.3
 
+
 class TestTDistribution:
     def test_dt(self):
         assert dt(0, 10) > 0
@@ -38,6 +51,7 @@ class TestTDistribution:
 
     def test_qt(self):
         assert abs(qt(0.975, 10) - 2.228) < 0.01
+
 
 class TestChiSquare:
     def test_dchisq(self):
@@ -49,6 +63,7 @@ class TestChiSquare:
     def test_qchisq(self):
         assert qchisq(0.95, 1) > 0
 
+
 class TestFDistribution:
     def test_df(self):
         assert f_distr(1, 3, 10) > 0
@@ -59,6 +74,7 @@ class TestFDistribution:
     def test_qf(self):
         assert f_pf(0.5, 3, 10) > 0
 
+
 class TestBinomial:
     def test_dbinom(self):
         assert dbinom(5, 10, 0.5) > 0
@@ -66,12 +82,14 @@ class TestBinomial:
     def test_pbinom(self):
         assert abs(pbinom(5, 10, 0.5) - 0.623) < 0.01
 
+
 class TestPoisson:
     def test_dpois(self):
         assert dpois(3, 3) > 0
 
     def test_ppois(self):
         assert ppois(2, 3) > 0
+
 
 class TestDescriptiveStats:
     def test_mean(self):
@@ -99,6 +117,7 @@ class TestDescriptiveStats:
         assert "Median" in s
         assert "SD" in s
 
+
 class TestTTest:
     def test_t_test_one_sample(self):
         data = [101, 102, 100, 99, 101, 103, 100, 101]
@@ -120,12 +139,14 @@ class TestTTest:
         result = t_test(before, after, paired=True)
         assert "statistic" in result
 
+
 class TestZTest:
     def test_z_test(self):
         data = [101, 102, 100, 99, 101, 103, 100, 101]
         result = z_test(data, sigma=2, mu=100)
         assert "statistic" in result
         assert "p_value" in result
+
 
 class TestChiSquareTest:
     def test_chisq_test(self):
@@ -134,6 +155,7 @@ class TestChiSquareTest:
         assert "statistic" in result
         assert "df" in result
         assert "p_value" in result
+
 
 class TestAnova:
     def test_anova(self):
@@ -145,6 +167,7 @@ class TestAnova:
         assert "p_value" in result
         assert "df1" in result
         assert "df2" in result
+
 
 class TestConfInterval:
     def test_conf_interval(self):

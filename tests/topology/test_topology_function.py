@@ -1,26 +1,19 @@
 """Test topology function module theorems."""
 
 import math4py.topology.function as top
-import numpy as np
 
 
 class TestOpenSet:
     def test_trivial_open(self):
         """空集合與全集是開集。"""
-        topology = {
-            "open_sets": {frozenset(), frozenset({1, 2, 3})},
-            "universal": {1, 2, 3}
-        }
-        assert top.is_open_set(set(), topology) == True
-        assert top.is_open_set({1, 2, 3}, topology) == True
+        topology = {"open_sets": {frozenset(), frozenset({1, 2, 3})}, "universal": {1, 2, 3}}
+        assert top.is_open_set(set(), topology)
+        assert top.is_open_set({1, 2, 3}, topology)
 
     def test_non_open(self):
         """{1} 不在開集族中。"""
-        topology = {
-            "open_sets": {frozenset(), frozenset({1, 2, 3})},
-            "universal": {1, 2, 3}
-        }
-        assert top.is_open_set({1}, topology) == False
+        topology = {"open_sets": {frozenset(), frozenset({1, 2, 3})}, "universal": {1, 2, 3}}
+        assert not top.is_open_set({1}, topology)
 
 
 class TestClosedSet:
@@ -28,29 +21,26 @@ class TestClosedSet:
         """開集的補集是閉集。"""
         topology = {
             "open_sets": {frozenset(), frozenset({1, 2}), frozenset({1, 2, 3})},
-            "universal": {1, 2, 3}
+            "universal": {1, 2, 3},
         }
         # {3} 的補集是 {1, 2}，是開集，所以 {3} 是閉集
-        assert top.is_closed_set({3}, topology) == True
+        assert top.is_closed_set({3}, topology)
 
 
 class TestConnected:
     def test_connected_space(self):
         """只有空集合與全集的空間是連通的。"""
-        topology = {
-            "open_sets": {frozenset(), frozenset({1, 2, 3})},
-            "universal": {1, 2, 3}
-        }
-        assert top.is_connected(topology) == True
+        topology = {"open_sets": {frozenset(), frozenset({1, 2, 3})}, "universal": {1, 2, 3}}
+        assert top.is_connected(topology)
 
     def test_disconnected_space(self):
         """有非平凡既開又閉的集合則不連通。"""
         topology = {
             "open_sets": {frozenset(), frozenset({1}), frozenset({2, 3}), frozenset({1, 2, 3})},
-            "universal": {1, 2, 3}
+            "universal": {1, 2, 3},
         }
         # {1} 既開又閉
-        assert top.is_connected(topology) == False
+        assert not top.is_connected(topology)
 
 
 class TestEulerCharacteristic:
@@ -70,18 +60,21 @@ class TestCompact:
         """有限覆蓋的空間是緊緻的（簡化）。"""
         topology = {
             "open_sets": {frozenset(), frozenset({1}), frozenset({2}), frozenset({1, 2})},
-            "universal": {1, 2}
+            "universal": {1, 2},
         }
         covering = [frozenset({1}), frozenset({2})]
-        assert top.is_compact(topology, covering) == True
+        assert top.is_compact(topology, covering)
 
 
 class TestHausdorff:
     def test_distinct_points(self):
         """不同點距離 > 0 滿足豪斯多夫。"""
         points = [0.0, 1.0, 2.0]
-        dist_fn = lambda x, y: abs(x - y)
-        assert top.is_hausdorff(points, dist_fn) == True
+
+        def dist_fn(x, y):
+            return abs(x - y)
+
+        assert top.is_hausdorff(points, dist_fn)
 
 
 class TestClosure:
@@ -115,29 +108,29 @@ class TestBoundary:
 class TestHomeomorphism:
     def test_identity_map(self):
         """恆等映射是同胚。"""
-        f = lambda x: x
-        f_inv = lambda x: x
+
+        def f(x):
+            return x
+
+        def f_inv(x):
+            return x
+
         domain = [1, 2, 3]
         codomain = [1, 2, 3]
-        assert top.homeomorphism_check(f, f_inv, domain, codomain) == True
+        assert top.homeomorphism_check(f, f_inv, domain, codomain)
 
 
 class TestFundamentalGroup:
     def test_simply_connected(self):
         """單連通空間的基本群平凡。"""
         loops = [True, True, True]  # 所有迴路可收縮
-        assert top.fundamental_group_trivial(loops) == True
+        assert top.fundamental_group_trivial(loops)
 
 
 class TestTopologicalSort:
     def test_dag_sort(self):
         """有向無環圖的拓撲排序。"""
-        graph = {
-            0: [1, 2],
-            1: [3],
-            2: [3],
-            3: []
-        }
+        graph = {0: [1, 2], 1: [3], 2: [3], 3: []}
         result = top.topological_sort(graph)
         # 檢查順序是否合法
         pos = {node: i for i, node in enumerate(result)}

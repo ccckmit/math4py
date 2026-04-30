@@ -1,8 +1,6 @@
 """天體物理（Astrophysics）基礎函數。"""
 
 import numpy as np
-from typing import Tuple
-
 
 # 物理常數
 GRAVITATIONAL_CONSTANT = 6.67430e-11  # m³ kg⁻¹ s⁻²
@@ -21,7 +19,7 @@ def schwarzschild_radius(M: float) -> float:
 def orbital_velocity(M: float, r: float) -> float:
     """軌道速度 v = sqrt(GM/r)。"""
     if r == 0:
-        return float('inf')
+        return float("inf")
     return np.sqrt(GRAVITATIONAL_CONSTANT * M / r)
 
 
@@ -30,10 +28,9 @@ def escape_velocity(M: float, r: float) -> float:
     return np.sqrt(2.0 * GRAVITATIONAL_CONSTANT * M / r)
 
 
-def hubble_law(v: float = None, d: float = None, 
-                 H0: float = 70.0) -> dict:
+def hubble_law(v: float = None, d: float = None, H0: float = 70.0) -> dict:
     """哈勃定律 v = H0 * d。
-    
+
     H0: 哈勃常數 (km/s/Mpc)，預設 70
     """
     if v is None and d is not None:
@@ -55,13 +52,12 @@ def cosmological_redshift(d: float, H0: float = 70.0) -> float:
     return H0 * d / c
 
 
-def kepler_third_law(P: float = None, a: float = None, 
-                     M: float = None) -> dict:
+def kepler_third_law(P: float = None, a: float = None, M: float = None) -> dict:
     """克卜勒第三定律 P² = 4π² a³/(GM)。"""
     if P is None and all([a, M]):
         return {"P": np.sqrt(4.0 * np.pi**2 * a**3 / (GRAVITATIONAL_CONSTANT * M))}
     elif a is None and all([P, M]):
-        return {"a": (GRAVITATIONAL_CONSTANT * M * P**2 / (4.0 * np.pi**2))**(1.0/3.0)}
+        return {"a": (GRAVITATIONAL_CONSTANT * M * P**2 / (4.0 * np.pi**2)) ** (1.0 / 3.0)}
     elif M is None and all([P, a]):
         return {"M": 4.0 * np.pi**2 * a**3 / (GRAVITATIONAL_CONSTANT * P**2)}
     return {}
@@ -74,13 +70,15 @@ def tov_near_parsec(d_pc: float, M: float = SOLAR_MASS) -> float:
 
 def main_sequence_lifetime(M: float) -> float:
     """主序星壽命 t ∝ M^-2.5（年）。"""
-    return 1e10 * (M / SOLAR_MASS)**(-2.5)  # 年
+    return 1e10 * (M / SOLAR_MASS) ** (-2.5)  # 年
 
 
 def jeans_mass(T: float, rho: float, mu: float = 1.67e-27) -> float:
     """金斯質量 M_J = (π/6) (π kT / Gμρ)^(3/2) ρ^(-1/2)。"""
     k = 1.380649e-23
-    return (np.pi / 6.0) * (np.pi * k * T / (GRAVITATIONAL_CONSTANT * mu * rho))**1.5 / np.sqrt(rho)
+    return (
+        (np.pi / 6.0) * (np.pi * k * T / (GRAVITATIONAL_CONSTANT * mu * rho)) ** 1.5 / np.sqrt(rho)
+    )
 
 
 __all__ = [

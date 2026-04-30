@@ -1,119 +1,119 @@
 """physics - 物理學模組（相對論、電磁學、量子力學、控制理論、熱力學等）。"""
 
-from .relativity import (
-    lorentz_factor,
-    lorentz_transformation,
-    time_dilation,
-    length_contraction,
-    relativistic_momentum,
-    relativistic_energy,
-    mass_energy_equivalence,
-    spacetime_interval,
-)
-from .electromagnetism import (
-    coulomb_law,
-    electric_field_point_charge,
-    magnetic_field_wire,
-    biot_savart_law,
-    ampere_law_line,
-    faraday_law,
-    maxwell_equations_check,
-    poynting_vector,
-)
-from .quantum import (
-    planck_constant,
-    de_broglie_wavelength,
-    energy_photon,
-    wave_function_free_particle,
-    probability_density,
-    heisenberg_uncertainty_check,
-    tunneling_probability,
-    particle_in_box_wave_function,
-    energy_levels_particle_in_box,
-    spin_state_representation,
-    pauli_matrices,
-)
-from .control import (
-    transfer_function,
-    routh_hurwitz,
-    controllability_matrix,
-)
-from .thermodynamics import (
-    ideal_gas_law,
-    first_law,
-    carnot_efficiency,
-    entropy_change,
-    stefan_boltzmann_law,
-    gibbs_free_energy,
-    helmholtz_free_energy,
-)
-from .statistical_mechanics import (
-    boltzmann_distribution,
-    partition_function,
-    average_energy,
-    entropy_statistical,
-    fermi_dirac_distribution,
-    bose_einstein_distribution,
-    maxwell_boltzmann_speed,
-)
-from .optics import (
-    snells_law,
-    critical_angle,
-    magnification,
-)
-from .fluid_dynamics import (
-    continuity_equation,
-    bernoulli_equation,
-    reynolds_number,
-    drag_force,
-    hydrostatic_pressure,
-    mach_number,
-)
 from .acoustics import (
-    sound_speed,
+    decibel_level,
     doppler_shift,
     sound_intensity,
-    decibel_level,
+    sound_speed,
 )
-from .nuclear_physics import (
-    mass_defect,
-    binding_energy,
-    radioactive_decay,
-    decay_constant,
-    half_life,
-    nuclear_radius,
-    q_value,
-)
-from .particle_physics import (
-    lorentz_invariant_mass,
-    decay_width_to_lifetime,
-    branching_ratio,
-    center_of_mass_energy,
-    particle_composition,
+from .astrophysics import (
+    cosmological_redshift,
+    escape_velocity,
+    hubble_law,
+    kepler_third_law,
+    orbital_velocity,
+    schwarzschild_radius,
+    stefan_boltzmann_luminosity,
 )
 from .condensed_matter import (
     band_gap_to_wavelength,
-    fermi_energy,
     density_of_states_3d,
     drude_conductivity,
+    fermi_energy,
     hall_resistance,
 )
-from .astrophysics import (
-    schwarzschild_radius,
-    orbital_velocity,
-    escape_velocity,
-    hubble_law,
-    stefan_boltzmann_luminosity,
-    cosmological_redshift,
-    kepler_third_law,
+from .control import (
+    controllability_matrix,
+    routh_hurwitz,
+    transfer_function,
+)
+from .electromagnetism import (
+    ampere_law_line,
+    biot_savart_law,
+    coulomb_law,
+    electric_field_point_charge,
+    faraday_law,
+    magnetic_field_wire,
+    maxwell_equations_check,
+    poynting_vector,
+)
+from .fluid_dynamics import (
+    bernoulli_equation,
+    continuity_equation,
+    drag_force,
+    hydrostatic_pressure,
+    mach_number,
+    reynolds_number,
+)
+from .nuclear_physics import (
+    binding_energy,
+    decay_constant,
+    half_life,
+    mass_defect,
+    nuclear_radius,
+    q_value,
+    radioactive_decay,
+)
+from .optics import (
+    critical_angle,
+    magnification,
+    snells_law,
+)
+from .particle_physics import (
+    branching_ratio,
+    center_of_mass_energy,
+    decay_width_to_lifetime,
+    lorentz_invariant_mass,
+    particle_composition,
 )
 from .plasma_physics import (
-    debye_length,
-    plasma_frequency,
-    cyclotron_frequency,
-    larmor_radius,
     alfven_speed,
+    cyclotron_frequency,
+    debye_length,
+    larmor_radius,
+    plasma_frequency,
     sound_speed_ionacoustic,
+)
+from .quantum import (
+    de_broglie_wavelength,
+    energy_levels_particle_in_box,
+    energy_photon,
+    heisenberg_uncertainty_check,
+    particle_in_box_wave_function,
+    pauli_matrices,
+    planck_constant,
+    probability_density,
+    spin_state_representation,
+    tunneling_probability,
+    wave_function_free_particle,
+)
+from .relativity import (
+    length_contraction,
+    lorentz_factor,
+    lorentz_transformation,
+    mass_energy_equivalence,
+    relativistic_energy,
+    relativistic_momentum,
+    spacetime_interval,
+    time_dilation,
+)
+from .statistical_mechanics import (
+    average_energy,
+    boltzmann_distribution,
+    bose_einstein_distribution,
+    entropy_statistical,
+    fermi_dirac_distribution,
+    maxwell_boltzmann_speed,
+    partition_function,
+)
+from .thermodynamics import (
+    carnot_efficiency,
+    entropy_change,
+    first_law,
+    gibbs_free_energy,
+    helmholtz_free_energy,
+    ideal_gas_law,
+    stefan_boltzmann_law,
 )
 
 __all__ = [

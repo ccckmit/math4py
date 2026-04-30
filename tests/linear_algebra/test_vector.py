@@ -1,6 +1,5 @@
 """Test linear algebra vector module."""
 
-import pytest
 import math4py.linear_algebra.vector as lv
 
 

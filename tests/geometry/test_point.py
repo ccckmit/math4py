@@ -1,6 +1,5 @@
 """Tests for Point class."""
 
-import pytest
 import math4py.geometry as geom
 
 

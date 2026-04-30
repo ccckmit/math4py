@@ -139,6 +139,7 @@ def query(clauses: List[Tuple], goal_str: str) -> List[Dict]:
 
 _var_counter = 0
 
+
 def fresh_var():
     """產生一個新的唯一變數名稱。"""
     global _var_counter
@@ -150,7 +151,7 @@ def rename_vars(term, var_map=None):
     """為 term 中的變數產生新的名稱。"""
     if var_map is None:
         var_map = {}
-    
+
     if isinstance(term, tuple):
         if term[0] == "var":
             if term[1] not in var_map:
@@ -181,7 +182,7 @@ def solve(clauses: List[Tuple], goals: List[Tuple], env: Dict) -> List[Dict]:
             var_map = {}
             head = rename_vars(clause[1], var_map)
             body = [rename_vars(b, var_map) for b in clause[2]]
-            
+
             new_env = unify(first, head, dict(env))
             if new_env is not None:
                 new_goals = body + rest

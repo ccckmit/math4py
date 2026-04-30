@@ -7,14 +7,14 @@ from .rete_inference import (
     create_fact,
 )
 from .zfc import (
-    Set,
     EMPTY_SET,
-    extensionality_axiom,
-    pair_set_axiom,
-    union_axiom,
-    power_set_axiom,
+    Set,
     choice_axiom,
     construct_natural_numbers,
+    extensionality_axiom,
+    pair_set_axiom,
+    power_set_axiom,
+    union_axiom,
     verify_zfc_axioms,
 )
 

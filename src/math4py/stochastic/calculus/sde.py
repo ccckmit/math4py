@@ -9,9 +9,9 @@ sde.py — 隨機微分方程數值求解器
 SDE 形式：  dX = a(t,X) dt + b(t,X) dW
 """
 
-import numpy as np
-from typing import Callable, Tuple, Optional
+from typing import Callable, Optional, Tuple
 
+import numpy as np
 
 Drift = Callable[[float, np.ndarray], np.ndarray]
 Diffusion = Callable[[float, np.ndarray], np.ndarray]
@@ -67,13 +67,9 @@ class SDESolver:
         paths[:, 0, :] = self.X0
 
         for i in range(n_steps):
-            X = paths[:, i, :]           # (n_paths, dim)
+            X = paths[:, i, :]  # (n_paths, dim)
             dW = self.rng.normal(0.0, sqrt_dt, size=(n_paths, dim))
-            paths[:, i + 1, :] = (
-                X
-                + self.a(t[i], X) * dt
-                + self.b(t[i], X) * dW
-            )
+            paths[:, i + 1, :] = X + self.a(t[i], X) * dt + self.b(t[i], X) * dW
 
         if dim == 1:
             return t, paths[:, :, 0]
@@ -114,13 +110,8 @@ class SDESolver:
             else:
                 bp = (self.b(t[i], X + eps) - b_val) / eps  # 有限差分
 
-            milstein_term = 0.5 * b_val * bp * (dW ** 2 - dt)
-            paths[:, i + 1, :] = (
-                X
-                + self.a(t[i], X) * dt
-                + b_val * dW
-                + milstein_term
-            )
+            milstein_term = 0.5 * b_val * bp * (dW**2 - dt)
+            paths[:, i + 1, :] = X + self.a(t[i], X) * dt + b_val * dW + milstein_term
 
         if dim == 1:
             return t, paths[:, :, 0]
@@ -151,9 +142,7 @@ class SDESolver:
         dim = len(self.X0)
 
         # 生成精細 dW
-        dW_fine = self.rng.normal(
-            0.0, sqrt_dt_ref, size=(n_paths, reference_steps, dim)
-        )
+        dW_fine = self.rng.normal(0.0, sqrt_dt_ref, size=(n_paths, reference_steps, dim))
 
         errors = []
         for n in steps_list:
@@ -170,13 +159,17 @@ class SDESolver:
                 if method == "milstein":
                     eps = 1e-6
                     bp = (self.b(t_c[i], X + eps) - b_i) / eps
-                    X = X + a_i * dt_c + b_i * dW_i + 0.5 * b_i * bp * (dW_i ** 2 - dt_c)
+                    X = X + a_i * dt_c + b_i * dW_i + 0.5 * b_i * bp * (dW_i**2 - dt_c)
                 else:
                     X = X + a_i * dt_c + b_i * dW_i
             # 參考解
             X_ref = np.tile(self.X0, (n_paths, 1)).astype(float)
             for i in range(reference_steps):
-                X_ref = X_ref + self.a(t_ref[i], X_ref) * dt_ref + self.b(t_ref[i], X_ref) * dW_fine[:, i, :]
+                X_ref = (
+                    X_ref
+                    + self.a(t_ref[i], X_ref) * dt_ref
+                    + self.b(t_ref[i], X_ref) * dW_fine[:, i, :]
+                )
             err = float(np.mean(np.abs(X[:, 0] - X_ref[:, 0])))
             errors.append(err)
 
@@ -184,5 +177,4 @@ class SDESolver:
         dts = T / steps_arr
         # 用 log-log 擬合估計收斂階
         slope = float(np.polyfit(np.log(dts), np.log(errors), 1)[0])
-        return {"steps": steps_list, "dts": dts.tolist(),
-                "errors": errors, "slope": slope}
+        return {"steps": steps_list, "dts": dts.tolist(), "errors": errors, "slope": slope}

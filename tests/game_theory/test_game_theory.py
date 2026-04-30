@@ -1,6 +1,5 @@
 r"""Game theory theorem tests."""
 
-import pytest
 import numpy as np
 
 

@@ -1,19 +1,17 @@
 """測度論測試。"""
 
-import pytest
-import math
 from math4py.calculus.measure import (
-    is_measure,
-    lebesgue_measure_1d,
-    lebesgue_measure_2d,
-    is_lebesgue_measurable,
-    outer_measure_1d,
     counting_measure,
     dirac_measure,
-    sigma_algebra_generated,
-    measure_space_check,
-    lebesgue_integral_simple,
     is_integrable_indicator,
+    is_lebesgue_measurable,
+    is_measure,
+    lebesgue_integral_simple,
+    lebesgue_measure_1d,
+    lebesgue_measure_2d,
+    measure_space_check,
+    outer_measure_1d,
+    sigma_algebra_generated,
 )
 
 
@@ -88,7 +86,7 @@ class TestDiracMeasure:
 class TestSigmaAlgebra:
     def test_generated_simple(self):
         """生成簡單的 σ-代數。"""
-        sets = [{'a'}, {'b'}]
+        sets = [{"a"}, {"b"}]
         sigma = sigma_algebra_generated(sets)
         assert len(sigma) > 0
         assert set() in sigma or any(len(s) == 0 for s in sigma)
@@ -104,7 +102,10 @@ class TestIsMeasure:
 
     def test_dirac_is_measure(self):
         """狄拉克測度是合法的測度。"""
-        mu = lambda A: dirac_measure(0, A)
+
+        def mu(A):
+            return dirac_measure(0, A)
+
         sets = [{0}, {1}, {0, 1}]
         is_valid, reason = is_measure(mu, sets)
         assert is_valid, reason
@@ -133,10 +134,16 @@ class TestLebesgueIntegral:
 class TestIntegrableIndicator:
     def test_finite_measure(self):
         """測度有限的集合指示函數可積。"""
-        mu = lambda A: lebesgue_measure_1d((0.0, 1.0))  # 測度=1
+
+        def mu(A):
+            return lebesgue_measure_1d((0.0, 1.0))  # 測度=1
+
         assert is_integrable_indicator({0.5}, mu)
 
     def test_infinite_measure(self):
         """測度無限的集合指示函數不可積（簡化）。"""
-        mu = lambda A: float('inf')
+
+        def mu(A):
+            return float("inf")
+
         assert not is_integrable_indicator({0.5}, mu)

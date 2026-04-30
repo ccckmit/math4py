@@ -1,7 +1,6 @@
 """Test astrophysics module theorems."""
 
 import math4py.physics.astrophysics as ap
-import numpy as np
 
 
 class TestSchwarzschildRadius:
@@ -14,7 +13,7 @@ class TestSchwarzschildRadius:
         # Rs ∝ M
         Rs1 = ap.schwarzschild_radius(1e30)
         Rs2 = ap.schwarzschild_radius(2e30)
-        assert abs(Rs2 - 2*Rs1) / Rs1 < 1e-10
+        assert abs(Rs2 - 2 * Rs1) / Rs1 < 1e-10
 
 
 class TestOrbitalVelocity:

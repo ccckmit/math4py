@@ -1,15 +1,16 @@
 """Example 1: Ito Integral - math4py.stochastic.calculus"""
 
-import numpy as np
 import matplotlib
+import numpy as np
+
 matplotlib.use("Agg")
 import os
+
 os.makedirs("./out", exist_ok=True)
 
-import math4py.stochastic.calculus as calc
-from math4py.stochastic.calculus.ito import quadratic_variation_demo
 from math4py.plot import StochPlot
 from math4py.stochastic.calculus import ItoIntegral, ito_lemma_demo
+from math4py.stochastic.calculus.ito import quadratic_variation_demo
 
 # ─── 1. 基礎 ∫ W dW 驗證 ─────────────────────────────────────────────────
 
@@ -27,7 +28,7 @@ analytic = result["analytic"]
 for i in range(W.shape[0]):
     final_ito = ito_int[i, -1]
     final_ana = analytic[i, -1]
-    print(f"\n路徑 {i+1}:")
+    print(f"\n路徑 {i + 1}:")
     print(f" W(T) = {W[i, -1]:.6f}")
     print(f" ∫ W dW (數值) = {final_ito:.6f}")
     print(f" ½W²-½T (解析) = {final_ana:.6f}")
@@ -42,7 +43,7 @@ print("=" * 60)
 ito_sin = ItoIntegral(integrand=lambda t, W: np.sin(W), seed=42)
 mean_val, se = ito_sin.expected_value(T=1.0, n_steps=5000, n_paths=10000)
 print(f"E[∫ sin(W) dW] = {mean_val:.6f} ±{se:.6f}")
-print(f"理論值 (鞅性質) = 0.000000")
+print("理論值 (鞅性質) = 0.000000")
 
 # ─── 3. ∫ t dW（確定性被積函數）────────────────────────────────────────────
 
@@ -53,7 +54,7 @@ print("=" * 60)
 ito_t = ItoIntegral(integrand=lambda t, W: t, seed=42)
 mean_t, se_t = ito_t.expected_value(T=1.0, n_steps=5000, n_paths=10000)
 print(f"E[∫ t dW] = {mean_t:.6f} ±{se_t:.6f}")
-print(f"理論: E=0, Var=∫₀¹ t² dt = 1/3 ≈ {1/3:.6f}")
+print(f"理論: E=0, Var=∫₀¹ t² dt = 1/3 ≈ {1 / 3:.6f}")
 
 _, _, I_t = ito_t.compute(T=1.0, n_steps=5000, n_paths=5000)
 var_t = float(np.var(I_t[:, -1]))
@@ -68,7 +69,7 @@ print("=" * 60)
 qv_result = quadratic_variation_demo(T=1.0, n_steps=100_000)
 qv_final = qv_result["quadratic_variation"][-1]
 print(f"[W, W]_T (樣本) = {qv_final:.6f}")
-print(f"理論值 T = 1.000000")
+print("理論值 T = 1.000000")
 print(f"一次變分（樣本）= {qv_result['first_variation'][-1]:.2f} → ∞")
 
 # ─── 5. 繪圖 ────────────────────────────────────────────────────────────────

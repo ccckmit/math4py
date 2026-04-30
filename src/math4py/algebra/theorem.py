@@ -3,12 +3,12 @@ r"""Algebra theorems and axioms."""
 
 def closure_axiom(op, a, b):
     r"""Closure axiom: if a, b in set, then a op b in set.
-    
+
     Args:
         op: Binary operation
         a: First element
         b: Second element
-    
+
     Returns:
         Dict with pass status
     """
@@ -18,13 +18,13 @@ def closure_axiom(op, a, b):
 
 def associativity(op, a, b, c):
     r"""Associativity: (a op b) op c = a op (b op c).
-    
+
     Args:
         op: Binary operation
         a: First element
         b: Second element
         c: Third element
-    
+
     Returns:
         Dict with pass status
     """
@@ -35,12 +35,12 @@ def associativity(op, a, b, c):
 
 def identity_element(op, e, a):
     r"""Identity element: e op a = a op e = a.
-    
+
     Args:
         op: Binary operation
         e: Identity element
         a: Element to test
-    
+
     Returns:
         Dict with pass status
     """
@@ -51,12 +51,12 @@ def identity_element(op, e, a):
 
 def inverse_element(op, a, inverse):
     r"""Inverse element: a op a^{-1} = e.
-    
+
     Args:
         op: Binary operation
         a: Element
         a_inverse: Inverse of a
-    
+
     Returns:
         Dict with pass status
     """
@@ -66,12 +66,12 @@ def inverse_element(op, a, inverse):
 
 def commutativity(op, a, b):
     r"""Commutativity: a op b = b op a.
-    
+
     Args:
         op: Binary operation
         a: First element
         b: Second element
-    
+
     Returns:
         Dict with pass status
     """
@@ -82,14 +82,14 @@ def commutativity(op, a, b):
 
 def distributivity(op1, op2, a, b, c):
     r"""Distributivity: a * (b + c) = a*b + a*c.
-    
+
     Args:
         op1: Multiplication-like operation
         op2: Addition-like operation
         a: Scalar
         b: First element
         c: Second element
-    
+
     Returns:
         Dict with pass status
     """
@@ -102,10 +102,10 @@ def fundamental_theorem_of_algebra(coefficients):
     r"""Fundamental Theorem of Algebra: Every non-constant polynomial with
     complex coefficients has at least one complex root.
     Therefore, a polynomial of degree n has exactly n complex roots.
-    
+
     Args:
         coefficients: Polynomial coefficients [a_n, ..., a_1, a_0]
-    
+
     Returns:
         Dict with pass status and roots
     """

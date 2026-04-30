@@ -1,9 +1,16 @@
 """Transform 定理驗證。"""
 
 import numpy as np
-from math4py.transform.fourier import fourier_transform, dft, idft, fourier_series_coeff, reconstruct_fourier_series
-from math4py.transform.wavelet import dwt, idwt, multilevel_dwt, wavelet_denoise, haar_wavelet
+
+from math4py.transform.fourier import (
+    dft,
+    fourier_series_coeff,
+    fourier_transform,
+    idft,
+    reconstruct_fourier_series,
+)
 from math4py.transform.laplace import laplace_transform, laplace_transform_pairs, solve_ode_laplace
+from math4py.transform.wavelet import dwt, idwt, multilevel_dwt, wavelet_denoise
 
 
 def fourier_inversion_theorem(signal: np.ndarray, dt: float = 0.01) -> float:
@@ -14,7 +21,7 @@ def fourier_inversion_theorem(signal: np.ndarray, dt: float = 0.01) -> float:
     """
     freqs, spectrum = fourier_transform(signal, dt)
     t_recon, signal_recon = idft(spectrum, dt)
-    return np.max(np.abs(signal - signal_recon[:len(signal)]))
+    return np.max(np.abs(signal - signal_recon[: len(signal)]))
 
 
 def dft_idft_theorem(x: np.ndarray) -> float:
@@ -47,13 +54,14 @@ def convolution_theorem_fourier(x: np.ndarray, h: np.ndarray, dt: float = 0.01) 
         頻域乘積與摺積 FFT 的差異
     """
     from math4py.transform.fourier import convolution_fft
+
     conv_result = convolution_fft(x, h)
-    
+
     freqs_x, X = fourier_transform(x, dt)
     freqs_h, H = fourier_transform(h, dt)
     product = X * H
     _, conv_fft = inverse_fourier_transform(product, dt)
-    
+
     min_len = min(len(conv_result), len(conv_fft))
     return np.max(np.abs(conv_result[:min_len] - conv_fft[:min_len]))
 
@@ -66,7 +74,7 @@ def wavelet_reconstruction_theorem(signal: np.ndarray) -> float:
     """
     approx, detail = dwt(signal)
     signal_recon = idwt(approx, detail)
-    return np.max(np.abs(signal[:len(signal_recon)] - signal_recon))
+    return np.max(np.abs(signal[: len(signal_recon)] - signal_recon))
 
 
 def multilevel_reconstruction(signal: np.ndarray, levels: int = 3) -> float:
@@ -79,7 +87,7 @@ def multilevel_reconstruction(signal: np.ndarray, levels: int = 3) -> float:
     reconstructed = coeffs[0]
     for detail in coeffs[1:]:
         reconstructed = idwt(reconstructed, detail)
-    return np.max(np.abs(signal[:len(reconstructed)] - reconstructed))
+    return np.max(np.abs(signal[: len(reconstructed)] - reconstructed))
 
 
 def wavelet_denoising_effect(signal: np.ndarray, noise_level: float = 0.3) -> float:
@@ -117,6 +125,7 @@ def laplace_derivative_theorem(f: callable, s: complex, f0: float, t_max: float 
         定理殘差應接近 0
     """
     from math4py.transform.laplace import laplace_derivative_property
+
     return laplace_derivative_property(f, s, f0, t_max)
 
 
@@ -128,16 +137,16 @@ def laplace_ode_solution(a: float, b: float, y0: float, t_points: np.ndarray) ->
     """
     y_solution = solve_ode_laplace(a, b, y0)
     y_expected = y_solution(t_points)
-    
+
     def ode_rhs(t):
         return -a * y_expected + b
-    
+
     y_actual = np.zeros_like(t_points)
     y_actual[0] = y0
     dt = t_points[1] - t_points[0]
     for i in range(1, len(t_points)):
-        y_actual[i] = y_actual[i-1] + dt * ode_rhs(t_points[i-1])
-    
+        y_actual[i] = y_actual[i - 1] + dt * ode_rhs(t_points[i - 1])
+
     return np.max(np.abs(y_expected - y_actual))
 
 

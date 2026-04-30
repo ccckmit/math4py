@@ -5,11 +5,11 @@ def eulerian_path_theorem(num_odd_degree: int = 0, connected: bool = True):
     r"""Eulerian path theorem: Graph has Eulerian path iff
     - Exactly 0 or 2 vertices have odd degree
     - All vertices with nonzero degree belong to single connected component
-    
+
     Args:
         num_odd_degree: Number of vertices with odd degree
         connected: Whether graph is connected
-    
+
     Returns:
         Dict with theorem status
     """
@@ -20,11 +20,11 @@ def eulerian_path_theorem(num_odd_degree: int = 0, connected: bool = True):
 def hamiltonian_path_theorem(n: int, min_degree: int):
     r"""Hamiltonian path theorem: Dirac's sufficient condition.
     If n >= 3 and every vertex has degree >= n/2, then graph is Hamiltonian.
-    
+
     Args:
         n: Number of vertices
         min_degree: Minimum degree of any vertex
-    
+
     Returns:
         Dict with theorem status
     """
@@ -44,11 +44,11 @@ def graph_isomorphism_theorem():
 
 def handshaking_lemma(num_vertices: int, edges: list):
     r"""Handshaking lemma: Sum of all vertex degrees = 2 * |E|.
-    
+
     Args:
         num_vertices: Number of vertices
         edges: List of edges
-    
+
     Returns:
         Dict with sum of degrees
     """
@@ -59,17 +59,21 @@ def handshaking_lemma(num_vertices: int, edges: list):
         degrees[e[0]] += 1
         degrees[e[1]] += 1
     total_degree = sum(degrees.values())
-    return {"total_degree": total_degree, "twice_edges": 2 * len(edges), "pass": total_degree == 2 * len(edges)}
+    return {
+        "total_degree": total_degree,
+        "twice_edges": 2 * len(edges),
+        "pass": total_degree == 2 * len(edges),
+    }
 
 
 def euler_characteristic(vertices: int, edges: int, faces: int):
     r"""Euler characteristic: V - E + F = 2.
-    
+
     Args:
         vertices: Number of vertices V
         edges: Number of edges E
         faces: Number of faces F
-    
+
     Returns:
         Euler characteristic
     """
@@ -79,11 +83,11 @@ def euler_characteristic(vertices: int, edges: int, faces: int):
 
 def tree_theorem(num_vertices: int, num_edges: int):
     r"""Tree theorem: Graph is tree iff connected and V-1 edges.
-    
+
     Args:
         num_vertices: Number of vertices
         num_edges: Number of edges
-    
+
     Returns:
         Dict with tree status
     """

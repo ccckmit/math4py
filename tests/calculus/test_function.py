@@ -1,13 +1,15 @@
 """Tests for calculus/function.py - 數值微積分."""
 
-import pytest
 import numpy as np
-from math4py.calculus import derivative, integral, trapezoidal, simpson
+
+from math4py.calculus import derivative, integral, simpson, trapezoidal
 
 
 class TestDerivative:
     def test_derivative_x2_at_2(self):
-        f = lambda x: x**2
+        def f(x):
+            return x**2
+
         result = derivative(f, 2)
         assert abs(result - 4.0) < 1e-5
 
@@ -24,9 +26,11 @@ class TestDerivative:
 
 class TestIntegral:
     def test_integral_x2_0_to_1(self):
-        f = lambda x: x**2
+        def f(x):
+            return x**2
+
         result = integral(f, 0, 1)
-        assert abs(result - 1/3) < 1e-3
+        assert abs(result - 1 / 3) < 1e-3
 
     def test_integral_sin_0_to_pi(self):
         f = np.sin
@@ -42,16 +46,20 @@ class TestIntegral:
 
 class TestTrapezoidal:
     def test_trapezoidal_x2_0_to_1(self):
-        f = lambda x: x**2
+        def f(x):
+            return x**2
+
         result = trapezoidal(f, 0, 1)
-        assert abs(result - 1/3) < 1e-3
+        assert abs(result - 1 / 3) < 1e-3
 
 
 class TestSimpson:
     def test_simpson_x2_0_to_1(self):
-        f = lambda x: x**2
+        def f(x):
+            return x**2
+
         result = simpson(f, 0, 1)
-        assert abs(result - 1/3) < 1e-4
+        assert abs(result - 1 / 3) < 1e-4
 
     def test_simpson_sin_0_to_pi(self):
         f = np.sin

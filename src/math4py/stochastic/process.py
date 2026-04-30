@@ -8,14 +8,14 @@ process.py — 隨機過程核心模組
   - BrownianBridge         布朗橋
 """
 
-import numpy as np
-from dataclasses import dataclass, field
 from typing import Optional, Tuple
 
+import numpy as np
 
 # ---------------------------------------------------------------------------
 # 基底類別
 # ---------------------------------------------------------------------------
+
 
 class StochasticProcess:
     """所有隨機過程的基底類別。"""
@@ -31,6 +31,7 @@ class StochasticProcess:
 # 1. 標準布朗運動 (Wiener Process)
 # ---------------------------------------------------------------------------
 
+
 class BrownianMotion(StochasticProcess):
     """
     標準布朗運動 W(t)，滿足：
@@ -45,8 +46,7 @@ class BrownianMotion(StochasticProcess):
     seed  : int | None, 隨機種子
     """
 
-    def __init__(self, mu: float = 0.0, sigma: float = 1.0,
-                 seed: Optional[int] = None):
+    def __init__(self, mu: float = 0.0, sigma: float = 1.0, seed: Optional[int] = None):
         self.mu = mu
         self.sigma = sigma
         self.rng = np.random.default_rng(seed)
@@ -91,12 +91,12 @@ class BrownianMotion(StochasticProcess):
         dt = T / n_steps
         t = np.linspace(0, T, n_steps + 1)
         dW = rng.normal(0.0, np.sqrt(dt), size=n_steps)
-        qv = np.concatenate([[0.0], np.cumsum(dW ** 2)])
+        qv = np.concatenate([[0.0], np.cumsum(dW**2)])
         return t, qv
 
     def autocorrelation(self, s: float, t: float) -> float:
         """E[W(s)W(t)] = min(s, t)"""
-        return self.sigma ** 2 * min(s, t)
+        return self.sigma**2 * min(s, t)
 
     def __repr__(self):
         return f"<BrownianMotion mu={self.mu} sigma={self.sigma}>"
@@ -105,6 +105,7 @@ class BrownianMotion(StochasticProcess):
 # ---------------------------------------------------------------------------
 # 2. 幾何布朗運動 (GBM)
 # ---------------------------------------------------------------------------
+
 
 class GeometricBrownianMotion(StochasticProcess):
     """
@@ -120,8 +121,9 @@ class GeometricBrownianMotion(StochasticProcess):
     seed  : int | None
     """
 
-    def __init__(self, S0: float = 100.0, mu: float = 0.05,
-                 sigma: float = 0.2, seed: Optional[int] = None):
+    def __init__(
+        self, S0: float = 100.0, mu: float = 0.05, sigma: float = 0.2, seed: Optional[int] = None
+    ):
         self.S0 = S0
         self.mu = mu
         self.sigma = sigma
@@ -145,7 +147,7 @@ class GeometricBrownianMotion(StochasticProcess):
         t = np.linspace(0, T, n_steps + 1)
 
         Z = self.rng.normal(0.0, 1.0, size=(n_paths, n_steps))
-        drift = (self.mu - 0.5 * self.sigma ** 2) * dt
+        drift = (self.mu - 0.5 * self.sigma**2) * dt
         diffusion = self.sigma * np.sqrt(dt) * Z
 
         log_increments = drift + diffusion
@@ -162,22 +164,16 @@ class GeometricBrownianMotion(StochasticProcess):
 
     def variance(self, t: float) -> float:
         """Var[S(t)] = S0² exp(2μt)(exp(σ²t) - 1)"""
-        return (
-            self.S0 ** 2
-            * np.exp(2 * self.mu * t)
-            * (np.exp(self.sigma ** 2 * t) - 1)
-        )
+        return self.S0**2 * np.exp(2 * self.mu * t) * (np.exp(self.sigma**2 * t) - 1)
 
     def __repr__(self):
-        return (
-            f"<GeometricBrownianMotion S0={self.S0} "
-            f"mu={self.mu} sigma={self.sigma}>"
-        )
+        return f"<GeometricBrownianMotion S0={self.S0} mu={self.mu} sigma={self.sigma}>"
 
 
 # ---------------------------------------------------------------------------
 # 3. Ornstein-Uhlenbeck（均值回歸）過程
 # ---------------------------------------------------------------------------
+
 
 class OrnsteinUhlenbeck(StochasticProcess):
     """
@@ -193,9 +189,14 @@ class OrnsteinUhlenbeck(StochasticProcess):
     seed  : int | None
     """
 
-    def __init__(self, mu: float = 0.0, theta: float = 1.0,
-                 sigma: float = 0.3, X0: float = 0.0,
-                 seed: Optional[int] = None):
+    def __init__(
+        self,
+        mu: float = 0.0,
+        theta: float = 1.0,
+        sigma: float = 0.3,
+        X0: float = 0.0,
+        seed: Optional[int] = None,
+    ):
         self.mu = mu
         self.theta = theta
         self.sigma = sigma
@@ -213,34 +214,30 @@ class OrnsteinUhlenbeck(StochasticProcess):
         t = np.linspace(0, T, n_steps + 1)
 
         e = np.exp(-self.theta * dt)
-        std = self.sigma * np.sqrt((1 - e ** 2) / (2 * self.theta))
+        std = self.sigma * np.sqrt((1 - e**2) / (2 * self.theta))
 
         paths = np.zeros((n_paths, n_steps + 1))
         paths[:, 0] = self.X0
         Z = self.rng.normal(size=(n_paths, n_steps))
 
         for i in range(n_steps):
-            paths[:, i + 1] = (
-                self.mu * (1 - e) + e * paths[:, i] + std * Z[:, i]
-            )
+            paths[:, i + 1] = self.mu * (1 - e) + e * paths[:, i] + std * Z[:, i]
         return t, paths
 
     def stationary_mean(self) -> float:
         return self.mu
 
     def stationary_variance(self) -> float:
-        return self.sigma ** 2 / (2 * self.theta)
+        return self.sigma**2 / (2 * self.theta)
 
     def __repr__(self):
-        return (
-            f"<OrnsteinUhlenbeck mu={self.mu} "
-            f"theta={self.theta} sigma={self.sigma}>"
-        )
+        return f"<OrnsteinUhlenbeck mu={self.mu} theta={self.theta} sigma={self.sigma}>"
 
 
 # ---------------------------------------------------------------------------
 # 4. 布朗橋 (Brownian Bridge)
 # ---------------------------------------------------------------------------
+
 
 class BrownianBridge(StochasticProcess):
     """
@@ -253,8 +250,7 @@ class BrownianBridge(StochasticProcess):
     seed : int | None
     """
 
-    def __init__(self, a: float = 0.0, b: float = 0.0,
-                 seed: Optional[int] = None):
+    def __init__(self, a: float = 0.0, b: float = 0.0, seed: Optional[int] = None):
         self.a = a
         self.b = b
         self.rng = np.random.default_rng(seed)
@@ -270,16 +266,10 @@ class BrownianBridge(StochasticProcess):
         t = np.linspace(0, T, n_steps + 1)
 
         dW = self.rng.normal(0.0, np.sqrt(dt), size=(n_paths, n_steps))
-        W = np.concatenate(
-            [np.zeros((n_paths, 1)), np.cumsum(dW, axis=1)], axis=1
-        )
+        W = np.concatenate([np.zeros((n_paths, 1)), np.cumsum(dW, axis=1)], axis=1)
         # 條件化：B(t) = W(t) + (a - W(0))*(1 - t/T) + (b - W(T))*(t/T)
         ratio = t / T
-        paths = (
-            W
-            + (self.a - W[:, [0]]) * (1 - ratio)
-            + (self.b - W[:, [-1]]) * ratio
-        )
+        paths = W + (self.a - W[:, [0]]) * (1 - ratio) + (self.b - W[:, [-1]]) * ratio
         return t, paths
 
     def __repr__(self):

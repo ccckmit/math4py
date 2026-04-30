@@ -1,6 +1,5 @@
 """Test linear algebra matrix module."""
 
-import pytest
 import math4py.linear_algebra.matrix as lm
 
 

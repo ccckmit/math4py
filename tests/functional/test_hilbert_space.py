@@ -1,38 +1,50 @@
 """Hilbert 空間測試。"""
 
 import numpy as np
-import pytest
+
 from math4py.functional.hilbert_space import (
-    inner_product_H,
-    norm_H,
-    distance_H,
-    proj_orthogonal_H,
-    gram_schmidt_H,
-    fourier_basis_H,
-    legendre_polynomials,
-    is_complete_basis_H,
-    riesz_representation,
-    check_parallelogram_law,
     check_jordan_vonneumann_theorem,
+    check_parallelogram_law,
+    distance_H,
+    fourier_basis_H,
+    gram_schmidt_H,
+    inner_product_H,
+    is_complete_basis_H,
+    legendre_polynomials,
+    norm_H,
+    proj_orthogonal_H,
+    riesz_representation,
 )
 
 
 class TestInnerProductH:
     def test_symmetry(self):
         """⟨f,g⟩ = ⟨g,f⟩"""
-        f = lambda x: x.copy()
-        g = lambda x: x**2
+
+        def f(x):
+            return x.copy()
+
+        def g(x):
+            return x**2
+
         inner1 = inner_product_H(f, g, 0.0, 1.0)
         inner2 = inner_product_H(g, f, 0.0, 1.0)
         assert abs(inner1 - inner2) < 1e-6
 
     def test_linearity(self):
         """⟨af+bg,h⟩ = a⟨f,h⟩ + b⟨g,h⟩"""
-        f = lambda x: x.copy()
-        g = lambda x: x**2
-        h = lambda x: np.ones_like(x)
+
+        def f(x):
+            return x.copy()
+
+        def g(x):
+            return x**2
+
+        def h(x):
+            return np.ones_like(x)
+
         a, b = 2.0, 3.0
-        left = inner_product_H(lambda x: a*f(x) + b*g(x), h, 0.0, 1.0)
+        left = inner_product_H(lambda x: a * f(x) + b * g(x), h, 0.0, 1.0)
         right = a * inner_product_H(f, h, 0.0, 1.0) + b * inner_product_H(g, h, 0.0, 1.0)
         assert abs(left - right) < 1e-6
 
@@ -40,18 +52,26 @@ class TestInnerProductH:
 class TestNormH:
     def test_positive_definiteness(self):
         """||f|| ≥ 0, =0 iff f=0"""
-        f = lambda x: x.copy()
+
+        def f(x):
+            return x.copy()
+
         norm = norm_H(f, 0.0, 1.0)
         assert norm > 0
 
     def test_zero_function(self):
-        f = lambda x: np.zeros_like(x)
+        def f(x):
+            return np.zeros_like(x)
+
         norm = norm_H(f, 0.0, 1.0)
         assert norm < 1e-6
 
     def test_scaling(self):
         """||cf|| = |c| ||f||"""
-        f = lambda x: x.copy()
+
+        def f(x):
+            return x.copy()
+
         c = 3.0
         norm1 = norm_H(lambda x: c * f(x), 0.0, 1.0)
         norm2 = abs(c) * norm_H(f, 0.0, 1.0)
@@ -61,14 +81,22 @@ class TestNormH:
 class TestDistanceH:
     def test_zero_distance(self):
         """d(f,f) = 0"""
-        f = lambda x: x.copy()
+
+        def f(x):
+            return x.copy()
+
         dist = distance_H(f, f, 0.0, 1.0)
         assert dist < 1e-6
 
     def test_symmetry(self):
         """d(f,g) = d(g,f)"""
-        f = lambda x: x.copy()
-        g = lambda x: x**2
+
+        def f(x):
+            return x.copy()
+
+        def g(x):
+            return x**2
+
         d1 = distance_H(f, g, 0.0, 1.0)
         d2 = distance_H(g, f, 0.0, 1.0)
         assert abs(d1 - d2) < 1e-6
@@ -77,8 +105,13 @@ class TestDistanceH:
 class TestProjOrthogonalH:
     def test_proj_coefficient(self):
         """proj(f,e) = ⟨f,e⟩/||e||²"""
-        f = lambda x: x.copy() + 1.0
-        e = lambda x: np.ones_like(x)
+
+        def f(x):
+            return x.copy() + 1.0
+
+        def e(x):
+            return np.ones_like(x)
+
         coeff = proj_orthogonal_H(f, e, 0.0, 1.0)
         expected = inner_product_H(f, e, 0.0, 1.0) / inner_product_H(e, e, 0.0, 1.0)
         assert abs(coeff - expected) < 1e-6
@@ -132,7 +165,10 @@ class TestRieszRepresentation:
     def test_linear_functional(self):
         """φ(f)=∫f should be represented by g=1."""
         basis = [lambda x: np.ones_like(x)]
-        phi = lambda f: np.trapezoid(f(np.linspace(0, 1, 1000)), dx=1.0/1000)
+
+        def phi(f):
+            return np.trapezoid(f(np.linspace(0, 1, 1000)), dx=1.0 / 1000)
+
         g_phi = riesz_representation(phi, basis, 0.0, 1.0)
         x = np.linspace(0, 1, 100)
         # g_phi should be close to constant
@@ -142,8 +178,13 @@ class TestRieszRepresentation:
 class TestParallelogramLaw:
     def test_law_holds(self):
         """Parallelogram: ||f+g||² + ||f-g||² = 2(||f||² + ||g||²)"""
-        f = lambda x: x.copy()
-        g = lambda x: x**2
+
+        def f(x):
+            return x.copy()
+
+        def g(x):
+            return x**2
+
         error = check_parallelogram_law(f, g, 0.0, 1.0)
         assert error < 0.1
 
@@ -151,7 +192,12 @@ class TestParallelogramLaw:
 class TestJordanVonNeumann:
     def test_theorem_holds(self):
         """⟨f,g⟩ = (||f+g||² - ||f-g||²)/4"""
-        f = lambda x: x.copy()
-        g = lambda x: x**2
+
+        def f(x):
+            return x.copy()
+
+        def g(x):
+            return x**2
+
         error = check_jordan_vonneumann_theorem(f, g, 0.0, 1.0)
         assert error < 0.1

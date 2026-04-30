@@ -1,6 +1,5 @@
 """Test linear algebra theorems module."""
 
-import pytest
 import math4py.linear_algebra.theorem as lt
 
 

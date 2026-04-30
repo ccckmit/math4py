@@ -1,10 +1,10 @@
 r"""Graph plotting functions using matplotlib and networkx."""
 
 import os
-import numpy as np
+from typing import Optional
+
 import matplotlib.pyplot as plt
 import networkx as nx
-from typing import Optional, List, Tuple, Dict, Any
 
 _OUT_DIR = os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))),
@@ -29,7 +29,7 @@ def plot_graph(
     title: Optional[str] = None,
 ):
     r"""Plot a graph.
-    
+
     Args:
         G: NetworkX graph
         filename: Output file (None for display)
@@ -42,20 +42,20 @@ def plot_graph(
         width: Edge width
         alpha: Transparency
         title: Plot title
-    
+
     Examples:
         import networkx as nx
         from math4py.graph import create_graph
         from math4py.plot import plot_graph
-        
+
         G = create_graph([(0,1), (1,2), (2,0)])
         plot_graph(G, filename="out/graph.pdf")
     """
     fig, ax = plt.subplots(figsize=(6, 6))
-    
+
     if pos is None:
         pos = nx.spring_layout(G)
-    
+
     nx.draw(
         G, pos, ax=ax,
         node_color=node_color,
@@ -66,12 +66,12 @@ def plot_graph(
         width=width,
         alpha=alpha,
     )
-    
+
     if title:
         ax.set_title(title, fontsize=14)
-    
+
     plt.tight_layout()
-    
+
     if filename:
         os.makedirs(_OUT_DIR, exist_ok=True)
         filepath = os.path.join(_OUT_DIR, filename) if not os.path.isabs(filename) else filename
@@ -96,7 +96,7 @@ def plot_directed_graph(
     title: Optional[str] = None,
 ):
     r"""Plot a directed graph with arrows.
-    
+
     Args:
         G: NetworkX directed graph
         filename: Output file
@@ -112,10 +112,10 @@ def plot_directed_graph(
         title: Plot title
     """
     fig, ax = plt.subplots(figsize=(6, 6))
-    
+
     if pos is None:
         pos = nx.spring_layout(G)
-    
+
     nx.draw(
         G, pos, ax=ax,
         node_color=node_color,
@@ -128,12 +128,12 @@ def plot_directed_graph(
         arrows=True,
         arrowsize=arrow_size,
     )
-    
+
     if title:
         ax.set_title(title, fontsize=14)
-    
+
     plt.tight_layout()
-    
+
     if filename:
         os.makedirs(_OUT_DIR, exist_ok=True)
         filepath = os.path.join(_OUT_DIR, filename) if not os.path.isabs(filename) else filename
@@ -158,7 +158,7 @@ def plot_weighted_graph(
     title: Optional[str] = None,
 ):
     r"""Plot a weighted graph with edge labels.
-    
+
     Args:
         G: NetworkX weighted graph
         filename: Output file
@@ -174,15 +174,15 @@ def plot_weighted_graph(
         title: Plot title
     """
     fig, ax = plt.subplots(figsize=(6, 6))
-    
+
     if pos is None:
         pos = nx.spring_layout(G)
-    
+
     edge_labels = {}
     if show_weights:
         for u, v, d in G.edges(data=True):
             edge_labels[(u, v)] = d.get("weight", "")
-    
+
     nx.draw(
         G, pos, ax=ax,
         node_color=node_color,
@@ -193,15 +193,15 @@ def plot_weighted_graph(
         width=width,
         alpha=alpha,
     )
-    
+
     if show_weights and edge_labels:
         nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, ax=ax)
-    
+
     if title:
         ax.set_title(title, fontsize=14)
-    
+
     plt.tight_layout()
-    
+
     if filename:
         os.makedirs(_OUT_DIR, exist_ok=True)
         filepath = os.path.join(_OUT_DIR, filename) if not os.path.isabs(filename) else filename
@@ -220,7 +220,7 @@ def plot_graph_properties(
     title: Optional[str] = None,
 ):
     r"""Plot graph with node properties (centrality, clustering, etc.).
-    
+
     Args:
         G: NetworkX graph
         filename: Output file
@@ -230,7 +230,7 @@ def plot_graph_properties(
         title: Plot title
     """
     fig, ax = plt.subplots(figsize=(6, 6))
-    
+
     if centrality == "degree":
         values = dict(G.degree())
     elif centrality == "betweenness":
@@ -241,15 +241,15 @@ def plot_graph_properties(
         values = nx.eigenvector_centrality(G)
     else:
         values = {n: 1 for n in G.nodes()}
-    
+
     if node_color_map:
         colors = [node_color_map.get(n, "#2196F3") for n in G.nodes()]
     else:
         max_val = max(values.values()) if values else 1
         colors = [plt.cm.Blues(values[n] / max_val + 0.2) for n in G.nodes()]
-    
+
     sizes = [node_size_scale * (values.get(n, 1) / max(values.values()) + 0.3) for n in G.nodes()]
-    
+
     pos = nx.spring_layout(G)
     nx.draw(
         G, pos, ax=ax,
@@ -260,12 +260,12 @@ def plot_graph_properties(
         width=1.0,
         alpha=0.8,
     )
-    
+
     title_str = title or f"Graph - {centrality.title()} Centrality"
     ax.set_title(title_str, fontsize=14)
-    
+
     plt.tight_layout()
-    
+
     if filename:
         os.makedirs(_OUT_DIR, exist_ok=True)
         filepath = os.path.join(_OUT_DIR, filename) if not os.path.isabs(filename) else filename
@@ -281,22 +281,22 @@ def plot_degree_distribution(
     title: Optional[str] = None,
 ):
     r"""Plot degree distribution histogram.
-    
+
     Args:
         G: NetworkX graph
         filename: Output file
         title: Plot title
     """
     degrees = [d for n, d in G.degree()]
-    
+
     fig, ax = plt.subplots(figsize=(6, 4))
     ax.hist(degrees, bins=range(max(degrees) + 2), edgecolor="black", alpha=0.7)
     ax.set_xlabel("Degree", fontsize=12)
     ax.set_ylabel("Frequency", fontsize=12)
     ax.set_title(title or "Degree Distribution", fontsize=14)
-    
+
     plt.tight_layout()
-    
+
     if filename:
         os.makedirs(_OUT_DIR, exist_ok=True)
         filepath = os.path.join(_OUT_DIR, filename) if not os.path.isabs(filename) else filename
@@ -312,21 +312,21 @@ def plot_adjacency_heatmap(
     title: Optional[str] = None,
 ):
     r"""Plot adjacency matrix as heatmap.
-    
+
     Args:
         G: NetworkX graph
         filename: Output file
         title: Plot title
     """
     A = nx.to_numpy_array(G)
-    
+
     fig, ax = plt.subplots(figsize=(6, 5))
     im = ax.imshow(A, cmap="Blues", edgecolor="white", linewidth=0.5)
     ax.set_title(title or "Adjacency Matrix", fontsize=14)
     plt.colorbar(im, ax=ax)
-    
+
     plt.tight_layout()
-    
+
     if filename:
         os.makedirs(_OUT_DIR, exist_ok=True)
         filepath = os.path.join(_OUT_DIR, filename) if not os.path.isabs(filename) else filename
@@ -342,21 +342,21 @@ def plot_laplacian_heatmap(
     title: Optional[str] = None,
 ):
     r"""Plot Laplacian matrix as heatmap.
-    
+
     Args:
         G: NetworkX graph
         filename: Output file
         title: Plot title
     """
     L = nx.laplacian_matrix(G).toarray()
-    
+
     fig, ax = plt.subplots(figsize=(6, 5))
     im = ax.imshow(L, cmap="RdBu_r", edgecolor="white", linewidth=0.5)
     ax.set_title(title or "Laplacian Matrix", fontsize=14)
     plt.colorbar(im, ax=ax)
-    
+
     plt.tight_layout()
-    
+
     if filename:
         os.makedirs(_OUT_DIR, exist_ok=True)
         filepath = os.path.join(_OUT_DIR, filename) if not os.path.isabs(filename) else filename
@@ -372,16 +372,16 @@ def plot_spectral_embedding(
     title: Optional[str] = None,
 ):
     r"""Plot graph using spectral layout.
-    
+
     Args:
         G: NetworkX graph
         filename: Output file
         title: Plot title
     """
     fig, ax = plt.subplots(figsize=(6, 6))
-    
+
     pos = nx.spectral_layout(G)
-    
+
     nx.draw(
         G, pos, ax=ax,
         node_color="#2196F3",
@@ -392,14 +392,14 @@ def plot_spectral_embedding(
         width=1.0,
         alpha=0.8,
     )
-    
+
     if title:
         ax.set_title(title, fontsize=14)
     else:
         ax.set_title("Spectral Layout", fontsize=14)
-    
+
     plt.tight_layout()
-    
+
     if filename:
         os.makedirs(_OUT_DIR, exist_ok=True)
         filepath = os.path.join(_OUT_DIR, filename) if not os.path.isabs(filename) else filename
@@ -415,18 +415,18 @@ def plot_shell(
     title: Optional[str] = None,
 ):
     r"""Plot graph using shell layout.
-    
+
     Args:
         G: NetworkX graph
         filename: Output file
         title: Plot title
     """
     fig, ax = plt.subplots(figsize=(6, 6))
-    
+
     n = G.number_of_nodes()
-    shells = [list(range(i, min(i + 3, n + 1)) for i in range(0, n, 3)]
+    shells = [list(range(i, min(i + 3, n + 1))) for i in range(0, n, 3)]
     pos = nx.shell_layout(G, nlist=shells)
-    
+
     nx.draw(
         G, pos, ax=ax,
         node_color="#2196F3",
@@ -437,14 +437,14 @@ def plot_shell(
         width=1.0,
         alpha=0.8,
     )
-    
+
     if title:
         ax.set_title(title, fontsize=14)
     else:
         ax.set_title("Shell Layout", fontsize=14)
-    
+
     plt.tight_layout()
-    
+
     if filename:
         os.makedirs(_OUT_DIR, exist_ok=True)
         filepath = os.path.join(_OUT_DIR, filename) if not os.path.isabs(filename) else filename

@@ -8,7 +8,11 @@ Wraps numpy/scipy for unified math API with R-style statistics.
 pip install -e ".[dev]"   # first-time setup
 pytest                       # all tests
 pytest tests/plot/            # outputs PDFs to out/
-ruff check . && ruff format .
+ruff check .                 # check code quality
+ruff check . --fix           # auto-fix safe errors
+ruff check . --fix --unsafe-fixes  # auto-fix more errors
+ruff format .                # format code
+ruff check . && ruff format .  # check + format (CI)
 ```
 
 ## Key facts
@@ -65,37 +69,6 @@ Example queries:
 - `grandmother(X, Y)` — find all grandmother relationships
 - `grandfather(X, Y)` — find all grandfather relationships
 - `great_grand_mother(X, Y)` — transitive relations
-
-## Tensor Module
-
-NumPy-based tensor operations:
-
-```python
-from math4py.tensor import Tensor
-import math4py.tensor.function as F
-
-# Create tensors
-x = Tensor([1.0, 2.0, 3.0])
-w = Tensor([[1.0, 2.0], [3.0, 4.0]])
-
-# Operations
-y = F.linear(x, w)  # Linear transformation
-z = y.relu()         # ReLU activation
-result = z.sum()
-print(result.numpy())
-```
-
-Features:
-- NumPy-based tensor operations
-- Supports: addition, multiplication, matmul, reshape, transpose
-- Activation functions: ReLU, Sigmoid, Tanh
-- Loss functions: MSE, Cross-Entropy with Softmax
-- Neural network operations: linear layers, softmax
-
-Module structure:
-- `tensor.py` — Tensor class
-- `function.py` — Mathematical functions and operations
-- `theorem.py` — pytest tests verifying tensor operations
 
 ## Theorem.py 撰寫原則
 

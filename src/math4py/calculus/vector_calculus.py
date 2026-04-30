@@ -4,6 +4,7 @@
 """
 
 from typing import Callable, Tuple
+
 import numpy as np
 
 
@@ -65,9 +66,15 @@ def curl_3d(F: Callable, point: np.ndarray, h: float = 1e-5) -> np.ndarray:
         旋度向量 (curl_x, curl_y, curl_z)
     """
     x, y, z = point.astype(float)
-    F1 = lambda x, y, z: F(x, y, z)[0]
-    F2 = lambda x, y, z: F(x, y, z)[1]
-    F3 = lambda x, y, z: F(x, y, z)[2]
+
+    def F1(x, y, z):
+        return F(x, y, z)[0]
+
+    def F2(x, y, z):
+        return F(x, y, z)[1]
+
+    def F3(x, y, z):
+        return F(x, y, z)[2]
 
     curl = np.zeros(3)
     curl[0] = (F3(x, y + h, z) - F3(x, y - h, z) - F2(x, y, z + h) + F2(x, y, z - h)) / (2 * h)
@@ -95,15 +102,12 @@ def laplacian(f: Callable, point: np.ndarray, h: float = 1e-5) -> float:
         point_minus = point.copy().astype(float)
         point_plus[i] += h
         point_minus[i] -= h
-        lap += (f(*point_plus) + f(*point_minus) - 2 * center) / (h ** 2)
+        lap += (f(*point_plus) + f(*point_minus) - 2 * center) / (h**2)
     return lap
 
 
 def directional_derivative(
-    f: Callable,
-    point: np.ndarray,
-    direction: np.ndarray,
-    h: float = 1e-5
+    f: Callable, point: np.ndarray, direction: np.ndarray, h: float = 1e-5
 ) -> float:
     """方向導數 D_u f。
 
@@ -141,7 +145,7 @@ def vector_laplacian(F: Callable, point: np.ndarray, h: float = 1e-5) -> np.ndar
         Fi_plus = F(*point_plus)[i]
         Fi_minus = F(*point_minus)[i]
         Fi_center = F(*point)[i]
-        result[i] = (Fi_plus + Fi_minus - 2 * Fi_center) / (h ** 2)
+        result[i] = (Fi_plus + Fi_minus - 2 * Fi_center) / (h**2)
     return result
 
 
@@ -186,10 +190,18 @@ def hessian(f: Callable, point: np.ndarray, h: float = 1e-5) -> np.ndarray:
     H = np.zeros((n, n))
     for i in range(n):
         for j in range(i, n):
-            x_pp = point.copy().astype(float); x_pp[i] += h; x_pp[j] += h
-            x_pm = point.copy().astype(float); x_pm[i] += h; x_pm[j] -= h
-            x_mp = point.copy().astype(float); x_mp[i] -= h; x_mp[j] += h
-            x_mm = point.copy().astype(float); x_mm[i] -= h; x_mm[j] -= h
+            x_pp = point.copy().astype(float)
+            x_pp[i] += h
+            x_pp[j] += h
+            x_pm = point.copy().astype(float)
+            x_pm[i] += h
+            x_pm[j] -= h
+            x_mp = point.copy().astype(float)
+            x_mp[i] -= h
+            x_mp[j] += h
+            x_mm = point.copy().astype(float)
+            x_mm[i] -= h
+            x_mm[j] -= h
             H[i, j] = (f(*x_pp) - f(*x_pm) - f(*x_mp) + f(*x_mm)) / (4 * h * h)
             H[j, i] = H[i, j]
     return H
@@ -209,8 +221,11 @@ def potential_function_2d(F: Callable, h: float = 1e-5) -> Tuple[bool, float]:
     """檢查二維向量場是否有勢函數。"""
     test_point = np.array([1.0, 1.0])
 
-    def F1(x, y): return F(x, y)[0]
-    def F2(x, y): return F(x, y)[1]
+    def F1(x, y):
+        return F(x, y)[0]
+
+    def F2(x, y):
+        return F(x, y)[1]
 
     dF1_dy = (F1(1.0, 1.0 + h) - F1(1.0, 1.0 - h)) / (2 * h)
     dF2_dx = (F2(1.0 + h, 1.0) - F2(1.0 - h, 1.0)) / (2 * h)

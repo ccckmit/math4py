@@ -1,6 +1,6 @@
 r"""First-order logic (predicate logic) operations."""
 
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 
 class Variable:
@@ -74,7 +74,11 @@ class Atom:
         return f"{self.predicate.name}({', '.join(str(t) for t in self.terms)})"
 
     def __eq__(self, other):
-        return isinstance(other, Atom) and self.predicate == other.predicate and self.terms == other.terms
+        return (
+            isinstance(other, Atom)
+            and self.predicate == other.predicate
+            and self.terms == other.terms
+        )
 
     def __hash__(self):
         return hash((self.predicate, self.terms))
@@ -104,7 +108,11 @@ class Literal:
         return f"~{self.atom}"
 
     def __eq__(self, other):
-        return isinstance(other, Literal) and self.atom == other.atom and self.positive == other.positive
+        return (
+            isinstance(other, Literal)
+            and self.atom == other.atom
+            and self.positive == other.positive
+        )
 
     def __hash__(self):
         return hash((self.atom, self.positive))
@@ -130,11 +138,11 @@ class Clause:
 
 def make_atom(predicate: str, *terms: Union[Variable, Constant, FunctionTerm]) -> Atom:
     r"""Create an atom (predicate application).
-    
+
     Args:
         predicate: Predicate name
         *terms: Terms (variables, constants, or function terms)
-    
+
     Returns:
         Atom
     """
@@ -143,12 +151,12 @@ def make_atom(predicate: str, *terms: Union[Variable, Constant, FunctionTerm]) -
 
 def make_literal(predicate: str, positive: bool, *terms: Union[Variable, Constant]) -> Literal:
     r"""Create a literal.
-    
+
     Args:
         predicate: Predicate name
         positive: True for positive, False for negated
         *terms: Terms
-    
+
     Returns:
         Literal
     """
@@ -156,16 +164,18 @@ def make_literal(predicate: str, positive: bool, *terms: Union[Variable, Constan
     return Literal(atom, positive)
 
 
-def unify(term1: Union[Variable, Constant, FunctionTerm], 
-          term2: Union[Variable, Constant, FunctionTerm],
-          bindings: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:
+def unify(
+    term1: Union[Variable, Constant, FunctionTerm],
+    term2: Union[Variable, Constant, FunctionTerm],
+    bindings: Optional[Dict[str, Any]] = None,
+) -> Optional[Dict[str, Any]]:
     r"""Unify two terms.
-    
+
     Args:
         term1: First term
         term2: Second term
         bindings: Current variable bindings
-    
+
     Returns:
         Most general unifier or None
     """
@@ -199,14 +209,15 @@ def unify(term1: Union[Variable, Constant, FunctionTerm],
     return None
 
 
-def substitute(term: Union[Variable, Constant, FunctionTerm], 
-               bindings: Dict[str, Any]) -> Union[Variable, Constant, FunctionTerm]:
+def substitute(
+    term: Union[Variable, Constant, FunctionTerm], bindings: Dict[str, Any]
+) -> Union[Variable, Constant, FunctionTerm]:
     r"""Apply substitution to term.
-    
+
     Args:
         term: Term to substitute
         bindings: Variable bindings
-    
+
     Returns:
         Substituted term
     """
@@ -220,10 +231,10 @@ def substitute(term: Union[Variable, Constant, FunctionTerm],
 
 def fol_to_cnf(formula: str) -> List[Clause]:
     r"""Convert first-order logic formula to CNF.
-    
+
     Args:
         formula: FOL formula
-    
+
     Returns:
         List of clauses in CNF
     """
@@ -232,11 +243,11 @@ def fol_to_cnf(formula: str) -> List[Clause]:
 
 def resolution(clause1: Clause, clause2: Clause) -> Optional[Clause]:
     r"""Apply resolution to two clauses.
-    
+
     Args:
         clause1: First clause
         clause2: Second clause
-    
+
     Returns:
         Resolvent clause or None
     """
@@ -250,11 +261,11 @@ def resolution(clause1: Clause, clause2: Clause) -> Optional[Clause]:
 
 def backward_chaining(goal: Atom, rules: List[Tuple[Atom, List[Atom]]]) -> bool:
     r"""Backward chaining inference.
-    
+
     Args:
         goal: Goal atom to prove
         rules: List of (head, body) rules
-    
+
     Returns:
         True if goal can be proved
     """
@@ -263,11 +274,11 @@ def backward_chaining(goal: Atom, rules: List[Tuple[Atom, List[Atom]]]) -> bool:
 
 def forward_chaining(facts: Set[Atom], rules: List[Tuple[Atom, List[Atom]]]) -> Set[Atom]:
     r"""Forward chaining inference.
-    
+
     Args:
         facts: Initial facts
         rules: List of (head, body) rules
-    
+
     Returns:
         Inferred facts
     """
@@ -285,10 +296,10 @@ def forward_chaining(facts: Set[Atom], rules: List[Tuple[Atom, List[Atom]]]) -> 
 
 def skolemize(formula: str) -> str:
     r"""Perform Skolemization (remove existential quantifiers).
-    
+
     Args:
         formula: FOL formula with quantifiers
-    
+
     Returns:
         Skolemized formula
     """
@@ -297,24 +308,25 @@ def skolemize(formula: str) -> str:
 
 def standardize_apart(formula: str) -> str:
     r"""Standardize apart (rename variables to avoid conflicts).
-    
+
     Args:
         formula: FOL formula
-    
+
     Returns:
         Formula with renamed variables
     """
     return formula
 
 
-def apply_substitution(term: Union[Atom, Literal], 
-                     substitutions: Dict[str, Any]) -> Union[Atom, Literal]:
+def apply_substitution(
+    term: Union[Atom, Literal], substitutions: Dict[str, Any]
+) -> Union[Atom, Literal]:
     r"""Apply substitution to atom or literal.
-    
+
     Args:
         term: Atom or Literal
         substitutions: Variable substitutions
-    
+
     Returns:
         Term with substitution applied
     """
@@ -323,21 +335,21 @@ def apply_substitution(term: Union[Atom, Literal],
         return Literal(new_atom, term.positive)
     elif isinstance(term, Atom):
         new_terms = tuple(
-            substitutions.get(t.name, t) if isinstance(t, Variable) else t
-            for t in term.terms
+            substitutions.get(t.name, t) if isinstance(t, Variable) else t for t in term.terms
         )
         return Atom(term.predicate, new_terms)
     return term
 
 
-def is_unifiable(term1: Union[Variable, Constant, FunctionTerm], 
-                term2: Union[Variable, Constant, FunctionTerm]) -> bool:
+def is_unifiable(
+    term1: Union[Variable, Constant, FunctionTerm], term2: Union[Variable, Constant, FunctionTerm]
+) -> bool:
     r"""Check if two terms are unifiable.
-    
+
     Args:
         term1: First term
         term2: Second term
-    
+
     Returns:
         True if unifiable
     """

@@ -1,7 +1,7 @@
 """統計力學（Statistical Mechanics）基礎函數。"""
 
 import numpy as np
-from typing import List
+
 from .thermodynamics import BOLTZMANN_CONSTANT
 
 
@@ -52,13 +52,13 @@ def bose_einstein_distribution(E: np.ndarray, mu: float, T: float) -> np.ndarray
 def maxwell_boltzmann_speed(v: np.ndarray, m: float, T: float) -> np.ndarray:
     """麥克斯韋-玻爾茲曼速率分布 f(v) = 4π (m/(2πkT))^(3/2) v² exp(-mv²/2kT)。"""
     kT = BOLTZMANN_CONSTANT * T
-    prefactor = 4.0 * np.pi * (m / (2.0 * np.pi * kT))**1.5
+    prefactor = 4.0 * np.pi * (m / (2.0 * np.pi * kT)) ** 1.5
     return prefactor * v**2 * np.exp(-m * v**2 / (2.0 * kT))
 
 
 def canonical_ensemble_energy_fluctuation(energies: np.ndarray, T: float) -> float:
     """正則繫的能量漲落 ⟨(ΔE)²⟩ = kT² C_V。"""
-    kT = BOLTZMANN_CONSTANT * T
+    BOLTZMANN_CONSTANT * T
     avg_E = average_energy(energies, T)
     avg_E2 = average_energy(energies**2, T)
     return avg_E2 - avg_E**2

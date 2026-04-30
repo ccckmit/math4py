@@ -1,8 +1,6 @@
 """核物理（Nuclear Physics）基礎函數。"""
 
 import numpy as np
-from typing import Tuple
-
 
 # 物理常數
 ATOMIC_MASS_UNIT = 1.66053906660e-27  # kg (1 u)
@@ -13,7 +11,7 @@ ELECTRON_VOLT = 1.602176634e-19  # J
 def mass_defect(Z: int, N: int, A: int, m_nucleus: float) -> float:
     """質量虧損 Δm = Z*m_p + N*m_n - m_nucleus。"""
     m_p = 1.007276466621 * ATOMIC_MASS_UNIT  # 質子質量
-    m_n = 1.00866491588 * ATOMIC_MASS_UNIT   # 中子質量
+    m_n = 1.00866491588 * ATOMIC_MASS_UNIT  # 中子質量
     return Z * m_p + N * m_n - m_nucleus
 
 
@@ -38,14 +36,14 @@ def radioactive_decay(N0: float, lambda_: float, t: np.ndarray) -> np.ndarray:
 def decay_constant(half_life: float) -> float:
     """衰變常數 λ = ln(2)/T₁/₂。"""
     if half_life <= 0:
-        return float('inf')
+        return float("inf")
     return np.log(2.0) / half_life
 
 
 def half_life(lambda_: float) -> float:
     """半衰期 T₁/₂ = ln(2)/λ。"""
     if lambda_ == 0:
-        return float('inf')
+        return float("inf")
     return np.log(2.0) / lambda_
 
 
@@ -56,7 +54,7 @@ def activity(N: float, lambda_: float) -> float:
 
 def nuclear_radius(A: int, R0: float = 1.2e-15) -> float:
     """原子核半徑 R = R0 * A^(1/3)。"""
-    return R0 * (A ** (1.0/3.0))
+    return R0 * (A ** (1.0 / 3.0))
 
 
 def q_value(reaction_mass_initial: float, reaction_mass_final: float) -> float:

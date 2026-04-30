@@ -1,8 +1,5 @@
 r"""Algebra theorem tests."""
 
-import pytest
-import numpy as np
-
 
 class TestComplexProperties:
     def test_complex_argument_properties(self):

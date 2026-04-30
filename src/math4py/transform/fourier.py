@@ -1,6 +1,7 @@
 """傅立葉轉換與頻譜分析。"""
 
 from typing import Tuple
+
 import numpy as np
 import numpy.fft as fft
 
@@ -21,7 +22,9 @@ def fourier_transform(signal: np.ndarray, dt: float = 1.0) -> Tuple[np.ndarray, 
     return freqs, spectrum
 
 
-def inverse_fourier_transform(spectrum: np.ndarray, dt: float = 1.0) -> Tuple[np.ndarray, np.ndarray]:
+def inverse_fourier_transform(
+    spectrum: np.ndarray, dt: float = 1.0
+) -> Tuple[np.ndarray, np.ndarray]:
     """逆傅立葉轉換。
 
     Args:
@@ -73,13 +76,15 @@ def fourier_series_coeff(f: callable, T: float, n_terms: int = 10) -> np.ndarray
     an = np.zeros(n_terms)
     bn = np.zeros(n_terms)
     for n in range(1, n_terms + 1):
-        an[n-1] = 2.0 / T * np.sum(y * np.cos(2 * np.pi * n * t / T)) * dt
-        bn[n-1] = 2.0 / T * np.sum(y * np.sin(2 * np.pi * n * t / T)) * dt
+        an[n - 1] = 2.0 / T * np.sum(y * np.cos(2 * np.pi * n * t / T)) * dt
+        bn[n - 1] = 2.0 / T * np.sum(y * np.sin(2 * np.pi * n * t / T)) * dt
 
     return a0, an, bn
 
 
-def reconstruct_fourier_series(a0: float, an: np.ndarray, bn: np.ndarray, T: float, t: np.ndarray) -> np.ndarray:
+def reconstruct_fourier_series(
+    a0: float, an: np.ndarray, bn: np.ndarray, T: float, t: np.ndarray
+) -> np.ndarray:
     """用傅立葉系數重構信號。
 
     Args:
@@ -94,8 +99,8 @@ def reconstruct_fourier_series(a0: float, an: np.ndarray, bn: np.ndarray, T: flo
     signal = np.ones_like(t) * a0 / 2.0
     n_terms = len(an)
     for n in range(1, n_terms + 1):
-        signal += an[n-1] * np.cos(2 * np.pi * n * t / T)
-        signal += bn[n-1] * np.sin(2 * np.pi * n * t / T)
+        signal += an[n - 1] * np.cos(2 * np.pi * n * t / T)
+        signal += bn[n - 1] * np.sin(2 * np.pi * n * t / T)
     return signal
 
 
@@ -140,7 +145,9 @@ def convolution_fft(x: np.ndarray, h: np.ndarray) -> np.ndarray:
     return np.real(fft.ifft(X * H))
 
 
-def windowed_ft(signal: np.ndarray, window: str = "hann", dt: float = 1.0) -> Tuple[np.ndarray, np.ndarray]:
+def windowed_ft(
+    signal: np.ndarray, window: str = "hann", dt: float = 1.0
+) -> Tuple[np.ndarray, np.ndarray]:
     """加窗傅立葉轉換。
 
     Args:

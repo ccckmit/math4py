@@ -6,11 +6,11 @@ import numpy as np
 
 def create_graph(edges: list, directed: bool = False) -> nx.Graph:
     r"""Create a graph from edge list.
-    
+
     Args:
         edges: List of tuples (u, v) representing edges
         directed: If True, create directed graph
-    
+
     Returns:
         NetworkX graph
     """
@@ -24,11 +24,11 @@ def create_graph(edges: list, directed: bool = False) -> nx.Graph:
 
 def create_weighted_graph(edges: list, directed: bool = False) -> nx.Graph:
     r"""Create a weighted graph from edge list.
-    
+
     Args:
         edges: List of tuples (u, v, weight)
         directed: If True, create directed graph
-    
+
     Returns:
         NetworkX weighted graph
     """
@@ -46,12 +46,12 @@ def create_weighted_graph(edges: list, directed: bool = False) -> nx.Graph:
 
 def adjacency_matrix(G: nx.Graph) -> np.ndarray:
     r"""Compute adjacency matrix.
-    
+
     A_{ij} = 1 if edge exists between i and j
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         Adjacency matrix as numpy array
     """
@@ -60,12 +60,12 @@ def adjacency_matrix(G: nx.Graph) -> np.ndarray:
 
 def laplacian_matrix(G: nx.Graph) -> np.ndarray:
     r"""Compute graph Laplacian matrix.
-    
+
     L = D - A where D is degree matrix, A is adjacency
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         Laplacian matrix
     """
@@ -74,10 +74,10 @@ def laplacian_matrix(G: nx.Graph) -> np.ndarray:
 
 def degree_sequence(G: nx.Graph) -> list:
     r"""Return degree sequence of graph.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         List of degrees for each node
     """
@@ -86,7 +86,7 @@ def degree_sequence(G: nx.Graph) -> list:
 
 def degree_distribution(G: nx.Graph) -> dict:
     r"""Compute degree distribution.
-    
+
     Returns:
         Dictionary mapping degree to count
     """
@@ -99,10 +99,10 @@ def degree_distribution(G: nx.Graph) -> dict:
 
 def average_degree(G: nx.Graph) -> float:
     r"""Compute average degree.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         Average degree
     """
@@ -111,10 +111,10 @@ def average_degree(G: nx.Graph) -> float:
 
 def clustering_coefficient(G: nx.Graph) -> float:
     r"""Compute average clustering coefficient.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         Average clustering coefficient
     """
@@ -123,10 +123,10 @@ def clustering_coefficient(G: nx.Graph) -> float:
 
 def clustering_coefficients(G: nx.Graph) -> dict:
     r"""Compute clustering coefficient for each node.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         Dictionary mapping node to clustering coefficient
     """
@@ -135,12 +135,12 @@ def clustering_coefficients(G: nx.Graph) -> dict:
 
 def shortest_path(G: nx.Graph, source, target) -> list:
     r"""Find shortest path between two nodes.
-    
+
     Args:
         G: NetworkX graph
         source: Source node
         target: Target node
-    
+
     Returns:
         List of nodes in shortest path
     """
@@ -152,12 +152,12 @@ def shortest_path(G: nx.Graph, source, target) -> list:
 
 def shortest_path_length(G: nx.Graph, source, target) -> float:
     r"""Find shortest path length.
-    
+
     Args:
         G: NetworkX graph
         source: Source node
         target: Target node
-    
+
     Returns:
         Shortest path length
     """
@@ -169,12 +169,12 @@ def shortest_path_length(G: nx.Graph, source, target) -> float:
 
 def dijkstra_shortest_path(G: nx.Graph, source, target) -> list:
     r"""Find shortest path using Dijkstra's algorithm.
-    
+
     Args:
         G: Weighted NetworkX graph
         source: Source node
         target: Target node
-    
+
     Returns:
         List of nodes in shortest path
     """
@@ -186,12 +186,12 @@ def dijkstra_shortest_path(G: nx.Graph, source, target) -> list:
 
 def dijkstra_path_length(G: nx.Graph, source, target) -> float:
     r"""Find shortest path length using Dijkstra.
-    
+
     Args:
         G: Weighted NetworkX graph
         source: Source node
         target: Target node
-    
+
     Returns:
         Shortest path length
     """
@@ -203,14 +203,14 @@ def dijkstra_path_length(G: nx.Graph, source, target) -> float:
 
 def bellman_ford_shortest_path(G: nx.Graph, source, target) -> list:
     r"""Find shortest path using Bellman-Ford algorithm.
-    
+
     Handles negative edge weights.
-    
+
     Args:
         G: Weighted NetworkX graph
         source: Source node
         target: Target node
-    
+
     Returns:
         List of nodes in shortest path
     """
@@ -222,10 +222,10 @@ def bellman_ford_shortest_path(G: nx.Graph, source, target) -> list:
 
 def connected_components(G: nx.Graph) -> list:
     r"""Find connected components.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         List of sets, each set is a connected component
     """
@@ -234,10 +234,10 @@ def connected_components(G: nx.Graph) -> list:
 
 def number_of_connected_components(G: nx.Graph) -> int:
     r"""Count connected components.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         Number of connected components
     """
@@ -246,10 +246,10 @@ def number_of_connected_components(G: nx.Graph) -> int:
 
 def is_connected(G: nx.Graph) -> bool:
     r"""Check if graph is connected.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         True if connected
     """
@@ -258,10 +258,10 @@ def is_connected(G: nx.Graph) -> bool:
 
 def is_biconnected(G: nx.Graph) -> bool:
     r"""Check if graph is biconnected (articulation points).
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         True if biconnected
     """
@@ -270,10 +270,10 @@ def is_biconnected(G: nx.Graph) -> bool:
 
 def articulation_points(G: nx.Graph) -> list:
     r"""Find articulation points (cut vertices).
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         List of articulation points
     """
@@ -282,10 +282,10 @@ def articulation_points(G: nx.Graph) -> list:
 
 def is_bipartite(G: nx.Graph) -> bool:
     r"""Check if graph is bipartite.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         True if bipartite
     """
@@ -294,10 +294,10 @@ def is_bipartite(G: nx.Graph) -> bool:
 
 def color_bipartite(G: nx.Graph) -> dict:
     r"""Color bipartite graph.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         Dictionary mapping nodes to color (0 or 1)
     """
@@ -309,10 +309,10 @@ def color_bipartite(G: nx.Graph) -> dict:
 
 def graph_center(G: nx.Graph) -> list:
     r"""Find center of graph (nodes with minimum eccentricity).
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         List of center nodes
     """
@@ -321,11 +321,11 @@ def graph_center(G: nx.Graph) -> list:
 
 def eccentricity(G: nx.Graph, node) -> int:
     r"""Compute eccentricity of a node.
-    
+
     Args:
         G: NetworkX graph
         node: Node to compute eccentricity for
-    
+
     Returns:
         Eccentricity (max shortest path distance to any other node)
     """
@@ -337,12 +337,12 @@ def eccentricity(G: nx.Graph, node) -> int:
 
 def radius(G: nx.Graph) -> int:
     r"""Compute graph radius.
-    
+
     Minimum eccentricity over all nodes.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         Graph radius
     """
@@ -351,12 +351,12 @@ def radius(G: nx.Graph) -> int:
 
 def diameter(G: nx.Graph) -> int:
     r"""Compute graph diameter.
-    
+
     Maximum eccentricity over all nodes.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         Graph diameter
     """
@@ -365,11 +365,11 @@ def diameter(G: nx.Graph) -> int:
 
 def pagerank(G: nx.Graph, alpha: float = 0.85) -> dict:
     r"""Compute PageRank scores.
-    
+
     Args:
         G: NetworkX graph
         alpha: Damping parameter
-    
+
     Returns:
         Dictionary mapping nodes to PageRank score
     """
@@ -378,11 +378,11 @@ def pagerank(G: nx.Graph, alpha: float = 0.85) -> dict:
 
 def hits_scores(G: nx.Graph, normalized: bool = True) -> tuple:
     r"""Compute HITS (Hubs and Authorities) scores.
-    
+
     Args:
         G: NetworkX graph
         normalized: If True, normalize scores
-    
+
     Returns:
         Tuple of (hubs, authorities) dictionaries
     """
@@ -391,10 +391,10 @@ def hits_scores(G: nx.Graph, normalized: bool = True) -> tuple:
 
 def betweenness_centrality(G: nx.Graph) -> dict:
     r"""Compute betweenness centrality.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         Dictionary mapping nodes to betweenness centrality
     """
@@ -403,10 +403,10 @@ def betweenness_centrality(G: nx.Graph) -> dict:
 
 def degree_centrality(G: nx.Graph) -> dict:
     r"""Compute degree centrality.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         Dictionary mapping nodes to degree centrality
     """
@@ -415,10 +415,10 @@ def degree_centrality(G: nx.Graph) -> dict:
 
 def closeness_centrality(G: nx.Graph) -> dict:
     r"""Compute closeness centrality.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         Dictionary mapping nodes to closeness centrality
     """
@@ -427,11 +427,11 @@ def closeness_centrality(G: nx.Graph) -> dict:
 
 def eigenvector_centrality(G: nx.Graph, max_iter: int = 100) -> dict:
     r"""Compute eigenvector centrality.
-    
+
     Args:
         G: NetworkX graph
         max_iter: Maximum iterations
-    
+
     Returns:
         Dictionary mapping nodes to eigenvector centrality
     """
@@ -443,10 +443,10 @@ def eigenvector_centrality(G: nx.Graph, max_iter: int = 100) -> dict:
 
 def minimum_spanning_tree(G: nx.Graph) -> nx.Graph:
     r"""Compute minimum spanning tree.
-    
+
     Args:
         G: Weighted NetworkX graph
-    
+
     Returns:
         MST as NetworkX graph
     """
@@ -455,10 +455,10 @@ def minimum_spanning_tree(G: nx.Graph) -> nx.Graph:
 
 def minimum_spanning_tree_edges(G: nx.Graph) -> list:
     r"""Get edges of minimum spanning tree.
-    
+
     Args:
         G: Weighted NetworkX graph
-    
+
     Returns:
         List of edges in MST
     """
@@ -467,10 +467,10 @@ def minimum_spanning_tree_edges(G: nx.Graph) -> list:
 
 def number_of_edges(G: nx.Graph) -> int:
     r"""Count number of edges.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         Number of edges
     """
@@ -479,10 +479,10 @@ def number_of_edges(G: nx.Graph) -> int:
 
 def number_of_nodes(G: nx.Graph) -> int:
     r"""Count number of nodes.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         Number of nodes
     """
@@ -491,10 +491,10 @@ def number_of_nodes(G: nx.Graph) -> int:
 
 def density(G: nx.Graph) -> float:
     r"""Compute graph density.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         Density (actual edges / possible edges)
     """
@@ -503,10 +503,10 @@ def density(G: nx.Graph) -> float:
 
 def is_eulerian(G: nx.Graph) -> bool:
     r"""Check if graph has Eulerian circuit/path.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         True if Eulerian
     """
@@ -515,10 +515,10 @@ def is_eulerian(G: nx.Graph) -> bool:
 
 def eulerian_path(G: nx.Graph) -> list:
     r"""Find Eulerian path/circuit.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         List of nodes in Eulerian path
     """
@@ -530,10 +530,10 @@ def eulerian_path(G: nx.Graph) -> list:
 
 def is_hamiltonian(G: nx.Graph) -> bool:
     r"""Check if graph has Hamiltonian cycle.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         True if Hamiltonian cycle exists (not guaranteed)
     """
@@ -542,10 +542,10 @@ def is_hamiltonian(G: nx.Graph) -> bool:
 
 def traveling_salesman(G: nx.Graph) -> list:
     r"""Approximate traveling salesman problem.
-    
+
     Args:
         G: Weighted NetworkX graph
-    
+
     Returns:
         Approximate TSP tour as list of nodes
     """
@@ -557,10 +557,10 @@ def traveling_salesman(G: nx.Graph) -> list:
 
 def max_clique(G: nx.Graph) -> list:
     r"""Find maximum clique.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         List of nodes in maximum clique
     """
@@ -572,10 +572,10 @@ def max_clique(G: nx.Graph) -> list:
 
 def graph_clique_number(G: nx.Graph) -> int:
     r"""Compute clique number (size of largest clique).
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         Clique number
     """
@@ -587,10 +587,10 @@ def graph_clique_number(G: nx.Graph) -> int:
 
 def independent_set(G: nx.Graph) -> list:
     r"""Find maximum independent set.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         List of nodes in maximum independent set
     """
@@ -602,10 +602,10 @@ def independent_set(G: nx.Graph) -> list:
 
 def vertex_cover(G: nx.Graph) -> list:
     r"""Find minimum vertex cover.
-    
+
     Args:
         G: NetworkX graph
-    
+
     Returns:
         List of nodes in minimum vertex cover
     """

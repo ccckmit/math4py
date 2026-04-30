@@ -3,7 +3,7 @@ r"""Graph theory tests using networkx."""
 import numpy as np
 import pytest
 import networkx as nx
-from math4py.graph.function import (
+from math4py.graph_theory.function import (
     create_graph,
     create_weighted_graph,
     adjacency_matrix,

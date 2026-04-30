@@ -1,4 +1,4 @@
-r"""Graph module - graph theory operations using networkx."""
+r"""Graph Theory module - graph operations using networkx."""
 
 from .function import (
     create_graph,

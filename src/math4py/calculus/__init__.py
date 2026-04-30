@@ -1,10 +1,50 @@
 """calculus - 微積分模組，數值微積分 (符號用 sympy 直接用)."""
 
 from .function import derivative, integral, trapezoidal, simpson
+from .series import (
+    taylor_series,
+    fourier_series,
+    power_series,
+    geometric_series,
+    harmonic_series,
+    alternating_harmonic_series,
+    ratio_test,
+    root_test,
+    series_convergence,
+)
+from .analysis import (
+    limit,
+    is_continuous,
+    pointwise_convergence,
+    uniform_convergence,
+    intermediate_value_theorem,
+    mean_value_theorem,
+    extreme_value_theorem,
+    sequence_limit,
+    cauchy_sequence,
+)
 
 __all__ = [
     "derivative",
     "integral",
     "trapezoidal",
     "simpson",
+    "taylor_series",
+    "fourier_series",
+    "power_series",
+    "geometric_series",
+    "harmonic_series",
+    "alternating_harmonic_series",
+    "ratio_test",
+    "root_test",
+    "series_convergence",
+    "limit",
+    "is_continuous",
+    "pointwise_convergence",
+    "uniform_convergence",
+    "intermediate_value_theorem",
+    "mean_value_theorem",
+    "extreme_value_theorem",
+    "sequence_limit",
+    "cauchy_sequence",
 ]

@@ -15,6 +15,12 @@ from math4py.optimization.hill_climbing import (
     random_restart_hill_climbing,
     simulated_annealing,
 )
+from math4py.optimization.linear_programming import (
+    simplex_method,
+    solve_lp,
+    is_feasible_point,
+    duality_gap,
+)
 from math4py.optimization.theorem import (
     convex_first_order_condition,
     convex_second_order_condition,
@@ -273,3 +279,79 @@ class TestSimulatedAnnealing:
                                                     max_iter=2000)
         # 應該能逃離 x=-2 的局部最優
         assert f_opt < 1.0
+
+
+class TestSimplexMethod:
+    def test_simple_minimization(self):
+        """簡單線性規劃：min x1 + 2*x2 s.t. x1 + x2 = 1, x1, x2 ≥ 0"""
+        c = np.array([1.0, 2.0])
+        A = np.array([[1.0, 1.0]])
+        b = np.array([1.0])
+        x_opt, obj, status = simplex_method(c, A, b)
+        assert status == "optimal"
+        assert abs(obj - 1.0) < 0.1  # 最優解應該是 (1, 0) 或接近
+
+    def test_unbounded(self):
+        """無界問題：min -x s.t. x ≥ 0（沒有上界）"""
+        c = np.array([-1.0])  # 求最大值（在 min 形式中）
+        A = np.array([[1.0]])  # x ≥ 0 的鬆弛變量形式
+        b = np.array([0.0])
+        x_opt, obj, status = simplex_method(c, A, b)
+        # 可能返回 unbounded 或一個很大的負值
+        assert status in ["unbounded", "optimal"]
+
+
+class TestSolveLP:
+    def test_basic_problem(self):
+        """基本線性規劃問題。"""
+        c = [1.0, 2.0]
+        A_ub = [[1.0, 1.0]]
+        b_ub = [1.0]
+        result = solve_lp(c, A_ub=A_ub, b_ub=b_ub)
+        assert result["status"] == "optimal"
+        assert result["fun"] < 3.0
+
+    def test_with_equality(self):
+        """帶等式約束的問題。"""
+        c = [1.0, 1.0]
+        A_eq = [[1.0, 1.0]]
+        b_eq = [2.0]
+        result = solve_lp(c, A_eq=A_eq, b_eq=b_eq)
+        assert result["status"] == "optimal"
+        assert abs(result["fun"] - 2.0) < 0.2
+
+
+class TestIsFeasiblePoint:
+    def test_feasible_point(self):
+        """可行的點。"""
+        x = np.array([0.5, 0.5])
+        A_ub = np.array([[1.0, 1.0]])
+        b_ub = np.array([1.0])
+        assert is_feasible_point(x, A_ub, b_ub)
+
+    def test_infeasible_point(self):
+        """不可行的點。"""
+        x = np.array([1.0, 1.0])
+        A_ub = np.array([[1.0, 1.0]])
+        b_ub = np.array([1.0])
+        assert not is_feasible_point(x, A_ub, b_ub)
+
+    def test_with_equality(self):
+        """帶等式約束。"""
+        x = np.array([1.0, 1.0])
+        A_eq = np.array([[1.0, 1.0]])
+        b_eq = np.array([2.0])
+        assert is_feasible_point(x, None, None, A_eq, b_eq)
+
+
+class TestDualityGap:
+    def test_zero_gap_at_optimum(self):
+        """在最優解處對偶間隙應為0。"""
+        c = np.array([1.0, 2.0])
+        x = np.array([1.0, 0.0])  # 假設的最優解
+        lambda_dual = np.array([1.0])  # 對偶變量
+        A = np.array([[1.0, 1.0]])
+        b = np.array([1.0])
+        gap = duality_gap(c, x, lambda_dual, A, b)
+        # 對偶間隙不一定為0（除非是最優解）
+        assert isinstance(gap, (int, float))

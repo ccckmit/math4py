@@ -23,7 +23,6 @@ from .function import (
     Field,
     Group,
     Ring,
-    VectorSpace,
 )
 from .polynomial import polynomial_add, polynomial_eval, polynomial_multiply
 from .theorem import (
@@ -34,7 +33,8 @@ from .theorem import (
     identity_element,
     inverse_element,
 )
-from .vector import cross_product, dot_product, norm_vector
+from math4py.linear_algebra.vector import cross_product, dot_product, norm_vector
+from math4py.linear_algebra.vector_space import VectorSpace
 
 __all__ = [
     "closure_axiom",
@@ -47,7 +47,6 @@ __all__ = [
     "Group",
     "Ring",
     "Field",
-    "VectorSpace",
     "norm_vector",
     "dot_product",
     "cross_product",
@@ -70,4 +69,5 @@ __all__ = [
     "complex_log",
     "complex_pow",
     "solve_quadratic",
+    "VectorSpace",
 ]

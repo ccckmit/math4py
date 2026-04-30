@@ -1,6 +1,7 @@
-"""matrix - 矩陣運算模組。"""
+"""matrix - 矩陣運算模組 (re-export from linear_algebra)."""
 
-from .function import (
+from math4py.linear_algebra.matrix import Matrix
+from math4py.linear_algebra.function import (
     det,
     inverse_2x2,
     matrix_add,
@@ -9,7 +10,6 @@ from .function import (
     trace,
     transpose,
 )
-from .matrix import Matrix
 
 __all__ = [
     "Matrix",

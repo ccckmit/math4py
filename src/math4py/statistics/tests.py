@@ -3,7 +3,7 @@
 from typing import List, Optional, Tuple
 import math
 from dataclasses import dataclass
-from .stats import mean, var, sd
+from .function import mean, variance as var, std as sd
 from .distributions import pt, pnorm, pf, pchisq, dt, df as f_df
 
 @dataclass

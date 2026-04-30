@@ -36,13 +36,13 @@ def std(x: List[float], ddof: int = 1) -> float:
     """標準差。
 
     Args:
-        x: 資料
-        ddof: 自由度調整
+        x: 數值列表
+        ddof: 自由度調整 (1 為樣樣本標準差)
 
     Returns:
         標準差
     """
-    return np.std(x, ddof=ddf)
+    return np.std(x, ddof=ddof)
 
 
 def covariance(x: List[float], y: List[float], ddof: int = 1) -> float:
@@ -176,15 +176,15 @@ def median(x) -> float:
 
 def summary(x) -> dict:
     return {
-        "min": min(x),
-        "q1": quantile(x, 0.25),
-        "median": median(x),
-        "mean": mean(x),
-        "q3": quantile(x, 0.75),
-        "max": max(x),
-        "sd": std(x),
-        "var": variance(x),
-        "n": len(x)
+        "Min": min(x),
+        "Q1": quantile(x, 0.25),
+        "Median": median(x),
+        "Mean": mean(x),
+        "Q3": quantile(x, 0.75),
+        "Max": max(x),
+        "SD": std(x),
+        "Variance": variance(x),
+        "N": len(x)
     }
 
 

@@ -2,7 +2,7 @@
 
 import pytest
 from math4py.statistics.distributions import dnorm, pnorm, qnorm, rnorm
-from math4py.statistics.stats import mean, median, var, sd
+from math4py.statistics.function import mean, median, variance as var, std as sd
 from math4py.statistics.tests import t_test, z_test
 
 def test_dnorm():

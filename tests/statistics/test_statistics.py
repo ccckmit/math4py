@@ -11,7 +11,7 @@ from math4py.statistics.distributions import (
     dpois, ppois, qpois, rpois,
     df as f_distr, pf as f_pf
 )
-from math4py.statistics.stats import mean, median, var, sd, cov, cor, quantile, summary, min_val, max_val
+from math4py.statistics.function import mean, median, variance as var, std, std as sd, covariance as cov, correlation as cor, quantile, summary
 from math4py.statistics.tests import t_test, z_test, chisq_test, anova, conf_interval
 
 class TestNormalDistribution:

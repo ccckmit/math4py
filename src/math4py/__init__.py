@@ -3,9 +3,7 @@
 from .geometry import Vector, Point
 from .geometry._3d import Line3D, Plane3D
 from . import statistics as R
-from . import matrix
 from . import number_theory
-from . import tensor
 
 from .statistics import (
     dnorm, pnorm, qnorm, rnorm,
@@ -29,7 +27,6 @@ from .plot import (
 __all__ = [
     "Vector", "Point", "Line3D", "Plane3D",
     "R",
-    "Matrix",
     "det",
     "inverse_2x2",
     "matrix_multiply",
@@ -49,6 +46,11 @@ __all__ = [
     "plot", "hist", "boxplot", "qqnorm",
     "plot_entropy", "plot_kl",
     "brownian_motion", "ito_integral_plot", "options_plot",
-    "tensor",
+    "inverse_2x2",
+    "matrix_multiply",
+    "matrix_add",
+    "matrix_scalar_mul",
+    "transpose",
+    "trace",
 ]
 __version__ = "0.1.0"

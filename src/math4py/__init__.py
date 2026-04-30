@@ -4,7 +4,6 @@ from .geometry import Vector, Point
 from .geometry._3d import Line3D, Plane3D
 from . import statistics as R
 from . import number_theory
-from . import tensor
 
 from .statistics import (
     dnorm, pnorm, qnorm, rnorm,
@@ -41,6 +40,5 @@ __all__ = [
     "plot", "hist", "boxplot", "qqnorm",
     "plot_entropy", "plot_kl",
     "brownian_motion", "ito_integral_plot", "options_plot",
-    "tensor",
 ]
 __version__ = "0.1.0"

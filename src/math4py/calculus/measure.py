@@ -1,3 +1,4 @@
+# 理論參考 -- https://gemini.google.com/app/7664e11b0bc36d4d
 """測度論（Measure Theory）基礎函數。"""
 
 import numpy as np

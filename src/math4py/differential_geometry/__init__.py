@@ -12,6 +12,16 @@ from .function import (
     metric_tensor_sphere,
     geodesic_distance_sphere,
 )
+from .tensor_algebra import (
+    Tensor,
+    tensor_product,
+    contract,
+    raise_index,
+    lower_index,
+    metric_tensor,
+    inverse_metric,
+    kronecker_delta,
+)
 from .theorem import (
     gauss_bonnet_theorem,
     stokes_theorem_check,
@@ -31,6 +41,14 @@ __all__ = [
     "covariant_derivative",
     "metric_tensor_sphere",
     "geodesic_distance_sphere",
+    "Tensor",
+    "tensor_product",
+    "contract",
+    "raise_index",
+    "lower_index",
+    "metric_tensor",
+    "inverse_metric",
+    "kronecker_delta",
     "gauss_bonnet_theorem",
     "stokes_theorem_check",
     "divergence_theorem_check",

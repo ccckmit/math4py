@@ -89,7 +89,7 @@ def mixed_strategy(payoffs: np.ndarray) -> np.ndarray:
         x = np.maximum(x, 0)
         x = x / x.sum()
         return x
-    except:
+    except (np.linalg.LinAlgError, ValueError):
         return np.ones(n) / n
 
 

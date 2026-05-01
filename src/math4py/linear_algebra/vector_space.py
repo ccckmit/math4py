@@ -53,7 +53,7 @@ class VectorSpace:
             mat = np.array(vectors).T
             rank = np.linalg.matrix_rank(mat)
             return rank == len(vectors)
-        except:
+        except (np.linalg.LinAlgError, ValueError):
             return True
 
     def basis(self) -> List[List[float]]:
@@ -71,7 +71,7 @@ class VectorSpace:
         try:
             mat = np.array(vectors).T
             return int(np.linalg.matrix_rank(mat))
-        except:
+        except (np.linalg.LinAlgError, ValueError):
             return len(vectors)
 
     def __repr__(self):

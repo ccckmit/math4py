@@ -66,7 +66,7 @@ def cross_section_point_like(sqrt_s: float, m0: float) -> float:
     return 1.0 / (sqrt_s**2)
 
 
-def ckms_matrix_element(V_us: float, V_ub: float, V_cb: float) -> np.ndarray:
+def ckms_matrix_element(V_us: float, V_ub: float, V_cb: float, V_ud: float) -> np.ndarray:
     """CKM 矩陣（Cabibbo-Kobayashi-Maskawa）。"""
     V_cd = np.sqrt(1.0 - V_us**2 - V_ub**2)  # 近似
     V_cs = -V_us * V_cd / V_ud if V_ud != 0 else 0  # 簡化

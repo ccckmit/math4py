@@ -3,7 +3,7 @@
 from typing import Any, Dict
 
 
-def category_axioms(category: "Category") -> dict:
+def category_axioms(category: Any) -> dict:
     """範疇公理驗證。
 
     1. 對每個物件 A，存在恆等態射 id_A: A → A
@@ -37,7 +37,7 @@ def functor_laws(F: Dict) -> dict:
     }
 
 
-def yoneda_embedding_theorem(C: "Category") -> dict:
+def yoneda_embedding_theorem(C: Any) -> dict:
     """米田嵌入定理：C → [C^op, Set] 是全且忠實的。"""
     return {"pass": True, "full": True, "faithful": True, "fully_faithful": True}
 

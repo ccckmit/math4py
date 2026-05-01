@@ -104,7 +104,7 @@ def taylor_series(f: Callable[[float], float], x0: float, n: int = 5) -> Callabl
         for i in range(1, n + 1):
             try:
                 result += (x - x0) ** i / np.math.factorial(i)
-            except:
+            except (ValueError, ZeroDivisionError):
                 break
         return result
 

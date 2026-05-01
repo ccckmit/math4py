@@ -3,8 +3,8 @@ r"""Physics theorems and formula verification.
 Verifies fundamental physics laws and formulas across domains.
 """
 
+
 import numpy as np
-from typing import Dict, List
 
 
 def newton_second_law(mass: float, acceleration: float, force: float):

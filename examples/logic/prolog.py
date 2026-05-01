@@ -11,10 +11,10 @@ def parse_term(s: str) -> Tuple:
             return ("var", s)
         try:
             return ("num", int(s))
-        except:
+        except ValueError:
             try:
                 return ("num", float(s))
-            except:
+            except ValueError:
                 return ("const", s)
 
     name, rest = s.split("(", 1)

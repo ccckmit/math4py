@@ -16,7 +16,7 @@ def existence_uniqueness_theorem(
     try:
         dy = f(y0, t_span[0])
         return np.all(np.isfinite(dy))
-    except:
+    except (ValueError, TypeError, ZeroDivisionError):
         return False
 
 

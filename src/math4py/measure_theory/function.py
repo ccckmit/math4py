@@ -43,12 +43,12 @@ def lebesgue_measure_interval(a: float, b: float) -> float:
 
 
 def is_lebesgue_integrable(f: Callable, a: float, b: float, n: int = 1000) -> bool:
-    """檢查函數在 [a, b] 上是否勒貝格可積。"""
+    """检查函数在 [a, b] 上是否勒贝格可积。"""
     try:
         x = np.linspace(a, b, n)
         values = f(x)
         return np.all(np.isfinite(values))
-    except:
+    except (ValueError, ZeroDivisionError, TypeError):
         return False
 
 
@@ -69,11 +69,11 @@ def sigma_finite_measure(measure: Dict[frozenset, float], universal: frozenset) 
 
 
 def measurable_function_check(f: Callable, domain_sets: List[frozenset]) -> bool:
-    """檢查函數是否為可測函數。"""
+    """检查函数是否为可测函数。"""
     try:
         test_val = f(0.0)
         return np.isfinite(test_val)
-    except:
+    except (ValueError, TypeError, ZeroDivisionError):
         return False
 
 

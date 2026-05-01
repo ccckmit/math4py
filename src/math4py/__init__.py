@@ -18,8 +18,6 @@ from .statistics import (
     anova,
     chisq_test,
     conf_interval,
-    correlation as cor,
-    covariance as cov,
     cross_entropy,
     dbinom,
     dchisq,
@@ -51,11 +49,21 @@ from .statistics import (
     rnorm,
     rpois,
     rt,
-    std as sd,
     summary,
     t_test,
-    variance as var,
     z_test,
+)
+from .statistics import (
+    correlation as cor,
+)
+from .statistics import (
+    covariance as cov,
+)
+from .statistics import (
+    std as sd,
+)
+from .statistics import (
+    variance as var,
 )
 
 __all__ = [

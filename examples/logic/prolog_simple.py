@@ -18,10 +18,10 @@ def parse_term(s: str):
             return ("var", s)
         try:
             return ("num", int(s))
-        except:
+        except ValueError:
             try:
                 return ("num", float(s))
-            except:
+            except ValueError:
                 return ("const", s)
 
     # 複合 term

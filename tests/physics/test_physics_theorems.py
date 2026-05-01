@@ -1,16 +1,15 @@
 """Pytest tests for physics theorems."""
 
-import pytest
 import math
 
 from math4py.physics.theorem import (
-    newton_second_law,
+    boyle_law,
     conservation_energy,
+    einstein_energy,
+    first_law_thermodynamics,
+    newton_second_law,
     ohms_law,
     snells_law,
-    einstein_energy,
-    boyle_law,
-    first_law_thermodynamics,
 )
 
 

@@ -7,6 +7,7 @@ from math4py.transform.fourier import (
     fourier_series_coeff,
     fourier_transform,
     idft,
+    inverse_fourier_transform,
     reconstruct_fourier_series,
 )
 from math4py.transform.laplace import laplace_transform, laplace_transform_pairs, solve_ode_laplace

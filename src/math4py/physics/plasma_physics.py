@@ -51,6 +51,7 @@ def sound_speed_ionacoustic(T_e: float, T_i: float, m_i: float) -> float:
 def collision_frequency(n_e: float, T_e: float) -> float:
     """碰撞頻率 ν_ei（簡化）。"""
     k = 1.380649e-23
+    m_e = 9.10938356e-31  # 電子質量
     return (
         n_e
         * ELECTRON_CHARGE**4
